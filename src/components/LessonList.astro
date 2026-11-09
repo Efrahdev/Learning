@@ -22,11 +22,13 @@ const { pages, compact = false } = Astro.props;
 <style>
   .lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
   .pg { display: flex; gap: var(--space-4); align-items: flex-start; padding: var(--space-4) var(--space-5); text-decoration: none; color: var(--ink); min-height: var(--tap); }
-  .pg:hover { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+  .pg { transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease), border-color var(--fast); }
+  .pg:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .pg:hover .num { background: var(--accent); color: var(--on-accent); }
   .compact .pg { padding: var(--space-3) var(--space-4); box-shadow: none; }
-  .num { flex: 0 0 auto; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .num { flex: 0 0 auto; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent-ink); font-weight: 700; transition: background var(--fast), color var(--fast); }
   .body { display: flex; flex-direction: column; gap: 2px; }
-  .name { font-weight: 700; font-size: var(--text-lg); }
+  .name { font-family: var(--font-heading); font-weight: 700; font-size: var(--text-lg); letter-spacing: -0.01em; }
   .compact .name { font-size: var(--text-base); }
   .summary { color: var(--ink-2); }
 </style>

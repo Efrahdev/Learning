@@ -1,18 +1,10 @@
 ---
-// The whole library on one page: every subject, part and lesson. Handy for deciding how to organise things.
+// The whole library on one page, as one tree you can filter. A React island (src/islands/Map.tsx).
 import BaseLayout from '../layouts/BaseLayout.astro';
-import MapBranch from '@components/MapBranch.astro';
-import { allFolders, allPages, getLibrary, plural } from '@lib/content';
-const root = await getLibrary();
-const folders = allFolders(root).length - 1;
+import LibraryMap from '@islands/Map';
+import { getCatalogue } from '@lib/catalogue';
+const data = await getCatalogue();
 ---
 <BaseLayout title="Library map">
-  <h1>Library map</h1>
-  <p class="lead" style="margin-block: var(--space-3) var(--space-5)">Everything in one place: {plural(root.folders.length, 'subject')}, {plural(folders, 'folder')} in all, {plural(allPages(root).length, 'lesson')}.</p>
-  <ul class="map" role="list">{root.folders.map((f) => <MapBranch folder={f} />)}</ul>
+  <LibraryMap client:load data={data} />
 </BaseLayout>
-
-<style>
-  h1 { font-size: var(--text-2xl); }
-  .map { list-style: none; margin: 0; padding: 0; max-width: 48rem; }
-</style>

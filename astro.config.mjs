@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -11,7 +12,8 @@ export default defineConfig({
   site: 'https://arhaanbeta.github.io',
   base: '/learning-library-ayu',
   trailingSlash: 'always',
-  integrations: [mdx()],
+  // React powers the rich islands (home page, library map). Lesson pages ship no React.
+  integrations: [mdx(), react()],
   markdown: {
     // Maths: $…$ inline and $$…$$ blocks, drawn by KaTeX at build time (no maths JavaScript in the browser).
     processor: unified({ remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] }),

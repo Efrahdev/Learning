@@ -31,7 +31,9 @@ The system has three parts, and each has one job:
 ## Stack
 - **Astro 7** with content collections, MDX and strict TypeScript. Node 22 (`.nvmrc`).
 - Content lives in `/content`, loaded with Astro's glob loader (`src/content.config.ts`).
-- Interactive widgets are small islands in vanilla TS (Preact only if a widget really needs it, and only after asking). Keep JS light on content pages.
+- The rich pages (home, map, search) are **React islands with Motion** (owner's request, Nov 2026): `src/islands/`, rendered to HTML at build time and hydrated with `client:load`. Lesson and folder pages ship no React. Lesson widgets stay small vanilla-TS islands. Keep JS light on content pages.
+- Fonts are self-hosted with Fontsource: Bricolage Grotesque (headings), Atkinson Hyperlegible Next (body, made for easy reading).
+- Page changes cross-fade with CSS cross-document View Transitions (no JS); a subject's icon and title glide from its home tile to its page (`view-transition-name: icon-<slug>` / `title-<slug>`).
 - Maths uses KaTeX (remark-math + rehype-katex via `unified()` in `astro.config.mjs`), rendered at build time. Code highlighting uses Astro's built-in Shiki.
 - Search (Phase 3): Pagefind, static, runs in the browser.
 - PWA (later, optional): `@vite-pwa/astro`, so visited pages can be read offline.
@@ -77,18 +79,20 @@ source: https://claude.ai/artifact/…      # where an imported lesson came from
 - The build fails if a lesson `id` is missing, badly formed or duplicated, or if a lesson and a folder would share an address.
 
 ## Routes
-- `/` shows the top-level folders as tiles. `/map/` shows the whole tree on one page.
+- `/` is the home page: hero with instant search (`/` or Ctrl/⌘ K), "Surprise me", subjects as a bento grid, and a filterable list of every lesson. `/map/` shows the whole tree on one page, with a live filter.
 - `/<any/folder/path>/` lists that folder's sub-folders (cards) and lessons. One route, `src/pages/[...path].astro`, serves every depth.
 - `/<folder/path>/<lesson>/` is a lesson: breadcrumb, the folder's lessons in a sidebar, previous/next. It always opens at the top.
-- `/search/` (Phase 3).
+- `/search/`: instant search over titles, topics, tags and summaries (`?q=` works). Full-text search inside lessons (Pagefind) is Phase 3.
 
 ## Where things live (so refactors stay small)
 - `src/styles/tokens.css`: every colour, size, space, radius and tap size. Light and dark. Subject accents.
 - `src/styles/base.css` (page frame, buttons) and `src/styles/prose.css` (lesson text, code, maths): tokens only.
-- `src/layouts/`: `BaseLayout` (head, header, footer, theme) → `LessonLayout` (written lessons) and `LegacyLayout` (older lessons in a frame).
+- `src/layouts/`: `BaseLayout` (head, header, footer, theme) → `LessonLayout` (written lessons) and `LegacyLayout` (opens an older lesson as itself).
 - `src/components/`: shared pieces. `mdx.ts` lists the components every lesson can use without importing.
 - `src/sims/`: interactive simulations, imported by the lessons that use them (`import X from '@sims/X.astro'`).
 - `src/lib/content.ts`: the only code that reads the collections; builds the folder tree (`getLibrary`, `allPages`, `ancestors`, `neighbours`).
+- `src/lib/catalogue.ts`: the same tree as plain data for the islands (`getCatalogue`).
+- `src/islands/`: React islands (`Home`, `Map`, `SearchPage`, `SearchBox`), the shared search logic (`search.ts`) and their CSS (tokens only).
 - Components use tokens, never raw colours or sizes. Lessons contain words and components, never styling.
 
 ## Shared components

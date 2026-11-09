@@ -1,22 +1,12 @@
 ---
-// Home: one card per top-level folder (subject or domain).
+// Home: hero with instant search, subjects as a bento grid, and an explorer for every lesson.
+// The page is one React island (src/islands/Home.tsx), rendered to HTML at build time and brought to life in the browser.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FolderCards from '@components/FolderCards.astro';
-import { getLibrary } from '@lib/content';
+import Home from '@islands/Home';
+import { getCatalogue } from '@lib/catalogue';
 import { url } from '@lib/url';
-const root = await getLibrary();
+const data = await getCatalogue();
 ---
-<BaseLayout title="Learning Library">
-  <section class="hello">
-    <h1>What shall we learn today?</h1>
-    <p class="lead">Pick a subject. Want to see everything at once? Open the <a href={url('map/')}>library map</a>.</p>
-  </section>
-  <FolderCards folders={root.folders} />
-  {root.folders.length === 0 && <p class="lead">No subjects yet. Add a folder in content/.</p>}
+<BaseLayout title="Learning Library" home>
+  <Home client:load data={data} mapHref={url('map/')} />
 </BaseLayout>
-
-<style>
-  .hello { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-6); }
-  h1 { font-size: var(--text-3xl); }
-  @media (max-width: 40rem) { h1 { font-size: var(--text-2xl); } }
-</style>

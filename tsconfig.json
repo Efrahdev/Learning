@@ -3,10 +3,13 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "public", "scripts"],
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "paths": {
       "@components/*": ["./src/components/*"],
       "@sims/*": ["./src/sims/*"],
-      "@lib/*": ["./src/lib/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@islands/*": ["./src/islands/*"]
     }
   }
 }

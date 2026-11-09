@@ -32,8 +32,9 @@
   --accent: #2f5bd3; --accent-soft: #e8eefc; --accent-ink: #1e3f9c; --on-accent: #ffffff;
 
   /* Type */
-  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-heading: var(--font-body);
+  /* Fonts are self-hosted (Fontsource), so no request ever leaves the site. */
+  --font-body: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Bricolage Grotesque Variable", var(--font-body);
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   --text-sm: 1rem;        /* 16px: meta, captions (never smaller) */
   --text-base: 1.125rem;  /* 18px: body text (minimum for reading) */
@@ -41,6 +42,7 @@
   --text-xl: 1.625rem;    /* 26px: section headings */
   --text-2xl: 2.125rem;   /* 34px: page titles */
   --text-3xl: 2.75rem;    /* 44px: home heading */
+  --text-hero: clamp(2.6rem, 1.4rem + 5.2vw, 5.25rem); /* the home page's big line: grows with the screen */
   --leading: 1.65;
   --leading-tight: 1.2;
   --measure: 68ch;        /* longest reading line */
@@ -52,6 +54,8 @@
   /* Shape and depth */
   --radius-sm: 8px; --radius: 14px; --radius-lg: 20px; --radius-pill: 999px;
   --shadow: 0 1px 2px rgb(29 34 48 / 0.06), 0 6px 20px -8px rgb(29 34 48 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(29 34 48 / 0.06), 0 18px 40px -16px rgb(29 34 48 / 0.32);
+  --glass: color-mix(in srgb, var(--surface) 72%, transparent); /* frosted panels over the hero glow */
   --border: 1px solid var(--line);
 
   /* Touch and layout */
@@ -62,7 +66,9 @@
 
   /* Motion */
   --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1); /* a small overshoot, for playful pops */
   --fast: 150ms;
+  --slow: 600ms;
 }
 
 :root[data-theme="dark"] {
@@ -84,6 +90,7 @@
 
   --accent: #8aa8ff; --accent-soft: #1c2643; --accent-ink: #bccdff; --on-accent: #0b1430;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -10px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.35), 0 22px 48px -18px rgb(0 0 0 / 0.85);
 }
 
 /*

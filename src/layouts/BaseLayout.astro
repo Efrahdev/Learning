@@ -3,6 +3,8 @@
  * The frame every page shares: head tags, header, footer, light/dark switch.
  * Every page sits inside this, so site-wide changes (header, nav, fonts) happen once, here.
  */
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import ThemeToggle from '@components/ThemeToggle.astro';
@@ -13,8 +15,9 @@ interface Props {
   title: string;
   description?: string;
   accent?: Accent;
+  home?: boolean; // the home page draws its own hero, so it sits closer to the header
 }
-const { title, description = 'Our family learning library.', accent } = Astro.props;
+const { title, description = 'Our family learning library.', accent, home = false } = Astro.props;
 const siteName = 'Learning Library';
 const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
 const path = Astro.url.pathname;
@@ -58,7 +61,7 @@ const nav = [
         <ThemeToggle />
       </div>
     </header>
-    <main id="main" class="wrap">
+    <main id="main" class:list={['wrap', { home }]}>
       <slot />
     </main>
     <footer class="site-footer wrap meta">Made at home, for learning. ✏️</footer>
@@ -84,6 +87,7 @@ const nav = [
   nav a:hover { background: var(--surface-2); }
   nav a[aria-current='page'] { color: var(--ink); background: var(--surface-2); }
   main { padding-block: var(--space-6) var(--space-8); }
+  main.home { padding-top: var(--space-4); }
   .site-footer { padding-block: var(--space-6); border-top: var(--border); }
   @media (max-width: 30rem) { .brand span:last-child { display: none; } }
 </style>

@@ -1,0 +1,64 @@
+/* Shared by the home page and map islands. Tokens only (see src/styles/tokens.css). */
+
+.ico { flex: 0 0 auto; display: block; }
+mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 4px; padding: 0 1px; }
+
+/* Buttons that pop a little when pressed */
+.btn.pop { transition: transform var(--fast) var(--ease-spring), box-shadow var(--fast) var(--ease), background var(--fast); }
+.btn.pop:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn.pop:active { transform: scale(0.96); }
+.btn.quiet { background: var(--glass); backdrop-filter: blur(8px); }
+
+/* "Interactive" / "Read" badges */
+.kind {
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  font-size: var(--text-sm); font-weight: 700; line-height: 1;
+  padding: 6px 10px; border-radius: var(--radius-pill);
+}
+.kind-live { color: var(--accent-ink); background: var(--accent-soft); }
+.kind-read { color: var(--ink-2); background: var(--surface-2); }
+
+/* Round arrow that slides when its card is hovered */
+.go {
+  display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; flex: 0 0 auto;
+  border-radius: 50%; color: var(--accent-ink); background: var(--accent-soft);
+  transition: transform var(--fast) var(--ease), background var(--fast), color var(--fast);
+}
+a:hover > * > .go, a:hover > .go, a:focus-visible .go { transform: translateX(4px); background: var(--accent); color: var(--on-accent); }
+
+/* Segmented control with a sliding pill */
+.seg {
+  display: inline-flex; padding: 4px; gap: 2px; border-radius: var(--radius-pill);
+  background: var(--surface-2); border: var(--border);
+}
+.seg button {
+  position: relative; min-height: 40px; padding: 0 var(--space-4); border: 0; background: none; cursor: pointer;
+  border-radius: var(--radius-pill); font-weight: 700; color: var(--ink-2);
+}
+.seg button.on { color: var(--ink); }
+.seg-pill { position: absolute; inset: 0; border-radius: inherit; background: var(--surface); box-shadow: var(--shadow); }
+.seg-label { position: relative; }
+
+/* Filter chips with a sliding pill */
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  position: relative; min-height: var(--tap); padding: 0 var(--space-4); cursor: pointer;
+  border-radius: var(--radius-pill); border: 1px solid var(--line-2); background: var(--surface);
+  font-weight: 700; color: var(--ink-2); transition: border-color var(--fast), color var(--fast), transform var(--fast) var(--ease-spring);
+}
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.chip:active { transform: scale(0.96); }
+.chip.on { color: var(--on-accent); border-color: transparent; }
+.chip-pill { position: absolute; inset: -1px; border-radius: inherit; background: var(--accent); }
+.chip-label { position: relative; display: inline-flex; gap: 6px; align-items: center; }
+
+/* Section headings */
+.section { margin-top: var(--space-8); }
+.section-head { margin-bottom: var(--space-5); display: flex; flex-direction: column; gap: var(--space-1); }
+.section-head.row { flex-direction: row; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-4); }
+.section-title { font-size: clamp(var(--text-xl), 1.2rem + 1.6vw, var(--text-2xl)); letter-spacing: -0.02em; }
+.eyebrow { color: var(--ink-3); }
+
+/* Entrance: rise and fade, staggered by --i. Plain CSS, so it plays before any script loads. */
+.rise { animation: rise var(--slow) var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }

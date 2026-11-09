@@ -11,6 +11,7 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* full-bleed glows may reach past the page edge without adding a sideways scroll */
 }
 img, svg, video, iframe { max-width: 100%; }
 img, video { height: auto; }
@@ -60,6 +61,13 @@ p { margin: 0; text-wrap: pretty; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
+/* Smooth cross-fades between pages (cross-document View Transitions: no JavaScript).
+   A subject's icon and title carry the same view-transition-name on the home page and on its own page,
+   so they glide from one to the other. Browsers without support simply change page as usual. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 260ms; }
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
