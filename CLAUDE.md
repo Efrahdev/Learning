@@ -8,7 +8,7 @@ It replaces single-file HTML lessons that are scattered across 3–4 devices. We
 The system has three parts, and each has one job:
 - **Vault**: this GitHub repo (public). It is the one master copy of all content.
 - **Robot**: a GitHub Action (`.github/workflows/site.yml`). On every push to `main` it checks, builds and deploys. On pull requests it only checks and builds, to catch errors.
-- **Shell**: a static site on **GitHub Pages**, installable as a PWA: https://arhaanbeta.github.io/learning-library-ayu/
+- **Shell**: a static site on **GitHub Pages**, installable as a PWA: https://efrahdev.github.io/Learning/
 
 **No progress tracking (owner's decision, Nov 2026).** The site remembers nothing about the reader: every lesson opens at the beginning, every time. No database, no Firebase, no "Mark as done", no readers.
 
@@ -37,7 +37,7 @@ The system has three parts, and each has one job:
 - Maths uses KaTeX (remark-math + rehype-katex via `unified()` in `astro.config.mjs`), rendered at build time. Code highlighting uses Astro's built-in Shiki.
 - Search (Phase 3): Pagefind, static, runs in the browser.
 - PWA (later, optional): `@vite-pwa/astro`, so visited pages can be read offline.
-- Site path: `site` and `base` in `astro.config.mjs` (`/learning-library-ayu`). Internal links always go through `url()` in `src/lib/url.ts`, so moving the site is a one-line change.
+- Site path: `site` and `base` in `astro.config.mjs` (`/Learning`). Internal links always go through `url()` in `src/lib/url.ts`, so moving the site is a one-line change.
 - GitHub Pages sends a short cache time for everything; hashed assets in `_astro/` are safe because their names change when they change.
 
 ## Content model: folders of any depth → lessons

@@ -1,6 +1,6 @@
 # Learning Library
 
-Our family's learning material in one place: https://arhaanbeta.github.io/learning-library-ayu/
+Our family's learning material in one place: https://efrahdev.github.io/Learning/
 
 ## Add a lesson
 1. Pick the folder, e.g. `content/physics/forces/` (folders can be nested as deep as you like; a folder's `meta.json` gives its title).
@@ -12,7 +12,7 @@ Lessons can use `<KeyIdea>`, `<Tip>`, `<Remember>`, `<Warning>`, `<RealWorld>`, 
 ## Run it on a computer
 ```sh
 npm ci
-npm run dev      # http://localhost:4321/learning-library-ayu/
+npm run dev      # http://localhost:4321/Learning/
 npm run check    # types and content
 npm run build    # the full site, into dist/
 ```

@@ -6,11 +6,11 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
-// The site lives at https://arhaanbeta.github.io/learning-library-ayu/
+// The site lives at https://efrahdev.github.io/Learning/
 // If the repo is renamed or moved to a custom domain, change `site` and `base` here (nowhere else).
 export default defineConfig({
-  site: 'https://arhaanbeta.github.io',
-  base: '/learning-library-ayu',
+  site: 'https://efrahdev.github.io',
+  base: '/Learning',
   trailingSlash: 'always',
   // React powers the rich islands (home page, library map). Lesson pages ship no React.
   integrations: [mdx(), react()],
