@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070d1a">
+<meta name="description" content="The Memory Machine — a playable lesson where you are the processor: addresses, registers, bytes, and the cache, learned by executing a real program.">
+<title>The Memory Machine — You Are The Processor</title>
+<style>
+:root{
+  --bg:#070d1a; --panel:#0e1730; --panel2:#122040; --line:#233459; --line2:#2f4574;
+  --ink:#eaf2ff; --dim:#94a9d1; --cy:#3ce0ff; --gd:#3af2a4; --wr:#ffb454; --bd:#ff5d7a; --vi:#b48bff;
+  --r:14px;
+  --mono:ui-monospace,"Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;min-width:0}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);
+  background:radial-gradient(1100px 650px at 75% -12%,#0e1e42 0%,var(--bg) 58%);
+  font:16px/1.5 var(--sans);
+  overflow-x:hidden;overflow-wrap:anywhere;
+  -webkit-tap-highlight-color:transparent;
+}
+body::before{ /* faint circuit grid */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background:
+    linear-gradient(rgba(60,224,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(60,224,255,.045) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+#app{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;overflow-x:clip}
+.sr{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip{position:absolute;left:8px;top:-48px;background:var(--cy);color:#022;padding:8px 12px;border-radius:8px;z-index:99;transition:top .2s}
+.skip:focus{top:8px}
+
+/* ---------- HUD ---------- */
+#hud{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:10px clamp(10px,2.5vw,20px);
+  border-bottom:1px solid var(--line);
+  background:rgba(7,13,26,.7);backdrop-filter:blur(6px);
+  position:sticky;top:0;z-index:20;
+}
+.brand{font:800 clamp(13px,3.6vw,16px)/1 var(--mono);letter-spacing:.14em;color:var(--cy);text-shadow:0 0 14px rgba(60,224,255,.5);white-space:nowrap}
+#dots{display:flex;gap:7px;align-items:center;margin-inline:auto}
+.dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--line2);display:inline-block}
+.dot.on{background:var(--gd);border-color:var(--gd);box-shadow:0 0 10px rgba(58,242,164,.7)}
+.hudR{display:flex;gap:8px}
+.icobtn{min-width:44px;min-height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 13px var(--mono);cursor:pointer}
+.icobtn:hover{border-color:var(--cy)}
+
+main{width:min(100%,1000px);margin-inline:auto;padding:clamp(10px,2.6vw,22px);flex:1;display:flex;flex-direction:column;gap:14px}
+main:focus{outline:none}
+
+/* ---------- shared bits ---------- */
+h1,h2,h3{margin:0;font-family:var(--mono)}
+h3{font-size:clamp(11px,2.8vw,12.5px);letter-spacing:.22em;color:var(--dim);font-weight:700;margin-bottom:8px}
+p{margin:.4em 0}
+.dim{color:var(--dim)} .tiny{font-size:12.5px} .mono{font-family:var(--mono)}
+.panel{background:linear-gradient(180deg,var(--panel),#0c1428);border:1px solid var(--line);border-radius:var(--r);padding:clamp(10px,2.5vw,16px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.btn{
+  min-height:46px;padding:10px 18px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--cy);background:linear-gradient(180deg,#12324a,#0b1f33);
+  color:var(--cy);font:700 clamp(13px,3.6vw,15px)/1.1 var(--mono);letter-spacing:.06em;
+}
+.btn:hover{filter:brightness(1.18)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.big{min-height:54px;padding:14px 26px;font-size:clamp(15px,4.4vw,18px)}
+.btn.small{min-height:42px;padding:8px 14px}
+.btn.ghost{border-color:var(--line2);color:var(--dim);background:var(--panel)}
+.btn.glow{box-shadow:0 0 18px rgba(60,224,255,.45);animation:btnp 1.6s ease-in-out infinite}
+@keyframes btnp{50%{box-shadow:0 0 30px rgba(60,224,255,.85)}}
+.linkish{background:none;border:none;color:var(--dim);text-decoration:underline;cursor:pointer;font:13px var(--sans);padding:8px;min-height:40px}
+.chip{border:1px solid var(--line2);background:var(--panel2);color:var(--ink);border-radius:10px;padding:8px 12px;font:700 13px var(--mono)}
+.prow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.prow.center{justify-content:center}
+
+/* ---------- overlay cards ---------- */
+.overlay{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:16px;background:rgba(4,8,18,.78);backdrop-filter:blur(4px)}
+.card{width:min(580px,94vw);max-height:min(88dvh,720px);overflow:auto;text-align:center;padding:clamp(16px,4vw,28px)}
+.card h2{font-size:clamp(17px,5vw,23px);letter-spacing:.08em;color:var(--cy);text-shadow:0 0 16px rgba(60,224,255,.4)}
+.card p{color:var(--ink);font-size:clamp(14px,3.9vw,16px);margin:12px 0 18px}
+.card .btn{margin:4px}
+
+/* ---------- title ---------- */
+.hero{position:relative;min-height:calc(100dvh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;overflow:hidden;border-radius:var(--r)}
+.kick{font:700 clamp(11px,3vw,13px) var(--mono);letter-spacing:.4em;color:var(--vi);margin:0}
+.hero h1{
+  font-size:clamp(46px,14vw,104px);line-height:.95;letter-spacing:.02em;font-weight:800;
+  color:#fff;text-shadow:0 0 26px rgba(60,224,255,.55),0 0 4px rgba(60,224,255,.9);
+}
+.tag{font-size:clamp(14px,3.9vw,17px);color:var(--dim);margin:2px 0 14px}
+.tag b{color:var(--gd)}
+.flakes{position:absolute;inset:0;pointer-events:none}
+.flake{position:absolute;top:-12%;font:11px var(--mono);color:var(--cy);opacity:.28;animation:flakefall linear infinite}
+.f0{animation-duration:9s}.f1{animation-duration:12s}.f2{animation-duration:10.5s}.f3{animation-duration:14s}.f4{animation-duration:11s}
+@keyframes flakefall{to{transform:translateY(118dvh)}}
+
+/* ---------- map ---------- */
+.map{display:flex;flex-direction:column;gap:14px;align-items:center}
+.mapt{font-size:clamp(16px,4.6vw,20px);letter-spacing:.28em;color:var(--cy)}
+.mgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));width:100%}
+.mcard{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;color:var(--ink);min-height:120px}
+.mcard:hover:not(:disabled){border-color:var(--cy);transform:translateY(-2px)}
+.mcard .mn{font:800 clamp(14px,4vw,16px) var(--mono);letter-spacing:.1em;color:var(--cy)}
+.mcard .md{font-size:13.5px;color:var(--dim)}
+.mcard .ms{margin-top:auto;font:700 12px var(--mono);letter-spacing:.12em;color:var(--gd)}
+.mcard.lock{opacity:.45;cursor:not-allowed}
+.mcard.lock .ms{color:var(--dim)}
+.mcard.done{border-color:rgba(58,242,164,.6)}
+.mcard{transition:transform .15s,border-color .15s}
+
+/* ---------- machine layout ---------- */
+.machine{position:relative;display:grid;gap:10px;grid-template-columns:1fr}
+.mtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mtag{font:800 clamp(12px,3.4vw,14px) var(--mono);letter-spacing:.2em;color:var(--vi)}
+.meter{margin-left:auto;font:800 clamp(13px,3.8vw,16px) var(--mono);color:var(--wr);border:1px solid rgba(255,180,84,.5);border-radius:10px;padding:6px 12px;background:rgba(60,35,5,.25)}
+.meter b{font-size:1.25em}
+@media(min-width:780px){
+  .machine{grid-template-columns:250px minmax(0,1fr)}
+  .mtop{grid-column:1/-1}
+  .prog-p{grid-row:2/4}
+  .feed{grid-column:1/-1}
+}
+
+/* program */
+.prog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.ins{font:600 clamp(12px,3.4vw,14px)/1.35 var(--mono);padding:7px 9px;border-radius:8px;border-left:3px solid transparent;color:var(--dim);white-space:pre-wrap}
+.ins.cur{background:rgba(60,224,255,.12);border-left-color:var(--cy);color:#fff}
+.ins.cur::before{content:"▶ ";color:var(--cy)}
+.ins.weird{color:var(--wr)}
+.ins.fixedin{color:var(--gd)}
+.ins.hdr{color:var(--vi);letter-spacing:.1em}
+.compchip{margin-top:8px;font:700 12px var(--mono);color:var(--gd);border:1px dashed rgba(58,242,164,.6);border-radius:8px;padding:7px 9px;animation:fadein .5s}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}}
+
+/* CPU */
+.regs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.reg{border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;padding:6px 2px}
+.reg .rn{font:700 10.5px var(--mono);color:var(--dim);letter-spacing:.1em}
+.reg .rv{font:800 clamp(15px,4.6vw,20px) var(--mono);color:var(--gd)}
+.exec{width:100%;min-height:48px;font-size:clamp(14px,4vw,16px);border-color:var(--vi);color:var(--vi);background:linear-gradient(180deg,#241b45,#161030)}
+.exec:not(:disabled):hover{filter:brightness(1.2)}
+
+/* cache */
+.cachep{margin-top:10px;border:1px solid rgba(180,139,255,.5);border-radius:10px;padding:8px;background:rgba(35,25,65,.35);animation:fadein .5s}
+.ct{font:700 10.5px var(--mono);letter-spacing:.16em;color:var(--vi)}
+.cslots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:6px}
+.cslot{border:1px solid var(--line2);border-radius:8px;min-height:40px;display:grid;place-items:center;font:700 clamp(10px,2.8vw,12px) var(--mono);color:var(--vi);background:var(--panel);text-align:center;padding:2px}
+.hm{display:inline-block;margin-top:6px;font:800 12px var(--mono);letter-spacing:.14em;min-height:16px}
+.hm.hit{color:var(--gd);animation:pop .5s}
+.hm.miss{color:var(--wr);animation:pop .5s}
+
+/* RAM */
+.ram{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(5px,1.2vw,9px)}
+.ram.strip{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))}
+.cell{
+  position:relative;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  min-height:58px;padding:6px 2px;cursor:pointer;color:var(--ink);
+  transition:transform .12s,border-color .12s,background .3s;
+  user-select:none;-webkit-user-select:none;
+}
+.cell:hover{border-color:var(--cy)}
+.cell .ca{font:600 clamp(9px,2.3vw,10.5px) var(--mono);color:var(--dim)}
+.cell .cv{font:800 clamp(13px,4vw,19px)/1 var(--mono);color:var(--ink)}
+.cell .cv.bin{font-size:clamp(8.5px,2.3vw,11px);letter-spacing:0}
+.cell.lit .cv{color:var(--gd);text-shadow:0 0 12px rgba(58,242,164,.7)}
+.cell.pick{border-color:var(--gd)}
+.cell.pick::after{content:attr(data-n);position:absolute;top:3px;right:5px;font:800 10px var(--mono);color:var(--gd)}
+.cell.linehl{background:rgba(255,180,84,.22);border-color:var(--wr)}
+.cell.hl-hit{background:rgba(58,242,164,.25);border-color:var(--gd)}
+.cell.hl-miss{background:rgba(255,180,84,.28);border-color:var(--wr)}
+.ram.tint .cell[data-line="0"]{box-shadow:inset 0 3px 0 #2fd3ff44}
+.ram.tint .cell[data-line="1"]{box-shadow:inset 0 3px 0 #3af2a444}
+.ram.tint .cell[data-line="2"]{box-shadow:inset 0 3px 0 #ffb45444}
+.ram.tint .cell[data-line="3"]{box-shadow:inset 0 3px 0 #b48bff55}
+.linelegend{margin-top:8px;font:600 11px var(--mono);color:var(--dim)}
+
+/* aiming / motion */
+.aim{box-shadow:0 0 0 2px var(--cy),0 0 18px rgba(60,224,255,.55);animation:aimp 1.15s ease-in-out infinite}
+@keyframes aimp{50%{box-shadow:0 0 0 3px var(--cy),0 0 28px rgba(60,224,255,.95)}}
+.pulse{animation:pop .5s}
+@keyframes pop{35%{transform:scale(1.14)}}
+.shake{animation:shk .38s}
+@keyframes shk{20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.machine.fault{animation:faultf .7s}
+@keyframes faultf{25%{box-shadow:0 0 0 3px var(--bd)}60%{box-shadow:0 0 0 3px var(--bd)}}
+.packet{
+  position:absolute;z-index:30;pointer-events:none;white-space:nowrap;
+  background:var(--cy);color:#00222e;font:800 12px/1 var(--mono);
+  padding:6px 9px;border-radius:9px;transform:translate(-50%,-50%);
+  box-shadow:0 0 16px rgba(60,224,255,.85);
+  transition:transform .65s cubic-bezier(.3,.7,.25,1);
+}
+
+/* feed */
+.feed{
+  min-height:2.9em;padding:11px 13px;border-radius:11px;background:#0a1226;
+  border:1px solid var(--line);font:600 clamp(12.5px,3.5vw,14.5px)/1.5 var(--mono);color:var(--ink);
+}
+.feed.ok{border-color:rgba(58,242,164,.55);color:#ccffe9}
+.feed.bad{border-color:rgba(255,93,122,.6);color:#ffd9e0}
+.feed.warn{border-color:rgba(255,180,84,.6);color:#ffe6c4}
+
+/* predict / forms */
+.pform{margin-top:10px;animation:fadein .4s}
+.pform label,#fflow label{display:block;font:700 13px var(--mono);color:var(--wr);letter-spacing:.04em;margin-bottom:8px}
+input[type],input,textarea{
+  background:var(--panel2);border:1px solid var(--line2);border-radius:10px;color:var(--ink);
+  font:700 16px var(--mono);padding:10px 12px;min-height:46px;max-width:100%;
+}
+input:focus,textarea:focus{border-color:var(--cy);outline:none}
+#pin{width:110px}
+#ni{width:96px;text-transform:uppercase;letter-spacing:.3em;text-align:center}
+textarea{width:100%;font:500 15px var(--sans);resize:vertical}
+
+/* byte lab */
+.lab{display:flex;flex-direction:column;gap:12px}
+.bits{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(4px,1.1vw,8px)}
+.bit{
+  border:1px solid var(--line2);border-radius:10px;background:var(--panel2);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 2px;min-height:74px;color:var(--ink);
+}
+.bit .bw{font:700 clamp(9px,2.5vw,11.5px) var(--mono);color:var(--dim)}
+.bit .bk{width:clamp(14px,4vw,20px);height:34px;border-radius:12px;background:#0a1020;border:1px solid var(--line2);position:relative;transition:background .2s}
+.bit .knob{position:absolute;left:2px;right:2px;height:14px;border-radius:9px;background:var(--dim);top:calc(100% - 17px);transition:top .18s,background .18s}
+.bit[aria-pressed="true"]{border-color:var(--gd)}
+.bit[aria-pressed="true"] .bk{background:rgba(58,242,164,.2)}
+.bit[aria-pressed="true"] .knob{top:3px;background:var(--gd);box-shadow:0 0 10px rgba(58,242,164,.8)}
+.bit[aria-pressed="true"] .bw{color:var(--gd)}
+.lensrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(120px,100%),1fr));gap:10px;margin-top:12px}
+.lensbox{border:1px solid var(--line);border-radius:11px;padding:10px;text-align:center;background:var(--panel)}
+.lensbox .lt{display:block;font:700 10px var(--mono);letter-spacing:.18em;color:var(--dim);margin-bottom:6px}
+.lensbox b{font:800 clamp(20px,6.5vw,28px) var(--mono);color:var(--cy)}
+.swatch{display:inline-block;width:44px;height:30px;border-radius:8px;border:1px solid var(--line2);vertical-align:middle}
+.same{text-align:center;font:600 12px var(--mono);letter-spacing:.16em;color:var(--vi);margin:10px 0 0}
+.target{font:800 clamp(14px,4vw,17px) var(--mono);color:var(--wr);border:1px dashed rgba(255,180,84,.6);border-radius:10px;padding:9px 12px;display:inline-block}
+.lensbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.lensbtns .chip{cursor:pointer;min-height:40px}
+.lensbtns .chip[aria-pressed="true"]{border-color:var(--cy);color:var(--cy)}
+
+/* mission 3 flow extras */
+.flowp{animation:fadein .4s}
+.cmp{display:flex;gap:14px;flex-wrap:wrap;font:700 clamp(13px,3.8vw,15px) var(--mono);margin-bottom:10px}
+.cmp b{color:var(--wr);font-size:1.3em}
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.lane{border:1px solid var(--line2);border-radius:10px;padding:10px;font:700 13px var(--mono);color:var(--dim);text-align:center}
+.lane b{display:block;font-size:clamp(20px,6vw,26px);color:var(--wr);margin-top:4px}
+
+/* license */
+.donewrap{display:flex;flex-direction:column;gap:16px;align-items:center;padding-top:8px}
+.license{
+  width:min(560px,96vw);text-align:center;padding:clamp(18px,5vw,30px);
+  border:1px solid rgba(60,224,255,.55);box-shadow:0 0 0 5px rgba(60,224,255,.08),0 0 44px rgba(60,224,255,.25);
+}
+.license .lk{font:700 11px var(--mono);letter-spacing:.34em;color:var(--vi);margin:0 0 6px}
+.license h2{font-size:clamp(18px,5.4vw,24px);letter-spacing:.22em;color:var(--cy)}
+.license .ln{font:800 clamp(52px,17vw,86px)/1 var(--mono);letter-spacing:.18em;color:#fff;text-shadow:0 0 24px rgba(60,224,255,.6);margin:14px 0 4px}
+.license .lb{color:var(--gd);font-weight:700;font-size:clamp(13px,3.8vw,16px);margin:0 0 12px}
+.lms{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 12px}
+.lms span{font:700 11px var(--mono);letter-spacing:.1em;color:var(--gd);border:1px solid rgba(58,242,164,.5);border-radius:99px;padding:5px 10px}
+.lq{font-style:italic;color:var(--ink);border-top:1px dashed var(--line2);padding-top:12px}
+.sparkle{animation:aimp 1.4s ease-in-out 4}
+
+/* confetti */
+.cf{position:fixed;top:-4dvh;z-index:60;width:9px;height:15px;border-radius:2px;pointer-events:none;animation:cfall linear forwards}
+@keyframes cfall{to{transform:translateY(112dvh) rotate(740deg)}}
+
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px;border-radius:8px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#stage">Skip to game</a>
+<div id="app">
+  <header id="hud">
+    <span class="brand">▦ MEMORY MACHINE</span>
+    <nav id="dots" aria-label="Mission progress"></nav>
+    <span class="hudR">
+      <button type="button" class="icobtn" id="muteBtn" aria-label="Toggle sound">🔊</button>
+      <button type="button" class="icobtn" id="homeBtn" aria-label="Mission deck">⌂ DECK</button>
+    </span>
+  </header>
+  <main id="stage" tabindex="-1"></main>
+  <div id="live" class="sr" aria-live="polite"></div>
+  <noscript><p style="padding:20px;text-align:center">The Memory Machine needs JavaScript to run.</p></noscript>
+</div>
+<script>
+'use strict';
+/* ============ core utils & state ============ */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const stage=$('#stage'),live=$('#live'),dotsEl=$('#dots');
+const RM=matchMedia('(prefers-reduced-motion: reduce)');
+const KEY='memmachine.v1';
+const DEF={m1:0,m2:0,m3:0,forge:0,muted:0,initials:'',bytes:[],note:''};
+function loadP(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+let P=Object.assign({},DEF,loadP());
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){} renderDots();}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const bin8=v=>(v&255).toString(2).padStart(8,'0');
+const chr=v=>(v>=33&&v<=126)?String.fromCharCode(v):'·';
+
+/* ============ audio (tiny synth, gesture-gated, mutable) ============ */
+let AC=null;
+function tone(f,d,t,g){if(P.muted)return;try{
+  AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended')AC.resume();
+  const o=AC.createOscillator(),v=AC.createGain();
+  o.type=t||'square';o.frequency.value=f;o.connect(v);v.connect(AC.destination);
+  const n=AC.currentTime;v.gain.setValueAtTime(g||.035,n);
+  v.gain.exponentialRampToValueAtTime(.0001,n+d);o.start(n);o.stop(n+d);
+}catch(e){}}
+const sTap=()=>tone(540,.05,'triangle',.02);
+const sGood=()=>{tone(700,.09);setTimeout(()=>tone(940,.12),80)};
+const sBad=()=>tone(150,.16,'sawtooth',.028);
+const sTick=()=>tone(360,.03,'square',.014);
+const sMiss=()=>tone(230,.09,'square',.02);
+const sWin=()=>{[660,830,990,1320].forEach((f,i)=>setTimeout(()=>tone(f,.13,'square',.03),i*110))};
+
+/* ============ shared UI helpers ============ */
+function feed(msg,cls){const f=$('#feed');if(f){f.textContent=msg;f.className='feed'+(cls?' '+cls:'');}live.textContent=msg;}
+function pulse(el){if(!el)return;el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');setTimeout(()=>el.classList.remove('pulse'),520);}
+function shake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),420);}
+function aim(el){$$('.aim').forEach(x=>x.classList.remove('aim'));if(el)el.classList.add('aim');}
+function fly(fromEl,toEl,label,ms,done){
+  if(!fromEl||!toEl||RM.matches||!ms){pulse(toEl);if(done)done();return;}
+  const mach=fromEl.closest('.machine')||fromEl.closest('.lab')||stage;
+  const r0=fromEl.getBoundingClientRect(),r1=toEl.getBoundingClientRect(),rm=mach.getBoundingClientRect();
+  const p=document.createElement('div');p.className='packet';p.textContent=label;
+  p.style.left=(r0.left+r0.width/2-rm.left)+'px';
+  p.style.top=(r0.top+r0.height/2-rm.top)+'px';
+  p.style.transitionDuration=ms+'ms';
+  mach.appendChild(p);
+  const dx=(r1.left+r1.width/2)-(r0.left+r0.width/2);
+  const dy=(r1.top+r1.height/2)-(r0.top+r0.height/2);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    p.style.transform='translate(calc('+dx+'px - 50%), calc('+dy+'px - 50%))';
+  }));
+  setTimeout(()=>{p.remove();pulse(toEl);if(done)done();},ms+50);
+}
+function cardUI(o){
+  const ov=document.createElement('div');ov.className='overlay';
+  ov.innerHTML='<div class="card panel" role="dialog" aria-modal="true" aria-label="'+esc(o.t)+'">'
+    +'<h2>'+o.t+'</h2>'+(o.b?'<p>'+o.b+'</p>':'')+(o.ex||'')
+    +(o.btn?'<button type="button" class="btn big" data-cgo="1">'+o.btn+'</button>':'')
+    +'</div>';
+  stage.appendChild(ov);
+  const g=$('[data-cgo]',ov);
+  if(g){g.focus();g.addEventListener('click',()=>{sTap();ov.remove();if(o.go)o.go();});}
+  return ov;
+}
+
+/* ============ machine builders ============ */
+function progHTML(list){return '<ol class="prog" id="prog">'+list.map((s,i)=>'<li class="ins" data-i="'+i+'">'+s+'</li>').join('')+'</ol>';}
+function regsHTML(){return '<div class="regs" id="regs">'+[1,2,3,4].map(r=>'<div class="reg" id="R'+r+'"><span class="rn">R'+r+'</span><span class="rv">·</span></div>').join('')+'</div>';}
+function cellBtn(a,v){return '<button type="button" class="cell" data-a="'+a+'" data-line="'+((a-1000)>>2)+'" aria-label="cell '+a+' holds '+v+'"><span class="ca">'+a+'</span><span class="cv" data-dec="'+v+'">'+v+'</span></button>';}
+function ramGrid(mem){let h='<div class="ram" id="ram">';for(let a=1000;a<1016;a++)h+=cellBtn(a,mem[a]);return h+'</div>';}
+function machineShell(o){
+  return '<section class="machine'+(o.cls?' '+o.cls:'')+'">'
+   +'<div class="mtop"><span class="mtag">'+o.tag+'</span>'+(o.meter?'<span class="meter">CYCLES <b id="cyc">0</b></span>':'')+'</div>'
+   +'<div class="panel prog-p"><h3>PROGRAM</h3>'+progHTML(o.prog)+'<div id="pslot"></div></div>'
+   +'<div class="panel cpu-p"><h3>CPU</h3>'+regsHTML()
+     +'<button type="button" class="btn exec" id="exec" data-act="exec">EXEC ⚡</button><div id="cslot"></div></div>'
+   +'<div class="panel ram-p"><h3>RAM'+(o.lensUI?(' '+o.lensUI):'')+'</h3>'+ramGrid(o.mem)+'</div>'
+   +'<div class="feed" id="feed" role="status" aria-live="polite"></div>'
+   +'</section>'+(o.below||'');
+}
+function cellEl(a){return stage.querySelector('.cell[data-a="'+a+'"]');}
+function setCell(a,v,asChar){
+  const el=cellEl(a);if(!el)return;
+  const cv=$('.cv',el);cv.dataset.dec=v;
+  cv.textContent=asChar?("'"+chr(v)+"'"):v;
+  el.setAttribute('aria-label','cell '+a+' holds '+v+(asChar?(' letter '+chr(v)):''));
+  el.classList.add('lit');pulse(el);
+}
+function setRegV(r,v){const el=$('#R'+r);if(!el)return;$('.rv',el).textContent=v;pulse(el);}
+function clearRegs(){for(let r=1;r<=4;r++){const el=$('#R'+r);if(el)$('.rv',el).textContent='·';}}
+function setPC(i){$$('#prog .ins').forEach(el=>el.classList.toggle('cur',+el.dataset.i===i));
+  const c=$('#prog .ins.cur');if(c&&c.scrollIntoView)c.scrollIntoView({block:'nearest'});}
+
+/* ============ event delegation ============ */
+let H={};
+stage.addEventListener('click',e=>{
+  const c=e.target.closest('.cell');if(c){if(H.cell)H.cell(+c.dataset.a,c);return;}
+  const b=e.target.closest('.bit');if(b){if(H.bit)H.bit(+b.dataset.i,b);return;}
+  const a=e.target.closest('[data-act]');if(a&&!a.disabled){if(H.act)H.act(a.dataset.act,a);return;}
+});
+stage.addEventListener('submit',e=>{e.preventDefault();if(H.form)H.form(e.target);});
+
+/* ============ HUD ============ */
+const NAMES=['FETCH','DECODE','DISTANCE','FORGE'];
+function renderDots(){dotsEl.innerHTML=['m1','m2','m3','forge'].map((k,i)=>'<span class="dot'+(P[k]?' on':'')+'" title="'+NAMES[i]+'"></span>').join('');}
+function paintMute(){const b=$('#muteBtn');b.textContent=P.muted?'🔇':'🔊';b.setAttribute('aria-label',P.muted?'Sound off — tap to unmute':'Sound on — tap to mute');}
+$('#homeBtn').addEventListener('click',()=>{sTap();go('map');});
+$('#muteBtn').addEventListener('click',()=>{P.muted=P.muted?0:1;save();paintMute();sTap();});
+
+/* ============ router ============ */
+const SCREENS={};
+function go(name){H={};window.scrollTo(0,0);SCREENS[name]();stage.focus({preventScroll:true});}
+
+/* ============ title ============ */
+SCREENS.title=function(){
+  const flakes=Array.from({length:10},(_,i)=>'<span class="flake f'+(i%5)+'" style="left:'+(6+i*9.4)+'%;animation-delay:'+(i*.8).toFixed(1)+'s">'+bin8(64+i*13)+'</span>').join('');
+  stage.innerHTML='<section class="hero">'
+   +'<div class="flakes" aria-hidden="true">'+flakes+'</div>'
+   +'<p class="kick">A PLAYABLE MACHINE</p>'
+   +'<h1>MEMORY<br>MACHINE</h1>'
+   +'<p class="tag">RAM keeps no names and no meanings — only numbered cells.<br>And <b>you</b> are the processor.</p>'
+   +'<button type="button" class="btn big glow" data-act="start">'+((P.m1||P.m2||P.m3||P.forge)?'CONTINUE ▶':'POWER ON ▶')+'</button>'
+   +'<p class="tiny dim">touch · mouse · keyboard — progress saves on this device</p>'
+   +'</section>';
+  H.act=k=>{if(k==='start'){sGood();go('map');}};
+};
+
+/* ============ mission deck ============ */
+SCREENS.map=function(){
+  const M=[
+    {id:'m1',n:'01 · FETCH',d:'Execute a real program by hand. Load, add, store — by address.',un:1,done:P.m1},
+    {id:'m2',n:'02 · DECODE',d:'Eight switches per cell. Meaning is a lens, not a fact.',un:P.m1,done:P.m2},
+    {id:'m3',n:'03 · DISTANCE',d:'RAM is far away. Cycles are the bill. Invent the cache.',un:P.m2,done:P.m3},
+    {id:'forge',n:'★ · FORGE',d:'Engrave your name into memory — in the machine\u2019s own language.',un:P.m3,done:P.forge}
+  ];
+  stage.innerHTML='<section class="map"><h2 class="mapt">MISSION DECK</h2><div class="mgrid">'
+   +M.map(m=>'<button type="button" class="mcard panel'+(m.un?'':' lock')+(m.done?' done':'')+'" data-act="go:'+m.id+'"'+(m.un?'':' disabled')+'>'
+     +'<span class="mn">'+m.n+'</span><span class="md">'+m.d+'</span>'
+     +'<span class="ms">'+(m.done?'CLEAR ✓ · replay':(m.un?'ENTER ▶':'🔒 finish previous'))+'</span></button>').join('')
+   +'</div>'
+   +(P.forge?'<button type="button" class="btn ghost" data-act="go:done">VIEW LICENSE ▶</button>':'')
+   +'<button type="button" class="linkish" data-act="wipe">reset all progress</button></section>';
+  H.act=k=>{
+    if(k.indexOf('go:')===0){sTap();go(k.slice(3));}
+    else if(k==='wipe'&&confirm('Erase saved progress on this device?')){P=Object.assign({},DEF,{muted:P.muted});save();go('title');}
+  };
+};
+
+/* ============ MISSION 1 · FETCH ============ */
+SCREENS.m1=function(){
+  const mem={1000:7,1001:12,1002:90,1003:3,1004:25,1005:64,1006:5,1007:88,1008:2,1009:17,1010:51,1011:9,1012:0,1013:33,1014:48,1015:6};
+  const regs={1:null,2:null,3:null,4:null};
+  const progA=['LOAD  R1, [1004]','LOAD  R2, [1009]','ADD   R3, R1, R2','STORE [1012], R3'];
+  const progB=['LOAD  R1, [1002]','LOAD  R2, [1014]','SUB   R3, R1, R2','STORE [1000], R3'];
+  let step=0,lock=false,pred=null;
+  stage.innerHTML=machineShell({tag:'MISSION 01 · FETCH',prog:progA,mem:mem});
+  const seq=[
+    {need:'cell',a:1004,r:1,pc:0,hint:'LOAD R1, [1004] — tap cell 1004 on the memory wall.'},
+    {need:'cell',a:1009,r:2,pc:1,hint:'LOAD R2, [1009] — fetch the second operand.'},
+    {need:'predict',pc:2,q:'ADD R3 ← R1 + R2. Predict R3 before you run it:',ans:()=>regs[1]+regs[2]},
+    {need:'exec',op:'add',pc:2,hint:'Prediction locked. Tap EXEC to fire the ALU.'},
+    {need:'cell',a:1012,r:3,pc:3,store:true,hint:'STORE [1012], R3 — tap the destination cell.'},
+    {need:'faultintro',pc:4},
+    {need:'faultexec',pc:4},
+    {need:'cell',a:1004,r:4,pc:4,hint:'Now fetch it: tap [1004].',
+      msg:'R4 ← MEM[1004] = 25 · names live in code — addresses live here.'},
+    {need:'chcard'},
+    {need:'cell',a:1002,r:1,pc:0},
+    {need:'cell',a:1014,r:2,pc:1},
+    {need:'predict',pc:2,q:'SUB R3 ← R1 − R2. Predict:',ans:()=>regs[1]-regs[2]},
+    {need:'exec',op:'sub',pc:2},
+    {need:'cell',a:1000,r:3,pc:3,store:true},
+    {need:'clear'}
+  ];
+  const cur=()=>seq[step];
+  function enter(){
+    const s=cur();if(!s)return;
+    if(s.pc!==undefined&&s.pc>=0)setPC(s.pc);
+    if(s.need==='cell'){
+      if(s.hint){feed(s.hint);aim(cellEl(s.a));}
+      else{feed('SOLO RUN — read the instruction, then act. No guide lights.');aim(null);}
+    }else if(s.need==='predict'){
+      aim(null);
+      $('#pslot').innerHTML='<form class="pform" id="pf"><label for="pin">'+s.q+'</label>'
+        +'<div class="prow"><input id="pin" name="pin" inputmode="numeric" autocomplete="off" required pattern="-?[0-9]{1,4}">'
+        +'<button class="btn small" type="submit">LOCK ▶</button></div></form>';
+      feed('Engineers predict first — then let the machine referee.');
+      const i=$('#pin');if(i)i.focus();
+    }else if(s.need==='exec'){
+      aim($('#exec'));if(s.hint)feed(s.hint);
+    }else if(s.need==='faultintro'){
+      const ol=$('#prog'),li=document.createElement('li');
+      li.className='ins weird';li.dataset.i='4';li.textContent='LOAD  R4, score';
+      ol.appendChild(li);setPC(4);
+      step++;enter();
+    }else if(s.need==='faultexec'){
+      aim($('#exec'));
+      feed('A rogue line just arrived: LOAD R4, score. Tap EXEC — hear what the silicon says.');
+    }else if(s.need==='chcard'){
+      cardUI({t:'CHALLENGE 1 · SOLO RUN',
+        b:'New program, same machine — but the guide lights are off. Read each instruction and execute it yourself. One prediction on the way.',
+        btn:'RUN IT ▶',
+        go:function(){
+          $('#prog').outerHTML=progHTML(progB);
+          $('#pslot').innerHTML='';
+          regs[1]=regs[2]=regs[3]=regs[4]=null;clearRegs();pred=null;
+          step++;enter();
+        }});
+    }else if(s.need==='clear'){
+      P.m1=1;save();sWin();
+      cardUI({t:'MISSION 01 CLEAR — FETCH ✓',
+        b:'You just did what a CPU does billions of times a second: <b>address → fetch → registers → ALU → store</b>.<br>And you met the machine\u2019s one law: <b>no names — only numbers.</b>',
+        btn:'NEXT · DECODE ▶',go:()=>go('m2'),
+        ex:'<p><button type="button" class="btn ghost" data-act="tomap">MISSION DECK</button></p>'});
+    }
+  }
+  H.cell=function(a,el){
+    if(lock)return;const s=cur();if(!s)return;
+    if(s.need!=='cell'){shake(el);sBad();feed('✗ Not a memory step — check the current instruction.','bad');return;}
+    if(a!==s.a){shake(el);sBad();feed('✗ That\u2019s ['+a+']. The instruction says ['+s.a+']. One number off is a different universe.','bad');return;}
+    lock=true;sTap();
+    if(s.store){
+      const v=regs[s.r];
+      fly($('#R'+s.r),el,String(v),650,function(){
+        mem[a]=v;setCell(a,v);sGood();
+        feed(s.msg||('MEM['+a+'] ← R'+s.r+' = '+v),'ok');
+        lock=false;step++;enter();
+      });
+    }else{
+      const v=mem[a];
+      fly(el,$('#R'+s.r),String(v),650,function(){
+        regs[s.r]=v;setRegV(s.r,v);sGood();
+        feed(s.msg||('R'+s.r+' ← MEM['+a+'] = '+v),'ok');
+        lock=false;step++;enter();
+      });
+    }
+  };
+  H.form=function(){
+    const s=cur();if(!s||s.need!=='predict')return;
+    const v=parseInt($('#pin').value,10);pred=isNaN(v)?null:v;
+    $('#pslot').innerHTML='';sTap();step++;enter();
+  };
+  H.act=function(k){
+    if(k==='tomap'){go('map');return;}
+    if(k!=='exec'||lock)return;
+    const s=cur();if(!s)return;
+    if(s.need==='exec'){
+      lock=true;
+      const res=(s.op==='add')?(regs[1]+regs[2]):(regs[1]-regs[2]);
+      const w=(s.op==='add')?(regs[1]+'+'+regs[2]):(regs[1]+'−'+regs[2]);
+      pulse($('#exec'));
+      setTimeout(function(){
+        regs[3]=res;setRegV(3,res);sGood();
+        if(pred===res)feed('R3 = '+res+'. Exactly as you predicted — '+w+'.','ok');
+        else if(pred===null)feed('R3 = '+res+' ('+w+').','ok');
+        else feed('You predicted '+pred+' — the ALU says '+res+' ('+w+'). It computes on registers, not on memory.','warn');
+        lock=false;step++;enter();
+      },RM.matches?0:350);
+    }else if(s.need==='faultexec'){
+      lock=true;
+      const m=$('.machine');m.classList.add('fault');sBad();
+      feed('✗ FAULT — \u201cscore\u201d is not an address. Hardware keeps no names, only numbers.','bad');
+      setTimeout(function(){
+        m.classList.remove('fault');
+        const li=$('#prog .ins.weird');
+        if(li){li.textContent='LOAD  R4, [1004]';li.classList.remove('weird');li.classList.add('fixedin');}
+        $('#pslot').innerHTML='<div class="compchip">COMPILER ▸ score = [1004]</div>';
+        feed('Your compiler steps in: score → [1004]. Names are for humans; addresses are for the machine.','warn');
+        lock=false;step++;enter();
+      },RM.matches?200:1200);
+    }else{
+      shake($('#exec'));sBad();feed('✗ Nothing to execute yet — this instruction needs a memory cell.','bad');
+    }
+  };
+  cardUI({t:'MISSION 01 · FETCH',
+    b:'The CPU can\u2019t see the whole wall — it follows instructions, one address at a time.<br><b>You are the CPU.</b> Execute the program.',
+    btn:'BEGIN ▶',go:enter});
+};
+
+/* ============ MISSION 2 · DECODE ============ */
+SCREENS.m2=function(){
+  const W=[128,64,32,16,8,4,2,1];
+  let bits=[0,1,0,0,1,1,0,1]; /* 77 = M */
+  let mode='intro',flips=0,pred=null,spellStep=0,lens='dec',lock=false;
+  const smem={1000:66,1001:73,1002:84,1003:83,1004:33,1005:0,1006:0,1007:63};
+  const byteVal=()=>bits.reduce((s,b,i)=>s+b*W[i],0);
+  stage.innerHTML='<section class="lab">'
+   +'<div class="mtop"><span class="mtag">MISSION 02 · DECODE</span></div>'
+   +'<div class="panel"><h3>ONE CELL · EIGHT SWITCHES</h3>'
+   +'<div class="bits" id="bits">'+W.map((w,i)=>'<button type="button" class="bit" data-i="'+i+'" aria-pressed="false" aria-label="switch worth '+w+'"><span class="bw">'+w+'</span><span class="bk"><span class="knob"></span></span></button>').join('')+'</div>'
+   +'<div class="lensrow">'
+   +'<div class="lensbox"><span class="lt">NUMBER LENS</span><b id="ldec">0</b></div>'
+   +'<div class="lensbox"><span class="lt">LETTER LENS</span><b id="lchr">·</b></div>'
+   +'<div class="lensbox"><span class="lt">PIXEL LENS</span><span class="swatch" id="lpix"></span></div>'
+   +'</div><p class="same">SAME 8 BITS — THREE MEANINGS</p></div>'
+   +'<div class="panel flowp" id="m2flow"></div>'
+   +'<div class="feed" id="feed" role="status" aria-live="polite"></div>'
+   +'</section>';
+  function paintByte(){
+    const v=byteVal();
+    $$('.bit').forEach((b,i)=>b.setAttribute('aria-pressed',bits[i]?'true':'false'));
+    $('#ldec').textContent=v;$('#lchr').textContent=chr(v);
+    $('#lpix').style.background='rgb('+v+','+v+','+v+')';
+    return v;
+  }
+  function repaintStrip(){
+    $$('#strip .cell').forEach(el=>{
+      const cv=$('.cv',el),v=+cv.dataset.dec;
+      cv.classList.toggle('bin',lens==='bin');
+      cv.textContent=(lens==='chr')?chr(v):(lens==='bin')?bin8(v):v;
+    });
+    $$('.lensbtns .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.act==='lens:'+lens?'true':'false'));
+  }
+  function target(){return spellStep===0?{a:1005,ch:'H',code:72}:{a:1006,ch:'I',code:73};}
+  function finishSpell(){
+    lens='chr';repaintStrip();sWin();aim(null);
+    $$('#strip .cell').forEach((el,i)=>setTimeout(()=>pulse(el),RM.matches?0:i*70));
+    feed('The wall now reads  B I T S ! H I ?  — RAM never knew it was text. Your lens decided.','ok');
+    setTimeout(function(){
+      P.m2=1;save();
+      cardUI({t:'MISSION 02 CLEAR — DECODE ✓',
+        b:'A byte is 8 switch positions — nothing more. <b>The lens that reads it decides the meaning</b>: number, letter, pixel… even an instruction.',
+        btn:'NEXT · DISTANCE ▶',go:()=>go('m3'),
+        ex:'<p><button type="button" class="btn ghost" data-act="tomap">MISSION DECK</button></p>'});
+    },RM.matches?300:1200);
+  }
+  H.bit=function(i,el){
+    if(lock)return;
+    if(mode==='flip'){
+      if(i!==6){shake(el);sBad();feed('✗ That\u2019s the '+W[i]+'-switch. Find the one worth 2.','bad');return;}
+      bits[i]=bits[i]?0:1;const v=paintByte();sGood();aim(null);
+      feed(pred===79?('79 — called it. 77+2=79, and the letter lens flips M → O.'):('It reads '+v+' now (77+2) — and the letter lens flips M → O.'),'ok');
+      mode='free';flips=0;
+      $('#m2flow').innerHTML='<p>Free play: flip anything. Watch all three lenses move as <b>one</b> — because there is only one byte.</p>';
+    }else if(mode==='free'){
+      bits[i]=bits[i]?0:1;paintByte();sTap();flips++;
+      if(flips>=3&&!$('#m2go'))
+        $('#m2flow').insertAdjacentHTML('beforeend','<p><button type="button" class="btn glow" id="m2go" data-act="m2k">GOT IT — CHALLENGE ▶</button></p>');
+    }else if(mode==='buildK'){
+      bits[i]=bits[i]?0:1;const v=paintByte();sTap();
+      if(v===75){
+        mode='kdone';sGood();
+        feed('01001011 → 64+8+2+1 = 75 = \u2018K\u2019 ✓  You just wrote ASCII by hand.','ok');
+        $('#m2flow').innerHTML='<p class="target">K = 75 ✓ BUILT</p><p><button type="button" class="btn glow" data-act="m2spell">CHALLENGE 2 · SPELL INTO RAM ▶</button></p>';
+      }
+    }else if(mode==='spell'){
+      bits[i]=bits[i]?0:1;paintByte();sTap();
+    }else{
+      shake(el);feed('One step at a time — answer the prediction first.','warn');
+    }
+  };
+  H.cell=function(a,el){
+    if(mode!=='spell'||lock)return;
+    const t=target();
+    if(a!==t.a){
+      shake(el);sBad();
+      feed(a===1005||a===1006?'✗ Order matters on this wall — \u2018H\u2019 goes into [1005] first.':'✗ ['+a+'] is taken. Your targets: [1005] then [1006].','bad');
+      return;
+    }
+    const v=byteVal();lock=true;sTap();
+    fly($('#bits'),el,String(v),600,function(){
+      smem[a]=v;setCell(a,v);repaintStrip();lock=false;
+      if(v===t.code){
+        sGood();spellStep++;
+        if(spellStep===2){finishSpell();}
+        else{feed('MEM['+a+'] ← '+v+' — \u2018'+t.ch+'\u2019 locked. Now build I = 73 and store it in [1006].','ok');aim(cellEl(1006));}
+      }else{
+        sBad();
+        feed('✗ ['+a+'] now holds '+v+' = \u2018'+chr(v)+'\u2019 — you can see the miss. Target \u2018'+t.ch+'\u2019 = '+t.code+'. Fix the switches, store again.','bad');
+      }
+    });
+  };
+  H.form=function(){
+    if(mode!=='predict')return;
+    const v=parseInt($('#pin').value,10);pred=isNaN(v)?null:v;
+    mode='flip';sTap();
+    $('#m2flow').innerHTML='<p>Locked. Now flip the <b>2</b>-switch.</p>';
+    aim($$('.bit')[6]);
+  };
+  H.act=function(k){
+    if(k==='tomap'){go('map');return;}
+    if(k==='m2k'){
+      mode='buildK';bits=[0,0,0,0,0,0,0,0];paintByte();sTap();
+      $('#m2flow').innerHTML='<p class="target">TARGET  \u2018K\u2019 = 75</p><p class="dim tiny">A=65, B=66, C=67 … count up. Sum the ON switches to hit it.</p>';
+      feed('Challenge 2a: build 75 with the switches.');
+    }else if(k==='m2spell'){
+      mode='spell';spellStep=0;lens='dec';sTap();
+      let strip='<div class="ram strip" id="strip">';
+      for(let a=1000;a<1008;a++)strip+=cellBtn(a,smem[a]);
+      strip+='</div>';
+      $('#m2flow').innerHTML='<p>Two empty cells sit in this row of RAM. Build <b>H</b> (72) on the switches, then <b>tap [1005]</b> to store it. Then <b>I</b> (73) into [1006].</p>'
+        +strip
+        +'<div class="lensbtns"><span class="dim tiny">LENS:</span>'
+        +'<button type="button" class="chip" data-act="lens:dec" aria-pressed="true">DEC</button>'
+        +'<button type="button" class="chip" data-act="lens:chr" aria-pressed="false">CHR</button>'
+        +'<button type="button" class="chip" data-act="lens:bin" aria-pressed="false">BIN</button></div>';
+      repaintStrip();aim(cellEl(1005));
+      feed('The wall doesn\u2019t know what you\u2019re writing. It never will.');
+    }else if(k.indexOf('lens:')===0){
+      lens=k.slice(5);sTap();repaintStrip();
+    }
+  };
+  paintByte();
+  cardUI({t:'MISSION 02 · DECODE',
+    b:'RAM stores no numbers, no letters, no colors. It stores <b>switch positions</b>.<br>Meaning arrives later — with the lens that reads them.',
+    btn:'OPEN THE CELL ▶',
+    go:function(){
+      bits=[0,1,0,0,1,1,0,1];paintByte();mode='predict';
+      $('#m2flow').innerHTML='<form class="pform" id="pf"><label for="pin">This cell reads 77 — the letter M. Flip the <b>2</b>-switch. Predict the new NUMBER first:</label>'
+        +'<div class="prow"><input id="pin" name="pin" inputmode="numeric" autocomplete="off" required pattern="-?[0-9]{1,4}"><button class="btn small" type="submit">LOCK ▶</button></div></form>';
+      feed('One byte on the bench. Three lenses on it.');
+      const i=$('#pin');if(i)i.focus();
+    }});
+};
+
+/* ============ MISSION 3 · DISTANCE ============ */
+SCREENS.m3=function(){
+  const mem={1000:10,1001:11,1002:10,1003:11,1004:20,1005:2,1006:8,1007:16,1008:4,1009:9,1010:11,1011:26,1012:0,1013:5,1014:60,1015:11};
+  const regs={1:0,2:0,3:0,4:0};
+  const line=a=>a-((a-1000)%4);
+  const opsA=[['L',1,1004],['L',2,1005],['ADD',3,1,2],['L',4,1004],['ADD',3,3,4],['S',1012,3]];
+  const progA=['LOAD  R1, [1004]','LOAD  R2, [1005]','ADD   R3, R1, R2','LOAD  R4, [1004]','ADD   R3, R3, R4','STORE [1012], R3'];
+  const laneA=[1000,1001,1002,1003],laneB=[1000,1007,1010,1013];
+  let cyc=0,cache=null,lock=false,pc=0,phase='A',aCost=0,bet=null,picks=[];
+  stage.innerHTML=machineShell({tag:'MISSION 03 · DISTANCE',meter:true,prog:progA,mem:mem,
+    below:'<div class="panel flowp" id="m3flow"><p class="dim tiny">RAM trip = 10 cycles · ALU op = 1 cycle</p></div>'});
+  const ex=$('#exec');ex.textContent='STEP ▶';ex.dataset.act='step';
+  function paintCyc(){$('#cyc').textContent=cyc;}
+  function addCycles(n,ms,done){
+    if(RM.matches||!ms){cyc+=n;paintCyc();if(done)done();return;}
+    let k=0;const per=Math.max(30,ms/n);
+    const iv=setInterval(function(){
+      cyc++;paintCyc();if(k%2===0)sTick();
+      if(++k>=n){clearInterval(iv);if(done)done();}
+    },per);
+  }
+  function setHM(t){const h=$('#hm');if(!h)return;h.textContent=t;h.className='hm '+t.toLowerCase();}
+  function paintCache(){
+    const s=$$('.cslot');if(!s.length)return;
+    s.forEach(function(el,i){el.textContent=cache?((cache.base+i)+':'+mem[cache.base+i]):'–';});
+  }
+  function flashLine(b){for(let a=b;a<b+4;a++){const el=cellEl(a);if(el){el.classList.add('linehl');setTimeout(()=>el.classList.remove('linehl'),RM.matches?0:700);}}}
+  function runOp(op,mode,done){
+    const t=op[0];
+    if(t==='L'){
+      const r=op[1],a=op[2],v=mem[a];
+      if(mode==='ram'){
+        fly(cellEl(a),$('#R'+r),String(v),RM.matches?0:1000,null);
+        addCycles(10,1000,function(){regs[r]=v;setRegV(r,v);feed('R'+r+' ← MEM['+a+'] = '+v+'  ·  +10 (full trip)');done();});
+      }else{
+        const b=line(a);
+        if(cache&&cache.base===b){
+          setHM('HIT');sGood();
+          fly($('#cachep'),$('#R'+r),String(v),RM.matches?0:230,null);
+          addCycles(1,200,function(){regs[r]=v;setRegV(r,v);feed('HIT · R'+r+' ← cache['+a+'] = '+v+'  ·  +1','ok');done();});
+        }else{
+          setHM('MISS');sMiss();flashLine(b);
+          fly(cellEl(b),$('#cachep'),'LINE',RM.matches?0:1000,null);
+          addCycles(10,1000,function(){cache={base:b};paintCache();regs[r]=v;setRegV(r,v);feed('MISS · line ['+b+'–'+(b+3)+'] hauled to cache · R'+r+' = '+v+'  ·  +10','warn');done();});
+        }
+      }
+    }else if(t==='ADD'){
+      const d=op[1],x=op[2],y=op[3],v=regs[x]+regs[y];
+      pulse($('#exec'));
+      addCycles(1,200,function(){regs[d]=v;setRegV(d,v);feed('R'+d+' ← R'+x+'+R'+y+' = '+v+'  ·  +1 (ALU is next door)');done();});
+    }else if(t==='S'){
+      const a=op[1],r=op[2],v=regs[r];
+      fly($('#R'+r),cellEl(a),String(v),RM.matches?0:1000,null);
+      addCycles(10,1000,function(){mem[a]=v;setCell(a,v);if(cache&&cache.base===line(a))paintCache();feed('MEM['+a+'] ← R'+r+' = '+v+'  ·  +10 (trip back)');done();});
+    }
+  }
+  function autoRun(ops,mode,done){
+    let i=0;
+    (function nx(){
+      if(i>=ops.length){done();return;}
+      setPC(i);runOp(ops[i],mode,function(){i++;nx();});
+    })();
+  }
+  function doneA(){
+    phase='cachewait';ex.disabled=true;aim(null);
+    feed('Total: '+cyc+' cycles — and [1004] made the FULL trip twice. Same address, same bytes, paid twice. Ideas?','warn');
+    $('#m3flow').innerHTML='<p><button type="button" class="btn glow" data-act="cache">INSTALL CACHE ⬛⬛⬛⬛</button></p>'
+      +'<p class="dim tiny">a tiny shelf beside the CPU — holds ONE line of 4 neighboring cells</p>';
+  }
+  function laneCost(addrs){let c=3,cb=null;addrs.forEach(function(a){const b=line(a);if(cb===b)c+=1;else{c+=10;cb=b;}});return c;}
+  function seqFlash(addrs,meterId,done){
+    let c=0,cb=null,i=0;
+    (function nx(){
+      if(i>=addrs.length){c+=3;$('#'+meterId).textContent=c;setTimeout(done,RM.matches?0:350);return;}
+      const a=addrs[i],b=line(a),hit=(cb===b);cb=b;
+      const el=cellEl(a);
+      if(el){el.classList.add(hit?'hl-hit':'hl-miss');setTimeout(()=>el.classList.remove('hl-hit','hl-miss'),RM.matches?0:(hit?220:480));}
+      c+=hit?1:10;$('#'+meterId).textContent=c;
+      if(hit)sTick();else sMiss();
+      i++;setTimeout(nx,RM.matches?0:(hit?260:560));
+    })();
+  }
+  function runRace(){
+    lock=true;
+    $('#m3flow').innerHTML='<div class="lanes">'
+      +'<div class="lane">LANE A · [1000][1001][1002][1003]<b id="la">0</b></div>'
+      +'<div class="lane">LANE B · [1000][1007][1010][1013]<b id="lb">0</b></div></div>';
+    feed('Lane A runs…');
+    cache=null;
+    seqFlash(laneA,'la',function(){
+      feed('Lane B runs…');
+      seqFlash(laneB,'lb',function(){
+        lock=false;
+        const ca=laneCost(laneA),cb2=laneCost(laneB);
+        $('#ram').classList.add('tint');
+        $('.ram-p').insertAdjacentHTML('beforeend','<p class="linelegend">↑ colored rows = cache lines (4 neighbors travel together)</p>');
+        const msg=bet==='A'?'You called it.':bet==='T'?'You bet TIE — and the MATH is a tie. But B paid four full trips: every access landed on a new line and evicted the last.':'B never stood a chance — each access evicted the line the last one hauled in.';
+        cardUI({t:'PHOTO FINISH',
+          b:'A: <b>'+ca+'</b> cycles · B: <b>'+cb2+'</b> cycles — both computed <b>42</b>.<br>'+msg+'<br><b>Same answer. Different distance.</b> Data layout is speed.',
+          btn:'FINAL CHALLENGE ▶',go:builder});
+      });
+    });
+  }
+  function builder(){
+    phase='build';picks=[];cache=null;cyc=0;paintCyc();paintCache();clearRegs();aim(null);
+    $('#prog').outerHTML=progHTML(['— YOUR PROGRAM —','pick 4 cells…']);
+    $$('#prog .ins').forEach(el=>el.classList.add('hdr'));
+    $('#m3flow').innerHTML='<p class="target">CHALLENGE 3 · SUM 4 CELLS UNDER <b>20</b> CYCLES</p>'
+      +'<p class="dim tiny">Tap four cells to queue them. One 4-slot cache line. Rows are lines.</p>'
+      +'<div class="prow"><button type="button" class="btn" id="runsum" data-act="runsum" disabled>RUN ▶</button>'
+      +'<button type="button" class="btn ghost" data-act="clearsum">CLEAR</button></div>';
+    feed('Choose your four. The meter is watching.');
+  }
+  function paintPicks(){
+    $$('#ram .cell').forEach(function(el){
+      const a=+el.dataset.a,ix=picks.indexOf(a);
+      el.classList.toggle('pick',ix>=0);
+      if(ix>=0)el.dataset.n=ix+1;else el.removeAttribute('data-n');
+    });
+    const r=$('#runsum');if(r)r.disabled=(picks.length!==4);
+    if(picks.length){
+      const lines=['— YOUR PROGRAM —'].concat(picks.map(function(a,i){return 'LOAD  → [' +a+']';}),picks.length===4?['ADD × 3','(cache: 1 line)']:[]);
+      $('#prog').outerHTML=progHTML(lines);
+      $$('#prog .ins')[0].classList.add('hdr');
+    }
+  }
+  function runSum(){
+    lock=true;cache=null;cyc=0;paintCyc();paintCache();clearRegs();
+    $('#prog').outerHTML=progHTML([
+      'LOAD  R1, ['+picks[0]+']','LOAD  R2, ['+picks[1]+']','ADD   R3, R1, R2',
+      'LOAD  R4, ['+picks[2]+']','ADD   R3, R3, R4','LOAD  R1, ['+picks[3]+']','ADD   R3, R3, R1']);
+    const ops=[['L',1,picks[0]],['L',2,picks[1]],['ADD',3,1,2],['L',4,picks[2]],['ADD',3,3,4],['L',1,picks[3]],['ADD',3,3,1]];
+    autoRun(ops,'cache',function(){
+      lock=false;
+      const total=cyc,sum=regs[3];
+      const nl=new Set(picks.map(line)).size,hauls=(total-7)/9;
+      if(total<=20){
+        sWin();feed('✓ '+total+' cycles — under budget. Σ = '+sum+'. One line, one haul, three free rides.','ok');
+        P.m3=1;save();
+        setTimeout(function(){
+          cardUI({t:'MISSION 03 CLEAR — DISTANCE ✓',
+            b:'Compute is cheap — <b>moving data is the bill</b>. Your cache bet on repeats and on neighbors, and you just cashed both bets. That\u2019s why programs that touch memory in order feel fast.',
+            btn:'FINAL · FORGE ▶',go:()=>go('forge'),
+            ex:'<p><button type="button" class="btn ghost" data-act="tomap">MISSION DECK</button></p>'});
+        },RM.matches?200:900);
+      }else{
+        sBad();
+        feed('✗ '+total+' cycles — over budget. '+hauls+' full hauls across '+nl+' lines. Neighbors share a ride; strangers don\u2019t.','bad');
+        picks=[];paintPicks();
+        $('#prog').outerHTML=progHTML(['— YOUR PROGRAM —','pick 4 cells…']);
+        $$('#prog .ins').forEach(el=>el.classList.add('hdr'));
+      }
+    });
+  }
+  H.cell=function(a,el){
+    if(phase!=='build'||lock)return;
+    const ix=picks.indexOf(a);
+    if(ix>=0)picks.splice(ix,1);
+    else if(picks.length<4)picks.push(a);
+    else{shake(el);feed('Four is the deal — un-pick one first.','warn');return;}
+    sTap();paintPicks();
+  };
+  H.act=function(k){
+    if(k==='tomap'){go('map');return;}
+    if(lock)return;
+    if(k==='step'&&phase==='A'){
+      lock=true;setPC(pc);
+      runOp(opsA[pc],'ram',function(){
+        lock=false;pc++;
+        if(pc>=opsA.length)doneA();else{setPC(pc);}
+      });
+    }else if(k==='cache'&&phase==='cachewait'){
+      phase='B';aCost=cyc;cyc=0;paintCyc();sGood();
+      clearRegs();mem[1012]=0;setCell(1012,0);cellEl(1012).classList.remove('lit');
+      $('#cslot').innerHTML='<div class="cachep" id="cachep"><span class="ct">CACHE · ONE LINE</span><div class="cslots">'
+        +[0,1,2,3].map(()=>'<span class="cslot">–</span>').join('')+'</div><span class="hm" id="hm"></span></div>';
+      $('#m3flow').innerHTML='<div class="cmp"><span>NO CACHE <b>'+aCost+'</b></span><span>WITH CACHE <b id="bCost">?</b></span></div>'
+        +'<p><button type="button" class="btn glow" data-act="runB">RE-RUN THE SAME PROGRAM ▶</button></p>';
+      feed('Shelf installed. Same program, same addresses — new physics.');
+    }else if(k==='runB'&&phase==='B'){
+      phase='Brun';lock=true;$('#m3flow .btn').disabled=true;
+      autoRun(opsA,'cache',function(){
+        lock=false;phase='race-intro';
+        $('#bCost').textContent=cyc;sGood();
+        feed(aCost+' → '+cyc+'. ONE miss hauled line [1004–1007]; every neighbor after that rode free.','ok');
+        $('#m3flow').insertAdjacentHTML('beforeend','<p><button type="button" class="btn glow" data-act="race">THE RACE ▶</button></p>');
+      });
+    }else if(k==='race'&&phase==='race-intro'){
+      phase='race';
+      cardUI({t:'THE RACE',b:'Two programs. Each adds four cells. Both answers are <b>42</b>.<br><span class="mono">A: [1000][1001][1002][1003]<br>B: [1000][1007][1010][1013]</span><br><b>Place your bet.</b>',
+        btn:null,
+        ex:'<div class="prow center"><button type="button" class="btn" data-act="bet:A">A WINS</button>'
+          +'<button type="button" class="btn" data-act="bet:B">B WINS</button>'
+          +'<button type="button" class="btn" data-act="bet:T">TIE — SAME MATH</button></div>'});
+    }else if(k.indexOf('bet:')===0&&phase==='race'){
+      bet=k.slice(4);sTap();
+      const ov=$('.overlay');if(ov)ov.remove();
+      runRace();
+    }else if(k==='runsum'&&phase==='build'&&picks.length===4){
+      runSum();
+    }else if(k==='clearsum'&&phase==='build'){
+      picks=[];sTap();paintPicks();
+      $('#prog').outerHTML=progHTML(['— YOUR PROGRAM —','pick 4 cells…']);
+      $$('#prog .ins').forEach(el=>el.classList.add('hdr'));
+    }
+  };
+  cardUI({t:'MISSION 03 · DISTANCE',
+    b:'The ALU sits next door: <b>1 cycle</b>. RAM is across town: <b>10 cycles per trip</b>.<br>Same machine as Mission 1 — but now the clock is running.',
+    btn:'START THE CLOCK ▶',
+    go:function(){setPC(0);aim(ex);feed('Tap STEP for each instruction. Watch the meter.');}});
+};
+
+/* ============ FINAL · FORGE ============ */
+SCREENS.forge=function(){
+  const W=[128,64,32,16,8,4,2,1];
+  let bits=[0,0,0,0,0,0,0,0],mode='name',li=0,codes=[],inits='',lock=false;
+  const byteVal=()=>bits.reduce((s,b,i)=>s+b*W[i],0);
+  stage.innerHTML='<section class="lab">'
+   +'<div class="mtop"><span class="mtag">FINAL · FORGE</span></div>'
+   +'<div class="panel flowp" id="fflow"></div>'
+   +'<div class="panel" id="fbyte" hidden><h3 id="ftitle"></h3>'
+   +'<div class="bits" id="bits">'+W.map((w,i)=>'<button type="button" class="bit" data-i="'+i+'" aria-pressed="false" aria-label="switch worth '+w+'"><span class="bw">'+w+'</span><span class="bk"><span class="knob"></span></span></button>').join('')+'</div>'
+   +'<div class="lensrow"><div class="lensbox"><span class="lt">NUMBER</span><b id="ldec">0</b></div>'
+   +'<div class="lensbox"><span class="lt">LETTER</span><b id="lchr">·</b></div></div></div>'
+   +'<div class="panel" id="fslots" hidden><h3>THE PLAQUE · RAM [1010] [1011]</h3>'
+   +'<div class="ram strip" id="strip">'+cellBtn(1010,0)+cellBtn(1011,0)+'</div></div>'
+   +'<div class="feed" id="feed" role="status" aria-live="polite"></div>'
+   +'</section>';
+  function paintByte(){
+    const v=byteVal();
+    $$('.bit').forEach((b,i)=>b.setAttribute('aria-pressed',bits[i]?'true':'false'));
+    $('#ldec').textContent=v;$('#lchr').textContent=chr(v);
+    return v;
+  }
+  function startLetter(){
+    bits=[0,0,0,0,0,0,0,0];paintByte();
+    $('#fbyte').hidden=false;$('#fslots').hidden=false;
+    $('#ftitle').textContent='LETTER '+(li+1)+' · \u2018'+inits[li]+'\u2019 = '+codes[li];
+    aim(null);
+    feed('Build '+codes[li]+' on the switches, then tap cell ['+(1010+li)+'] to engrave it.');
+  }
+  function doneForge(){
+    P.initials=inits;P.bytes=codes.slice();mode='note';aim(null);
+    $('#fbyte').hidden=true;sGood();
+    feed('Signature engraved in silicon. One last transmission…','ok');
+    $('#fflow').innerHTML='<form id="ef"><label for="ex2">EXPLAIN IT — to the next engineer:<br><span class="dim">why can\u2019t the CPU just ask RAM for \u201cscore\u201d by name?</span></label>'
+      +'<textarea id="ex2" name="ex2" rows="3" maxlength="240" placeholder="because…"></textarea>'
+      +'<div class="prow"><button class="btn small" type="submit">TRANSMIT ▶</button>'
+      +'<button type="button" class="linkish" data-act="skipnote">skip</button></div></form>';
+    const t=$('#ex2');if(t)t.focus();
+  }
+  function finishAll(){P.forge=1;save();go('done');}
+  H.bit=function(i){
+    if(mode!=='build'||lock)return;
+    bits[i]=bits[i]?0:1;const v=paintByte();sTap();
+    if(v===codes[li]){
+      feed(bin8(v)+' = '+v+' = \u2018'+inits[li]+'\u2019 — ready. Tap ['+(1010+li)+'] to engrave.','ok');
+      aim(cellEl(1010+li));
+    }else aim(null);
+  };
+  H.cell=function(a,el){
+    if(mode!=='build'||lock)return;
+    const want=1010+li;
+    if(a!==want){shake(el);sBad();feed('✗ Engrave in order — this letter goes into ['+want+'].','bad');return;}
+    const v=byteVal();
+    if(v!==codes[li]){shake(el);sBad();feed('✗ The switches read '+v+' (\u2018'+chr(v)+'\u2019) — the plaque needs '+codes[li]+' (\u2018'+inits[li]+'\u2019).','bad');return;}
+    lock=true;sTap();
+    fly($('#bits'),el,String(v),650,function(){
+      setCell(a,v,true);lock=false;sGood();li++;
+      if(li<2)startLetter();else doneForge();
+    });
+  };
+  H.form=function(f){
+    if(f.id==='nf'){
+      const v=($('#ni').value||'').toUpperCase().replace(/[^A-Z]/g,'');
+      if(v.length!==2){shake($('#ni'));sBad();feed('✗ Exactly two letters, A–Z.','bad');return;}
+      inits=v;codes=[v.charCodeAt(0),v.charCodeAt(1)];mode='build';li=0;sGood();startLetter();
+    }else if(f.id==='ef'){
+      P.note=($('#ex2').value||'').trim();finishAll();
+    }
+  };
+  H.act=function(k){if(k==='skipnote'){P.note='';finishAll();}};
+  cardUI({t:'FINAL · FORGE',
+    b:'Machines can\u2019t store your name — so engineers <b>encode</b> it.<br>Sign this machine in bytes you build yourself.',
+    btn:'SIGN IN ▶',
+    go:function(){
+      $('#fflow').innerHTML='<form id="nf"><label for="ni">YOUR INITIALS · 2 LETTERS</label>'
+        +'<div class="prow"><input id="ni" name="ni" maxlength="2" autocapitalize="characters" autocomplete="off" required pattern="[A-Za-z]{2}">'
+        +'<button class="btn small" type="submit">ENCODE ▶</button></div></form>';
+      feed('The plaque takes two bytes. You supply the bits.');
+      const i=$('#ni');if(i)i.focus();
+    }});
+};
+
+/* ============ DONE · LICENSE ============ */
+function confettiBig(){
+  if(RM.matches){const l=$('.license');if(l)l.classList.add('sparkle');return;}
+  const cols=['#3ce0ff','#3af2a4','#ffb454','#b48bff','#ff5d7a','#ffffff'];
+  for(let i=0;i<80;i++){
+    const d=document.createElement('div');d.className='cf';
+    d.style.left=(Math.random()*100)+'vw';
+    d.style.background=cols[i%cols.length];
+    d.style.animationDuration=(2.4+Math.random()*1.8)+'s';
+    d.style.animationDelay=(Math.random()*0.9)+'s';
+    d.style.transform='rotate('+(Math.random()*360)+'deg)';
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),5200);
+  }
+}
+SCREENS.done=function(){
+  const b=(P.bytes&&P.bytes.length===2)?P.bytes:[63,63];
+  stage.innerHTML='<section class="donewrap">'
+   +'<div class="license panel">'
+   +'<p class="lk">▦ THE MEMORY MACHINE ▦</p><h2>PROCESSOR LICENSE</h2>'
+   +'<p class="ln">'+esc(P.initials||'??')+'</p>'
+   +'<p class="lb mono">'+bin8(b[0])+' · '+bin8(b[1])+'</p>'
+   +'<div class="lms"><span>FETCH ✓</span><span>DECODE ✓</span><span>DISTANCE ✓</span><span>FORGE ✓</span></div>'
+   +(P.note?'<p class="lq">\u201c'+esc(P.note)+'\u201d</p>':'')
+   +'<p class="tiny dim">no names — only addresses · meaning is a lens · moving data is the bill<br>issued '+new Date().toLocaleDateString()+'</p>'
+   +'</div>'
+   +'<div class="prow center"><button type="button" class="btn" data-act="tomap">MISSION DECK</button>'
+   +'<button type="button" class="btn ghost" data-act="again">NEW GAME</button></div>'
+   +'</section>';
+  confettiBig();sWin();
+  H.act=function(k){
+    if(k==='tomap')go('map');
+    else if(k==='again'&&confirm('Start fresh? This erases the license.')){P=Object.assign({},DEF,{muted:P.muted});save();go('title');}
+  };
+};
+
+/* ============ boot ============ */
+renderDots();paintMute();go('title');
+</script>
+</body>
+</html>

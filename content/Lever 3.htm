@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 The Amazing World of Levers - Complete Experience</title>
+    <style>
+        /*
+        ============================================================
+        LEVER LEARNING EXPERIENCE - PART 3 (FINAL)
+        ============================================================
+        Complete integrated experience with:
+        - Build-a-Lever Workshop (Sandbox)
+        - Quiz Game (Knowledge Check)
+        - Mental Model Summary
+        ============================================================
+        */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #1a1a2e;
+            --color-bg-light: #16213e;
+            --color-surface: #0f3460;
+            --color-accent: #e94560;
+            
+            --color-fulcrum: #ffd700;
+            --color-effort: #4ecdc4;
+            --color-load: #ff6b6b;
+            --color-lever: #a8d8ea;
+            
+            --color-text: #ffffff;
+            --color-text-dim: #b8c5d6;
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            --color-error: #f87171;
+            
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 20px rgba(78, 205, 196, 0.4);
+            
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-light) 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-effort), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-dim);
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: var(--color-surface);
+            border: 2px solid transparent;
+            border-radius: 50px;
+            color: var(--color-text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            background: rgba(78, 205, 196, 0.2);
+            color: var(--color-text);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Main Container */
+        .viz-container {
+            background: var(--color-surface);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            min-height: 650px;
+        }
+
+        .viz-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .viz-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 1.7rem;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--color-text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* SVG Canvas */
+        .svg-canvas {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(180deg, 
+                rgba(15, 52, 96, 0.5) 0%, 
+                rgba(26, 26, 46, 0.8) 100%);
+            border-radius: 16px;
+            margin: 15px 0;
+            position: relative;
+            overflow: visible;
+        }
+
+        .svg-canvas.large {
+            height: 420px;
+        }
+
+        .svg-canvas svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            color: white;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
+            border: 2px solid var(--color-text-dim);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--color-success), #22c55e);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--color-warning), #f59e0b);
+            color: #1a1a2e;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        /* Guide Bubble */
+        .guide-bubble {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .guide-bubble::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+            background: var(--color-surface);
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .guide-bubble p {
+            color: white;
+            font-size: 1.05rem;
+        }
+
+        /* ============================================
+           VISUALIZATION 9: BUILD-A-LEVER WORKSHOP
+           ============================================ */
+        
+        .workshop-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .workshop-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .workshop-canvas {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 15px;
+            min-height: 400px;
+        }
+
+        .workshop-controls {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .control-group h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .control-label {
+            font-size: 0.9rem;
+            color: var(--color-text-dim);
+            min-width: 100px;
+        }
+
+        .control-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--color-effort);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-value {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--color-effort);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .result-panel {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--color-text-dim);
+            font-size: 0.9rem;
+        }
+
+        .result-value {
+            font-weight: 700;
+        }
+
+        .class-indicator {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .class-indicator.class-1 {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            border: 2px solid #60a5fa;
+        }
+
+        .class-indicator.class-2 {
+            background: rgba(52, 211, 153, 0.2);
+            color: #34d399;
+            border: 2px solid #34d399;
+        }
+
+        .class-indicator.class-3 {
+            background: rgba(244, 114, 182, 0.2);
+            color: #f472b6;
+            border: 2px solid #f472b6;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: var(--color-text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .preset-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--color-effort);
+        }
+
+        /* ============================================
+           VISUALIZATION 10: QUIZ GAME
+           ============================================ */
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .progress-dot {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .progress-dot.current {
+            background: var(--color-effort);
+            border-color: var(--color-effort);
+            transform: scale(1.15);
+        }
+
+        .progress-dot.correct {
+            background: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .progress-dot.incorrect {
+            background: var(--color-error);
+            border-color: var(--color-error);
+        }
+
+        .quiz-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        .quiz-image {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .quiz-option {
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: var(--color-text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: var(--color-effort);
+            transform: translateY(-2px);
+        }
+
+        .quiz-option.selected {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: var(--color-effort);
+        }
+
+        .quiz-option.correct {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: var(--color-success);
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(248, 113, 113, 0.2);
+            border-color: var(--color-error);
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .quiz-feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid var(--color-success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(248, 113, 113, 0.2);
+            border: 2px solid var(--color-error);
+        }
+
+        .quiz-feedback h4 {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-effort), var(--color-accent));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 0 40px rgba(78, 205, 196, 0.4);
+        }
+
+        .score-circle .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .score-circle .score-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .score-message {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .score-details {
+            color: var(--color-text-dim);
+            margin-bottom: 25px;
+        }
+
+        /* ============================================
+           MENTAL MODEL SUMMARY
+           ============================================ */
+
+        .mental-model {
+            background: linear-gradient(135deg, rgba(15, 52, 96, 0.8), rgba(26, 26, 46, 0.9));
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px solid var(--color-effort);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mental-model::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.1) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .mental-model-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .mental-model h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--color-fulcrum);
+        }
+
+        .key-insight {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid var(--color-effort);
+        }
+
+        .key-insight h4 {
+            color: var(--color-effort);
+            margin-bottom: 8px;
+        }
+
+        .formula-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula-box .formula {
+            font-size: 1.5rem;
+            color: var(--color-fulcrum);
+            margin-bottom: 10px;
+        }
+
+        .three-classes-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .three-classes-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .class-summary-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .class-summary-card h5 {
+            margin-bottom: 8px;
+        }
+
+        .class-summary-card.c1 { border-top: 3px solid #60a5fa; }
+        .class-summary-card.c1 h5 { color: #60a5fa; }
+
+        .class-summary-card.c2 { border-top: 3px solid #34d399; }
+        .class-summary-card.c2 h5 { color: #34d399; }
+
+        .class-summary-card.c3 { border-top: 3px solid #f472b6; }
+        .class-summary-card.c3 h5 { color: #f472b6; }
+
+        .remember-box {
+            background: linear-gradient(135deg, var(--color-fulcrum), #f59e0b);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 25px;
+            color: #1a1a2e;
+        }
+
+        .remember-box h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .remember-box p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.fulcrum { background: var(--color-fulcrum); }
+        .legend-dot.effort { background: var(--color-effort); }
+        .legend-dot.load { background: var(--color-load); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container { padding: 10px; }
+            .viz-container { padding: 15px; }
+            .quiz-card { padding: 20px; }
+            .quiz-question { font-size: 1.1rem; }
+        }
+
+        /* Animations */
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .celebrate {
+            animation: celebrate 0.6s ease;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>🎯 Lever Mastery - Final Challenge!</h1>
+            <p class="subtitle">Build, experiment, and prove your lever knowledge!</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="workshop">
+                <span>🔧</span> Build Workshop
+            </button>
+            <button class="nav-tab" data-section="quiz">
+                <span>🧠</span> Quiz Challenge
+            </button>
+            <button class="nav-tab" data-section="summary">
+                <span>🎓</span> Master Summary
+            </button>
+        </nav>
+
+        <main class="viz-container">
+
+            <!-- ========================================
+                 VISUALIZATION 9: BUILD-A-LEVER WORKSHOP
+                 Learning Goal: Apply knowledge through experimentation
+                 ======================================== -->
+            <section id="workshop" class="viz-section active">
+                <div class="section-header">
+                    <h2>🔧 Build-a-Lever Workshop</h2>
+                    <p>Design your own lever and see the physics in action!</p>
+                </div>
+
+                <div class="workshop-layout">
+                    <div class="workshop-canvas">
+                        <svg viewBox="0 0 550 380" preserveAspectRatio="xMidYMid meet" id="workshop-svg">
+                            <defs>
+                                <marker id="ws-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#4ecdc4"/>
+                                </marker>
+                                <filter id="ws-glow">
+                                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                                    <feMerge>
+                                        <feMergeNode in="blur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+
+                            <!-- Grid background -->
+                            <pattern id="ws-grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                            </pattern>
+                            <rect width="100%" height="100%" fill="url(#ws-grid)"/>
+
+                            <!-- Ground -->
+                            <line x1="20" y1="300" x2="530" y2="300" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+                            <!-- Lever Bar -->
+                            <g id="ws-lever-group">
+                                <rect id="ws-lever-bar" x="75" y="232" width="400" height="14" rx="7" fill="#a8d8ea" filter="url(#ws-glow)"/>
+                            </g>
+
+                            <!-- Fulcrum (draggable) -->
+                            <g id="ws-fulcrum-group" class="draggable" style="cursor: ew-resize;">
+                                <polygon id="ws-fulcrum" points="275,300 245,246 305,246" fill="#ffd700"/>
+                                <text id="ws-fulcrum-label" x="275" y="320" text-anchor="middle" fill="#ffd700" font-size="12" font-weight="bold">
+                                    FULCRUM
+                                </text>
+                                <text x="275" y="335" text-anchor="middle" fill="rgba(255,215,0,0.6)" font-size="10">
+                                    (drag left/right)
+                                </text>
+                            </g>
+
+                            <!-- Load -->
+                            <g id="ws-load-group">
+                                <rect id="ws-load" x="410" y="185" width="55" height="47" rx="8" fill="#ff6b6b"/>
+                                <text id="ws-load-text" x="437" y="214" text-anchor="middle" fill="white" font-size="13" font-weight="bold">80kg</text>
+                                <text x="437" y="170" text-anchor="middle" fill="#ff6b6b" font-size="11" font-weight="bold">LOAD</text>
+                            </g>
+
+                            <!-- Effort -->
+                            <g id="ws-effort-group">
+                                <line id="ws-effort-arrow" x1="100" y1="170" x2="100" y2="225" stroke="#4ecdc4" stroke-width="5" marker-end="url(#ws-arrow)"/>
+                                <text x="100" y="155" text-anchor="middle" font-size="24">💪</text>
+                                <text id="ws-effort-text" x="100" y="138" text-anchor="middle" fill="#4ecdc4" font-size="13" font-weight="bold">40kg</text>
+                                <text x="100" y="123" text-anchor="middle" fill="rgba(78,205,196,0.7)" font-size="10">EFFORT</text>
+                            </g>
+
+                            <!-- Distance indicators -->
+                            <g id="ws-distances">
+                                <!-- Effort arm -->
+                                <line id="ws-effort-arm" x1="100" y1="265" x2="275" y2="265" stroke="#4ecdc4" stroke-width="2" stroke-dasharray="6,3"/>
+                                <text id="ws-effort-arm-text" x="187" y="282" text-anchor="middle" fill="#4ecdc4" font-size="11" font-weight="bold">1.75m</text>
+
+                                <!-- Load arm -->
+                                <line id="ws-load-arm" x1="275" y1="265" x2="437" y2="265" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="6,3"/>
+                                <text id="ws-load-arm-text" x="356" y="282" text-anchor="middle" fill="#ff6b6b" font-size="11" font-weight="bold">1.62m</text>
+                            </g>
+
+                            <!-- Class indicator -->
+                            <g id="ws-class-display">
+                                <rect x="210" y="20" width="130" height="40" rx="20" fill="rgba(0,0,0,0.4)"/>
+                                <text id="ws-class-text" x="275" y="47" text-anchor="middle" fill="#60a5fa" font-size="14" font-weight="bold">CLASS 1</text>
+                            </g>
+
+                            <!-- MA indicator -->
+                            <g id="ws-ma-display">
+                                <rect x="380" y="20" width="100" height="40" rx="20" fill="rgba(0,0,0,0.4)"/>
+                                <text x="430" y="35" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10">MA</text>
+                                <text id="ws-ma-text" x="430" y="52" text-anchor="middle" fill="#4ade80" font-size="16" font-weight="bold">1.08×</text>
+                            </g>
+
+                            <!-- Animate button area -->
+                            <g id="ws-animate-btn" style="cursor: pointer;" onclick="WorkshopController.animateLever()">
+                                <rect x="70" y="20" width="100" height="40" rx="20" fill="#4ecdc4"/>
+                                <text x="120" y="46" text-anchor="middle" fill="white" font-size="12" font-weight="bold">▶ Animate</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="workshop-controls">
+                        <div class="control-group">
+                            <h4><span style="color: #ffd700;">▲</span> Fulcrum Position</h4>
+                            <div class="control-row">
+                                <span class="control-label">Position:</span>
+                                <input type="range" class="control-slider" id="fulcrum-slider" min="120" max="420" value="275">
+                                <span class="control-value" id="fulcrum-pos">50%</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h4><span style="color: #ff6b6b;">■</span> Load</h4>
+                            <div class="control-row">
+                                <span class="control-label">Weight:</span>
+                                <input type="range" class="control-slider" id="load-slider" min="10" max="200" value="80">
+                                <span class="control-value" id="load-weight">80 kg</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h4>⚡ Quick Presets</h4>
+                            <div class="preset-buttons">
+                                <button class="preset-btn" onclick="WorkshopController.loadPreset('seesaw')">⚖️ Seesaw</button>
+                                <button class="preset-btn" onclick="WorkshopController.loadPreset('wheelbarrow')">🛒 Wheelbarrow</button>
+                                <button class="preset-btn" onclick="WorkshopController.loadPreset('fishing')">🎣 Fishing Rod</button>
+                                <button class="preset-btn" onclick="WorkshopController.loadPreset('crowbar')">🔧 Crowbar</button>
+                            </div>
+                        </div>
+
+                        <div class="result-panel">
+                            <h4 style="margin-bottom: 12px;">📊 Results</h4>
+                            <div class="result-row">
+                                <span class="result-label">Effort Arm:</span>
+                                <span class="result-value" id="result-effort-arm" style="color: #4ecdc4;">1.75m</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Load Arm:</span>
+                                <span class="result-value" id="result-load-arm" style="color: #ff6b6b;">1.62m</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Mech. Advantage:</span>
+                                <span class="result-value" id="result-ma" style="color: #4ade80;">1.08×</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Effort Needed:</span>
+                                <span class="result-value" id="result-effort" style="color: #4ecdc4;">74 kg</span>
+                            </div>
+                            <div style="text-align: center; margin-top: 12px;">
+                                <span class="class-indicator class-1" id="result-class">CLASS 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="legend-dot fulcrum"></span>
+                        <span>Fulcrum (Drag to move)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot effort"></span>
+                        <span>Effort (Your Force)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot load"></span>
+                        <span>Load (Weight)</span>
+                    </div>
+                </div>
+
+                <div class="guide-bubble">
+                    <p><strong>Experiment!</strong> Move the fulcrum closer to the load and watch the required effort drop. That's mechanical advantage in action!</p>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 VISUALIZATION 10: QUIZ GAME
+                 Learning Goal: Reinforce knowledge through assessment
+                 ======================================== -->
+            <section id="quiz" class="viz-section">
+                <div class="section-header">
+                    <h2>🧠 Lever Master Quiz</h2>
+                    <p>Test your lever knowledge with 6 challenges!</p>
+                </div>
+
+                <div class="quiz-container">
+                    <!-- Progress dots -->
+                    <div class="quiz-progress" id="quiz-progress">
+                        <div class="progress-dot current">1</div>
+                        <div class="progress-dot">2</div>
+                        <div class="progress-dot">3</div>
+                        <div class="progress-dot">4</div>
+                        <div class="progress-dot">5</div>
+                        <div class="progress-dot">6</div>
+                    </div>
+
+                    <!-- Quiz card -->
+                    <div class="quiz-card" id="quiz-card">
+                        <!-- Question content loaded dynamically -->
+                    </div>
+
+                    <!-- Score display (shown at end) -->
+                    <div class="quiz-score" id="quiz-score" style="display: none;">
+                        <div class="score-circle">
+                            <span class="score-number" id="final-score">0</span>
+                            <span class="score-label">out of 6</span>
+                        </div>
+                        <div class="score-message" id="score-message">Great job!</div>
+                        <div class="score-details" id="score-details">You've shown excellent understanding of levers!</div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="QuizController.restart()">
+                                <span>🔄</span> Try Again
+                            </button>
+                            <button class="btn btn-success" onclick="navigateTo('summary')">
+                                <span>🎓</span> See Summary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 MENTAL MODEL SUMMARY
+                 Learning Goal: Consolidate all knowledge into memorable framework
+                 ======================================== -->
+            <section id="summary" class="viz-section">
+                <div class="section-header">
+                    <h2>🎓 Lever Master Summary</h2>
+                    <p>Everything you need to remember about levers!</p>
+                </div>
+
+                <div class="mental-model">
+                    <div class="mental-model-content">
+                        <h3>🧠 The One Picture to Remember</h3>
+                        
+                        <div class="svg-canvas" style="height: 220px; margin: 20px 0;">
+                            <svg viewBox="0 0 700 200" preserveAspectRatio="xMidYMid meet">
+                                <!-- Central lever diagram -->
+                                <g transform="translate(350, 100)">
+                                    <!-- Lever bar -->
+                                    <rect x="-250" y="-8" width="500" height="16" rx="8" fill="#a8d8ea"/>
+                                    
+                                    <!-- Fulcrum -->
+                                    <polygon points="0,50 -30,-8 30,-8" fill="#ffd700"/>
+                                    <text x="0" y="75" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">FULCRUM</text>
+                                    
+                                    <!-- Effort side -->
+                                    <g transform="translate(-180, 0)">
+                                        <circle cy="-30" r="25" fill="#4ecdc4"/>
+                                        <text y="-25" text-anchor="middle" fill="white" font-size="11" font-weight="bold">EFFORT</text>
+                                        <text y="-50" text-anchor="middle" fill="#4ecdc4" font-size="10">Your Push</text>
+                                    </g>
+                                    
+                                    <!-- Load side -->
+                                    <g transform="translate(180, 0)">
+                                        <rect x="-25" y="-45" width="50" height="37" rx="6" fill="#ff6b6b"/>
+                                        <text y="-22" text-anchor="middle" fill="white" font-size="11" font-weight="bold">LOAD</text>
+                                        <text y="-55" text-anchor="middle" fill="#ff6b6b" font-size="10">The Weight</text>
+                                    </g>
+                                    
+                                    <!-- Arm labels -->
+                                    <line x1="-180" y1="20" x2="0" y2="20" stroke="#4ecdc4" stroke-width="2" stroke-dasharray="5,3"/>
+                                    <text x="-90" y="38" text-anchor="middle" fill="#4ecdc4" font-size="11">Effort Arm</text>
+                                    
+                                    <line x1="0" y1="20" x2="180" y2="20" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,3"/>
+                                    <text x="90" y="38" text-anchor="middle" fill="#ff6b6b" font-size="11">Load Arm</text>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <div class="formula-box">
+                            <div class="formula">Effort × Effort Arm = Load × Load Arm</div>
+                            <div style="color: var(--color-text-dim); font-size: 0.95rem;">The Law of the Lever - Always balanced!</div>
+                        </div>
+
+                        <div class="three-classes-summary">
+                            <div class="class-summary-card c1">
+                                <h5>Class 1</h5>
+                                <div style="font-size: 1.3rem; margin: 8px 0;">E ─ F ─ L</div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-dim);">Fulcrum in Middle</div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">✂️ Scissors, ⚖️ Seesaw</div>
+                            </div>
+                            <div class="class-summary-card c2">
+                                <h5>Class 2</h5>
+                                <div style="font-size: 1.3rem; margin: 8px 0;">F ─ L ─ E</div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-dim);">Load in Middle</div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">🛒 Wheelbarrow, 🍾 Opener</div>
+                            </div>
+                            <div class="class-summary-card c3">
+                                <h5>Class 3</h5>
+                                <div style="font-size: 1.3rem; margin: 8px 0;">F ─ E ─ L</div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-dim);">Effort in Middle</div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">🎣 Fishing rod, 💪 Your arm</div>
+                            </div>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>💡 The Trade-Off</h4>
+                            <p>Levers don't create energy — they transform it. Less force means more distance. More force means less distance. The work is always the same!</p>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>⚡ Mechanical Advantage</h4>
+                            <p><strong>MA = Effort Arm ÷ Load Arm</strong></p>
+                            <p style="margin-top: 8px; color: var(--color-text-dim);">
+                                MA > 1 = Force multiplier (easier to lift) |
+                                MA < 1 = Speed multiplier (faster movement)
+                            </p>
+                        </div>
+
+                        <div class="remember-box">
+                            <h4>🌟 If You Remember Only ONE Thing:</h4>
+                            <p>"Move the fulcrum closer to the load = Less effort needed!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="margin-top: 25px;">
+                    <button class="btn btn-primary" onclick="navigateTo('workshop')">
+                        <span>🔧</span> Practice More
+                    </button>
+                    <button class="btn btn-warning" onclick="navigateTo('quiz')">
+                        <span>🧠</span> Take Quiz Again
+                    </button>
+                </div>
+
+                <div class="guide-bubble" style="background: linear-gradient(135deg, #ffd700, #f59e0b);">
+                    <p style="color: #1a1a2e;"><strong>🎉 Congratulations!</strong> You now understand one of humanity's oldest and most powerful tools. Look around — levers are everywhere, from scissors to your own skeleton!</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        /*
+        ============================================================
+        LEVER LEARNING EXPERIENCE - PART 3 (FINAL)
+        Complete Interactive Experience
+        ============================================================
+        */
+
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
+        const state = {
+            currentSection: 'workshop',
+            workshop: {
+                fulcrumX: 275,
+                loadWeight: 80,
+                effortX: 100,
+                loadX: 437,
+                barStart: 75,
+                barEnd: 475,
+                animating: false
+            },
+            quiz: {
+                currentQuestion: 0,
+                score: 0,
+                answers: [],
+                completed: false
+            }
+        };
+
+        // ============================================================
+        // QUIZ DATA
+        // ============================================================
+        const quizQuestions = [
+            {
+                question: "What is the fixed point around which a lever rotates?",
+                image: `<svg viewBox="0 0 300 120" width="300" height="120">
+                    <rect x="50" y="50" width="200" height="12" rx="6" fill="#a8d8ea"/>
+                    <polygon points="150,100 130,62 170,62" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
+                    <text x="150" y="115" text-anchor="middle" fill="#ffd700" font-size="12">?</text>
+                </svg>`,
+                options: ["The Effort", "The Load", "The Fulcrum", "The Lever Arm"],
+                correct: 2,
+                explanation: "The FULCRUM is the fixed pivot point. Everything rotates around it!"
+            },
+            {
+                question: "Scissors are an example of which lever class?",
+                image: `<svg viewBox="0 0 300 120" width="300" height="120">
+                    <path d="M 150 60 L 80 30 L 75 40 L 150 65 Z" fill="#c0c0c0"/>
+                    <path d="M 150 60 L 80 90 L 75 80 L 150 55 Z" fill="#c0c0c0"/>
+                    <circle cx="150" cy="60" r="10" fill="#ffd700"/>
+                    <ellipse cx="190" cy="45" rx="20" ry="25" fill="none" stroke="#4ecdc4" stroke-width="3"/>
+                    <ellipse cx="190" cy="75" rx="20" ry="25" fill="none" stroke="#4ecdc4" stroke-width="3"/>
+                </svg>`,
+                options: ["Class 1", "Class 2", "Class 3", "Class 4"],
+                correct: 0,
+                explanation: "Scissors are CLASS 1 — the fulcrum (screw) is in the MIDDLE between your fingers (effort) and the cutting blades (load)!"
+            },
+            {
+                question: "A wheelbarrow is a Class 2 lever. Where is the load?",
+                image: `<svg viewBox="0 0 300 120" width="300" height="120">
+                    <path d="M 60 40 L 50 90 L 150 90 L 160 40 Z" fill="#5a5a5a"/>
+                    <circle cx="50" cy="100" r="18" fill="#333" stroke="#ffd700" stroke-width="3"/>
+                    <line x1="160" y1="40" x2="220" y2="30" stroke="#8B4513" stroke-width="6" stroke-linecap="round"/>
+                    <line x1="160" y1="60" x2="220" y2="50" stroke="#8B4513" stroke-width="6" stroke-linecap="round"/>
+                    <text x="230" y="45" font-size="20">🤲</text>
+                </svg>`,
+                options: ["At the wheel", "At the handles", "In the middle (tray)", "Outside the wheelbarrow"],
+                correct: 2,
+                explanation: "In a Class 2 lever, the LOAD is in the MIDDLE — that's where you put the heavy stuff!"
+            },
+            {
+                question: "Your arm is a Class 3 lever. This means you need MORE force, but gain what?",
+                image: `<svg viewBox="0 0 300 120" width="300" height="120">
+                    <rect x="100" y="20" width="20" height="60" rx="10" fill="#ffdab9"/>
+                    <circle cx="110" cy="80" r="15" fill="#ffd700"/>
+                    <ellipse cx="130" cy="50" rx="15" ry="25" fill="#ff6b6b" opacity="0.6"/>
+                    <rect x="95" y="80" width="30" height="35" rx="10" fill="#ffdab9"/>
+                    <text x="110" y="130" text-anchor="middle" font-size="10" fill="white">ARM</text>
+                </svg>`,
+                options: ["More strength", "Speed and range of motion", "Less distance", "Nothing"],
+                correct: 1,
+                explanation: "Class 3 levers sacrifice force for SPEED and RANGE! A small muscle movement makes your hand sweep through a huge arc — perfect for throwing!"
+            },
+            {
+                question: "If you move the fulcrum CLOSER to the load, what happens to the effort needed?",
+                image: `<svg viewBox="0 0 300 120" width="300" height="120">
+                    <rect x="50" y="55" width="200" height="10" rx="5" fill="#a8d8ea"/>
+                    <polygon points="200,95 180,65 220,65" fill="#ffd700"/>
+                    <rect x="220" y="40" width="30" height="25" rx="4" fill="#ff6b6b"/>
+                    <text x="235" y="57" text-anchor="middle" fill="white" font-size="10">LOAD</text>
+                    <text x="80" y="45" font-size="16">💪</text>
+                    <path d="M 150 75 L 180 75" stroke="white" stroke-width="2" marker-end="url(#arrow)"/>
+                </svg>`,
+                options: ["Effort increases", "Effort decreases", "Effort stays the same", "The lever breaks"],
+                correct: 1,
+                explanation: "Closer fulcrum to load = Longer effort arm = MORE mechanical advantage = LESS effort needed! That's the power of levers!"
+            },
+            {
+                question: "The Law of the Lever states: Effort × Effort Arm = ?",
+                image: `<svg viewBox="0 0 300 80" width="300" height="80">
+                    <text x="150" y="50" text-anchor="middle" fill="#ffd700" font-size="18" font-family="monospace">
+                        E × d₁ = ? × d₂
+                    </text>
+                </svg>`,
+                options: ["Fulcrum × Distance", "Load × Load Arm", "Speed × Time", "Work × Power"],
+                correct: 1,
+                explanation: "Effort × Effort Arm = LOAD × LOAD ARM. This is the fundamental balance equation for all levers!"
+            }
+        ];
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        function initNavigation() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    navigateTo(tab.dataset.section);
+                });
+            });
+        }
+
+        function navigateTo(sectionId) {
+            state.currentSection = sectionId;
+            
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.section === sectionId);
+            });
+            
+            // Update sections
+            document.querySelectorAll('.viz-section').forEach(s => {
+                s.classList.toggle('active', s.id === sectionId);
+            });
+
+            // Initialize section if needed
+            if (sectionId === 'quiz' && !state.quiz.completed) {
+                QuizController.loadQuestion();
+            }
+        }
+
+        // ============================================================
+        // WORKSHOP CONTROLLER
+        // ============================================================
+        const WorkshopController = {
+            init() {
+                const fulcrumSlider = document.getElementById('fulcrum-slider');
+                const loadSlider = document.getElementById('load-slider');
+
+                fulcrumSlider.addEventListener('input', (e) => {
+                    state.workshop.fulcrumX = parseInt(e.target.value);
+                    this.update();
+                });
+
+                loadSlider.addEventListener('input', (e) => {
+                    state.workshop.loadWeight = parseInt(e.target.value);
+                    this.update();
+                });
+
+                // Make fulcrum draggable in SVG
+                this.initDrag();
+                this.update();
+            },
+
+            initDrag() {
+                const svg = document.getElementById('workshop-svg');
+                const fulcrumGroup = document.getElementById('ws-fulcrum-group');
+                let isDragging = false;
+
+                fulcrumGroup.addEventListener('mousedown', () => isDragging = true);
+                fulcrumGroup.addEventListener('touchstart', () => isDragging = true);
+
+                svg.addEventListener('mousemove', (e) => this.handleDrag(e, isDragging));
+                svg.addEventListener('touchmove', (e) => this.handleDrag(e, isDragging));
+
+                document.addEventListener('mouseup', () => isDragging = false);
+                document.addEventListener('touchend', () => isDragging = false);
+
+                // Store isDragging in closure
+                this.isDragging = () => isDragging;
+                this.setDragging = (val) => isDragging = val;
+            },
+
+            handleDrag(e, isDragging) {
+                if (!isDragging) return;
+                
+                const svg = document.getElementById('workshop-svg');
+                const rect = svg.getBoundingClientRect();
+                const scaleX = 550 / rect.width;
+                
+                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const svgX = (clientX - rect.left) * scaleX;
+                
+                // Clamp within valid range
+                state.workshop.fulcrumX = Math.max(120, Math.min(420, svgX));
+                document.getElementById('fulcrum-slider').value = state.workshop.fulcrumX;
+                this.update();
+            },
+
+            update() {
+                const { fulcrumX, loadWeight, effortX, loadX, barStart, barEnd } = state.workshop;
+
+                // Calculate arms
+                const effortArm = (fulcrumX - effortX) / 100; // Convert to meters
+                const loadArm = (loadX - fulcrumX) / 100;
+
+                // Calculate MA and required effort
+                const ma = effortArm / loadArm;
+                const requiredEffort = loadWeight / ma;
+
+                // Determine class
+                let leverClass = 1; // Default
+                // For this simple visualization, we're always showing Class 1
+                // In a more complex version, we could allow repositioning effort/load
+
+                // Update SVG elements
+                this.updateSVG(fulcrumX, effortArm, loadArm, ma, requiredEffort, loadWeight);
+                
+                // Update control displays
+                document.getElementById('fulcrum-pos').textContent = 
+                    `${Math.round(((fulcrumX - 120) / 300) * 100)}%`;
+                document.getElementById('load-weight').textContent = `${loadWeight} kg`;
+
+                // Update results panel
+                document.getElementById('result-effort-arm').textContent = `${effortArm.toFixed(2)}m`;
+                document.getElementById('result-load-arm').textContent = `${loadArm.toFixed(2)}m`;
+                document.getElementById('result-ma').textContent = `${ma.toFixed(2)}×`;
+                document.getElementById('result-effort').textContent = `${Math.round(requiredEffort)} kg`;
+
+                // Update class indicator color based on MA
+                const classIndicator = document.getElementById('result-class');
+                classIndicator.className = 'class-indicator';
+                if (ma > 1.5) {
+                    classIndicator.classList.add('class-2'); // Force multiplier style
+                    classIndicator.textContent = 'FORCE MULTIPLIER';
+                } else if (ma < 0.8) {
+                    classIndicator.classList.add('class-3'); // Speed multiplier style
+                    classIndicator.textContent = 'SPEED MULTIPLIER';
+                } else {
+                    classIndicator.classList.add('class-1');
+                    classIndicator.textContent = 'BALANCED';
+                }
+            },
+
+            updateSVG(fulcrumX, effortArm, loadArm, ma, requiredEffort, loadWeight) {
+                // Update fulcrum position
+                const fulcrum = document.getElementById('ws-fulcrum');
+                fulcrum.setAttribute('points', 
+                    `${fulcrumX},300 ${fulcrumX-30},246 ${fulcrumX+30},246`);
+                document.getElementById('ws-fulcrum-label').setAttribute('x', fulcrumX);
+
+                // Update arm lines
+                document.getElementById('ws-effort-arm').setAttribute('x2', fulcrumX);
+                document.getElementById('ws-effort-arm-text').setAttribute('x', (100 + fulcrumX) / 2);
+                document.getElementById('ws-effort-arm-text').textContent = `${effortArm.toFixed(2)}m`;
+
+                document.getElementById('ws-load-arm').setAttribute('x1', fulcrumX);
+                document.getElementById('ws-load-arm-text').setAttribute('x', (fulcrumX + 437) / 2);
+                document.getElementById('ws-load-arm-text').textContent = `${loadArm.toFixed(2)}m`;
+
+                // Update load weight display
+                document.getElementById('ws-load-text').textContent = `${loadWeight}kg`;
+
+                // Update effort display
+                document.getElementById('ws-effort-text').textContent = `${Math.round(requiredEffort)}kg`;
+
+                // Update MA display
+                document.getElementById('ws-ma-text').textContent = `${ma.toFixed(2)}×`;
+                
+                // Color code MA
+                const maText = document.getElementById('ws-ma-text');
+                if (ma >= 2) {
+                    maText.setAttribute('fill', '#4ade80');
+                } else if (ma >= 1) {
+                    maText.setAttribute('fill', '#fbbf24');
+                } else {
+                    maText.setAttribute('fill', '#f472b6');
+                }
+            },
+
+            animateLever() {
+                if (state.workshop.animating) return;
+                state.workshop.animating = true;
+
+                const leverBar = document.getElementById('ws-lever-bar');
+                const { fulcrumX } = state.workshop;
+
+                // Calculate rotation angle based on effort vs load side
+                const rotationAngle = 8;
+
+                leverBar.style.transition = 'transform 0.4s ease-in-out';
+                leverBar.style.transformOrigin = `${fulcrumX}px 239px`;
+                leverBar.style.transform = `rotate(${rotationAngle}deg)`;
+
+                setTimeout(() => {
+                    leverBar.style.transform = `rotate(-${rotationAngle}deg)`;
+                    setTimeout(() => {
+                        leverBar.style.transform = 'rotate(0deg)';
+                        state.workshop.animating = false;
+                    }, 400);
+                }, 400);
+            },
+
+            loadPreset(preset) {
+                switch(preset) {
+                    case 'seesaw':
+                        state.workshop.fulcrumX = 275; // Center
+                        state.workshop.loadWeight = 50;
+                        break;
+                    case 'wheelbarrow':
+                        state.workshop.fulcrumX = 140; // Close to effort end
+                        state.workshop.loadWeight = 120;
+                        break;
+                    case 'fishing':
+                        state.workshop.fulcrumX = 150; // Close to effort
+                        state.workshop.loadWeight = 30;
+                        break;
+                    case 'crowbar':
+                        state.workshop.fulcrumX = 380; // Close to load
+                        state.workshop.loadWeight = 150;
+                        break;
+                }
+
+                // Update sliders
+                document.getElementById('fulcrum-slider').value = state.workshop.fulcrumX;
+                document.getElementById('load-slider').value = state.workshop.loadWeight;
+                
+                this.update();
+                this.animateLever();
+            }
+        };
+
+        // ============================================================
+        // QUIZ CONTROLLER
+        // ============================================================
+        const QuizController = {
+            init() {
+                this.loadQuestion();
+            },
+
+            loadQuestion() {
+                const { currentQuestion } = state.quiz;
+                
+                if (currentQuestion >= quizQuestions.length) {
+                    this.showResults();
+                    return;
+                }
+
+                const q = quizQuestions[currentQuestion];
+                const card = document.getElementById('quiz-card');
+
+                card.innerHTML = `
+                    <div class="quiz-question">${q.question}</div>
+                    <div class="quiz-image">${q.image}</div>
+                    <div class="quiz-options" id="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <button class="quiz-option" data-index="${i}" onclick="QuizController.selectAnswer(${i})">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="quiz-feedback"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="next-btn" onclick="QuizController.nextQuestion()" disabled>
+                            Next Question →
+                        </button>
+                    </div>
+                `;
+
+                this.updateProgress();
+            },
+
+            selectAnswer(index) {
+                const { currentQuestion } = state.quiz;
+                const q = quizQuestions[currentQuestion];
+                const options = document.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById('quiz-feedback');
+                const nextBtn = document.getElementById('next-btn');
+
+                // Disable all options
+                options.forEach(opt => {
+                    opt.classList.add('disabled');
+                });
+
+                // Mark selected and correct
+                options[index].classList.add('selected');
+                
+                const isCorrect = index === q.correct;
+                
+                if (isCorrect) {
+                    options[index].classList.add('correct');
+                    state.quiz.score++;
+                    feedback.className = 'quiz-feedback show correct';
+                    feedback.innerHTML = `
+                        <h4>✅ Correct!</h4>
+                        <p>${q.explanation}</p>
+                    `;
+                    // Update progress dot
+                    document.querySelectorAll('.progress-dot')[currentQuestion].classList.add('correct');
+                } else {
+                    options[index].classList.add('incorrect');
+                    options[q.correct].classList.add('correct');
+                    feedback.className = 'quiz-feedback show incorrect';
+                    feedback.innerHTML = `
+                        <h4>❌ Not quite!</h4>
+                        <p>${q.explanation}</p>
+                    `;
+                    // Update progress dot
+                    document.querySelectorAll('.progress-dot')[currentQuestion].classList.add('incorrect');
+                }
+
+                state.quiz.answers.push(index);
+                nextBtn.disabled = false;
+            },
+
+            nextQuestion() {
+                state.quiz.currentQuestion++;
+                
+                if (state.quiz.currentQuestion >= quizQuestions.length) {
+                    this.showResults();
+                } else {
+                    this.loadQuestion();
+                }
+            },
+
+            updateProgress() {
+                const dots = document.querySelectorAll('.progress-dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.remove('current');
+                    if (i === state.quiz.currentQuestion) {
+                        dot.classList.add('current');
+                    }
+                });
+            },
+
+            showResults() {
+                state.quiz.completed = true;
+                
+                document.getElementById('quiz-card').style.display = 'none';
+                document.getElementById('quiz-progress').style.display = 'none';
+                
+                const scoreDisplay = document.getElementById('quiz-score');
+                scoreDisplay.style.display = 'block';
+                
+                const score = state.quiz.score;
+                document.getElementById('final-score').textContent = score;
+
+                let message, details;
+                if (score === 6) {
+                    message = "🏆 PERFECT! You're a Lever Master!";
+                    details = "Incredible! You understand levers completely. Archimedes would be proud!";
+                    this.celebrate();
+                } else if (score >= 4) {
+                    message = "🌟 Great job! Almost there!";
+                    details = `You got ${score} out of 6 correct. Review the summary to perfect your knowledge!`;
+                } else if (score >= 2) {
+                    message = "👍 Good effort! Keep learning!";
+                    details = `You got ${score} out of 6 correct. Try the workshop to practice more!`;
+                } else {
+                    message = "📚 Time to review!";
+                    details = `You got ${score} out of 6 correct. Check out the summary and try again!`;
+                }
+
+                document.getElementById('score-message').textContent = message;
+                document.getElementById('score-details').textContent = details;
+            },
+
+            restart() {
+                state.quiz.currentQuestion = 0;
+                state.quiz.score = 0;
+                state.quiz.answers = [];
+                state.quiz.completed = false;
+
+                // Reset progress dots
+                document.querySelectorAll('.progress-dot').forEach(dot => {
+                    dot.classList.remove('current', 'correct', 'incorrect');
+                });
+
+                document.getElementById('quiz-card').style.display = 'block';
+                document.getElementById('quiz-progress').style.display = 'flex';
+                document.getElementById('quiz-score').style.display = 'none';
+
+                this.loadQuestion();
+            },
+
+            celebrate() {
+                // Create confetti effect
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.cssText = `
+                            position: fixed;
+                            left: ${Math.random() * 100}vw;
+                            top: -20px;
+                            width: 10px;
+                            height: 10px;
+                            background: ${['#ffd700', '#4ecdc4', '#ff6b6b', '#4ade80', '#f472b6'][Math.floor(Math.random() * 5)]};
+                            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                            animation: fall ${2 + Math.random() * 2}s linear forwards;
+                        `;
+                        document.body.appendChild(confetti);
+                        
+                        setTimeout(() => confetti.remove(), 4000);
+                    }, i * 50);
+                }
+
+                // Add fall animation
+                if (!document.getElementById('confetti-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'confetti-style';
+                    style.textContent = `
+                        @keyframes fall {
+                            to {
+                                transform: translateY(100vh) rotate(720deg);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+        };
+
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 Lever Learning - Part 3 (Final) Initializing...');
+            
+            initNavigation();
+            WorkshopController.init();
+            QuizController.init();
+
+            console.log('✅ Complete Experience Ready!');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse Lab: Immersive Study Guide</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+    
+    :root {
+        --panel-width-left: 300px;
+        --panel-width-right: 320px;
+        --bg-color: #030508;
+        --panel-bg: rgba(8, 12, 20, 0.92);
+        --accent: #00f2ff;
+        --accent-glow: rgba(0, 242, 255, 0.3);
+        --gold: #ffd700;
+        --gold-dim: #b8860b;
+        --danger: #ff4444;
+        --success: #00ff88;
+        --text-main: #ffffff;
+        --text-muted: #6b7c8f;
+        --border: 1px solid rgba(255,255,255,0.08);
+        --glass: rgba(255,255,255,0.03);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg-color);
+        color: var(--text-main);
+        font-family: 'Exo 2', sans-serif;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    /* Canvas Layer */
+    #simCanvas {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 0;
+    }
+
+    /* Glass Morphism Panels */
+    .panel {
+        position: absolute;
+        top: 85px;
+        bottom: 25px;
+        background: var(--panel-bg);
+        border: var(--border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 10;
+        border-radius: 16px;
+        box-shadow: 
+            0 25px 50px rgba(0,0,0,0.5),
+            inset 0 1px 0 rgba(255,255,255,0.1),
+            0 0 100px rgba(0, 242, 255, 0.05);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) transparent;
+    }
+
+    .panel::-webkit-scrollbar { width: 4px; }
+    .panel::-webkit-scrollbar-thumb { 
+        background: var(--accent); 
+        border-radius: 4px; 
+    }
+
+    #left-panel {
+        left: 20px;
+        width: var(--panel-width-left);
+    }
+
+    #right-panel {
+        right: 20px;
+        width: var(--panel-width-right);
+    }
+
+    /* Header */
+    header {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 70px;
+        background: linear-gradient(180deg, rgba(5, 8, 15, 0.98) 0%, rgba(5, 8, 15, 0.9) 100%);
+        border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+    }
+
+    .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo-icon {
+        width: 45px; height: 45px;
+        background: radial-gradient(circle, #ffd700 0%, #ff6600 50%, #000 51%, #000 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+        50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.8); }
+    }
+
+    h1 {
+        margin: 0;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--gold) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .subtitle {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 2px;
+    }
+
+    #status-badge {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.8rem;
+        padding: 10px 20px;
+        border-radius: 25px;
+        background: linear-gradient(135deg, rgba(20,25,35,0.9) 0%, rgba(10,15,25,0.9) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.5s ease;
+    }
+
+    .status-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #555;
+        animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    /* Panel Titles */
+    .panel-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.75rem;
+        text-align: center;
+        letter-spacing: 4px;
+        color: var(--accent);
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .panel-title::before, .panel-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.3));
+    }
+
+    .panel-title::after {
+        background: linear-gradient(90deg, rgba(0, 242, 255, 0.3), transparent);
+    }
+
+    /* Control Blocks */
+    .control-block {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+        background: var(--glass);
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .control-block:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(0, 242, 255, 0.2);
+    }
+
+    .lbl {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .val {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--accent);
+        font-size: 0.85rem;
+        text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Custom Range Slider */
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, rgba(0,242,255,0.2) 0%, rgba(255,215,0,0.2) 100%);
+        border-radius: 3px;
+        outline: none;
+        position: relative;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 
+            0 0 15px var(--accent-glow),
+            0 4px 10px rgba(0,0,0,0.3);
+        transition: all 0.2s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 25px var(--accent);
+    }
+
+    /* Buttons */
+    .btn-row { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px; 
+    }
+
+    button {
+        font-family: 'Orbitron', sans-serif;
+        background: transparent;
+        border: 1px solid rgba(0, 242, 255, 0.4);
+        color: var(--accent);
+        padding: 12px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0,242,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    button:hover::before { left: 100%; }
+
+    button:hover {
+        background: rgba(0, 242, 255, 0.1);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+        transform: translateY(-2px);
+    }
+
+    .btn-tour {
+        grid-column: 1 / -1;
+        border-color: var(--gold);
+        color: var(--gold);
+        background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, transparent 100%);
+        font-size: 0.75rem;
+        padding: 15px;
+    }
+
+    .btn-tour:hover {
+        background: rgba(255, 215, 0, 0.15);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-tour.active {
+        animation: tour-pulse 1.5s infinite;
+    }
+
+    @keyframes tour-pulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    }
+
+    /* Observatory View */
+    .obs-container {
+        width: 100%;
+        aspect-ratio: 1;
+        background: radial-gradient(circle, #0a0a15 0%, #000 100%);
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 
+            inset 0 0 50px rgba(0,0,0,0.8),
+            0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .obs-container::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.05);
+        pointer-events: none;
+    }
+
+    #obsCanvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Narrator Box */
+    .narrator-box {
+        background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, transparent 100%);
+        border-left: 3px solid var(--gold);
+        padding: 18px;
+        border-radius: 0 12px 12px 0;
+        min-height: 120px;
+        position: relative;
+    }
+
+    .narrator-title {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--gold);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .narrator-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255,215,0,0.3), transparent);
+    }
+
+    #narrator-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #ccc;
+    }
+
+    #narrator-text strong {
+        color: var(--accent);
+    }
+
+    /* Info Cards */
+    .info-card {
+        background: var(--glass);
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .info-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .info-value {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.9rem;
+        color: var(--accent);
+    }
+
+    /* Keyboard Hints */
+    .key-hints {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .key {
+        font-size: 0.6rem;
+        padding: 4px 8px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        color: var(--text-muted);
+    }
+
+    /* Learning Progress */
+    .progress-section {
+        padding: 15px;
+        background: var(--glass);
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .progress-title {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .progress-bar {
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--gold));
+        width: 0%;
+        transition: width 0.5s ease;
+        border-radius: 2px;
+    }
+
+    .milestones {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .milestone {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .milestone.achieved {
+        opacity: 1;
+        color: var(--success);
+    }
+
+    /* Tooltip */
+    .tooltip {
+        position: absolute;
+        background: rgba(0, 20, 40, 0.95);
+        border: 1px solid var(--accent);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        max-width: 200px;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .tooltip.visible { opacity: 1; }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        #left-panel, #right-panel {
+            width: 260px;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .panel {
+            position: fixed;
+            top: auto;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100% !important;
+            height: 45vh;
+            border-radius: 20px 20px 0 0;
+            transform: translateY(calc(100% - 60px));
+            transition: transform 0.4s ease;
+        }
+
+        .panel.expanded {
+            transform: translateY(0);
+        }
+
+        #right-panel {
+            z-index: 11;
+        }
+
+        #left-panel {
+            z-index: 12;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel { animation: fadeIn 0.6s ease forwards; }
+    #left-panel { animation-delay: 0.2s; }
+    #right-panel { animation-delay: 0.4s; }
+
+    /* Eclipse notification */
+    .eclipse-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        padding: 40px 60px;
+        text-align: center;
+        z-index: 100;
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .eclipse-alert.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .eclipse-alert h2 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.5rem;
+        margin: 0 0 10px 0;
+        color: var(--gold);
+    }
+
+    .eclipse-alert p {
+        margin: 0;
+        color: #aaa;
+    }
+</style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-section">
+            <div class="logo-icon"></div>
+            <div>
+                <h1>ECLIPSE LAB</h1>
+                <div class="subtitle">Interactive Astronomy Study Guide</div>
+            </div>
+        </div>
+        <div id="status-badge">
+            <span class="status-dot"></span>
+            <span id="status-text">SYSTEM READY</span>
+        </div>
+    </header>
+
+    <div id="left-panel" class="panel">
+        <div class="panel-title">FLIGHT DECK</div>
+        
+        <div class="control-block">
+            <div class="lbl">
+                <span>🌙 Moon Orbital Position</span>
+                <span id="pos-val" class="val">180°</span>
+            </div>
+            <input type="range" id="moonSlider" min="0" max="360" value="180" step="0.5">
+            <div class="key-hints">
+                <span class="key">← →</span>
+                <span style="font-size:0.6rem;color:var(--text-muted)">Fine adjust</span>
+            </div>
+        </div>
+
+        <div class="control-block">
+            <div class="lbl">
+                <span>📐 Orbital Inclination</span>
+                <span id="tilt-val" class="val">5.0°</span>
+            </div>
+            <input type="range" id="tiltSlider" min="-5.2" max="5.2" value="5.0" step="0.1">
+        </div>
+
+        <div class="control-block">
+            <div class="lbl">
+                <span>⏱️ Animation Speed</span>
+                <span id="speed-val" class="val">OFF</span>
+            </div>
+            <input type="range" id="speedSlider" min="0" max="3" value="0" step="0.1">
+        </div>
+
+        <div class="btn-row">
+            <button id="resetBtn">↺ Reset</button>
+            <button id="labelsBtn">🏷️ Labels</button>
+            <button id="tourBtn" class="btn-tour">✦ START GUIDED LESSON</button>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-title">Learning Progress</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="milestones">
+                <span class="milestone" id="m1">Miss</span>
+                <span class="milestone" id="m2">Partial</span>
+                <span class="milestone" id="m3">Total Solar</span>
+                <span class="milestone" id="m4">Total Lunar</span>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <span class="info-label">Eclipse Type</span>
+            <span class="info-value" id="eclipseType">—</span>
+        </div>
+    </div>
+
+    <div id="right-panel" class="panel">
+        <div class="panel-title">OBSERVATORY</div>
+        
+        <div style="text-align:center;">
+            <div class="lbl" style="justify-content:center; margin-bottom:10px;">
+                <span>👁️ Earth Sky View</span>
+            </div>
+            <div class="obs-container">
+                <canvas id="obsCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <span class="info-label">Coverage</span>
+            <span class="info-value" id="coverageVal">0%</span>
+        </div>
+
+        <div class="narrator-box">
+            <div class="narrator-title">MISSION GUIDE</div>
+            <div id="narrator-text">
+                Welcome, Commander.<br><br>
+                The simulation is centered in the <strong>Safe Zone</strong>.<br>
+                Drag the <strong>Moon Position</strong> slider to begin your exploration.
+            </div>
+        </div>
+    </div>
+
+    <div class="eclipse-alert" id="eclipseAlert">
+        <h2 id="alertTitle">TOTAL ECLIPSE!</h2>
+        <p id="alertDesc">The Moon perfectly covers the Sun</p>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <canvas id="simCanvas"></canvas>
+
+<script>
+/**
+ * ECLIPSE LAB V6.0 - IMMERSIVE STUDY GUIDE
+ * Enhanced with stunning visuals and educational features
+ */
+
+// --- CONFIGURATION ---
+const C = {
+    sunRel: 0.15,
+    earthRel: 0.85,
+    sunR: 60,
+    earthR: 20,
+    moonR: 9,
+    colors: {
+        sun: '#FFD700',
+        sunCore: '#fff5e6',
+        sunCorona: 'rgba(255, 180, 50, 0.3)',
+        earth: '#4da6ff',
+        earthDark: '#1a3d5c',
+        moon: '#e0e0e0',
+        moonDark: '#888888',
+        umbra: 'rgba(0,0,0,0.9)',
+        penumbra: 'rgba(0,0,0,0.35)',
+        text: '#ffffff',
+        orbit: 'rgba(100, 200, 255, 0.15)'
+    }
+};
+
+// --- STATE ---
+const state = {
+    w: 0, h: 0,
+    safeX: 0, safeW: 0,
+    angle: 180,
+    tilt: 5.0,
+    speed: 0,
+    showLabels: true,
+    isTouring: false,
+    tourStep: 0,
+    tourTimer: 0,
+    status: "READY",
+    stars: [],
+    particles: [],
+    achievements: { miss: false, partial: false, totalSolar: false, totalLunar: false },
+    lastEclipse: null,
+    coverage: 0
+};
+
+// --- DOM ELEMENTS ---
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+const obsCanvas = document.getElementById('obsCanvas');
+const obsCtx = obsCanvas.getContext('2d');
+const statusBadge = document.getElementById('status-badge');
+const statusText = document.getElementById('status-text');
+const statusDot = statusBadge.querySelector('.status-dot');
+const narratorText = document.getElementById('narrator-text');
+const progressFill = document.getElementById('progressFill');
+const eclipseType = document.getElementById('eclipseType');
+const coverageVal = document.getElementById('coverageVal');
+const eclipseAlert = document.getElementById('eclipseAlert');
+const alertTitle = document.getElementById('alertTitle');
+const alertDesc = document.getElementById('alertDesc');
+const tooltip = document.getElementById('tooltip');
+
+// Controls
+const moonSlider = document.getElementById('moonSlider');
+const tiltSlider = document.getElementById('tiltSlider');
+const speedSlider = document.getElementById('speedSlider');
+const resetBtn = document.getElementById('resetBtn');
+const labelsBtn = document.getElementById('labelsBtn');
+const tourBtn = document.getElementById('tourBtn');
+const posVal = document.getElementById('pos-val');
+const tiltVal = document.getElementById('tilt-val');
+const speedVal = document.getElementById('speed-val');
+
+// Milestones
+const m1 = document.getElementById('m1');
+const m2 = document.getElementById('m2');
+const m3 = document.getElementById('m3');
+const m4 = document.getElementById('m4');
+
+// --- INITIALIZATION ---
+window.onload = init;
+window.onresize = resize;
+
+function init() {
+    resize();
+    generateStars();
+    setupEventListeners();
+    requestAnimationFrame(loop);
+}
+
+function resize() {
+    state.w = canvas.width = window.innerWidth;
+    state.h = canvas.height = window.innerHeight;
+    
+    obsCanvas.width = obsCanvas.offsetWidth * 2;
+    obsCanvas.height = obsCanvas.offsetHeight * 2;
+    
+    const padLeft = 340;
+    const padRight = 360;
+    
+    state.safeX = padLeft;
+    state.safeW = Math.max(state.w - padLeft - padRight, 200);
+    
+    generateStars();
+}
+
+function generateStars() {
+    state.stars = [];
+    for (let i = 0; i < 300; i++) {
+        state.stars.push({
+            x: Math.random() * state.w,
+            y: Math.random() * state.h,
+            r: Math.random() * 1.5 + 0.5,
+            brightness: Math.random(),
+            twinkleSpeed: Math.random() * 0.02 + 0.01
+        });
+    }
+}
+
+function setupEventListeners() {
+    moonSlider.oninput = (e) => {
+        state.angle = parseFloat(e.target.value);
+        state.speed = 0; 
+        speedSlider.value = 0; 
+        speedVal.innerText = "OFF";
+        posVal.innerText = Math.round(state.angle) + "°";
+        if (state.isTouring) cancelTour();
+    };
+
+    tiltSlider.oninput = (e) => {
+        state.tilt = parseFloat(e.target.value);
+        tiltVal.innerText = state.tilt.toFixed(1) + "°";
+        if (state.isTouring) cancelTour();
+    };
+
+    speedSlider.oninput = (e) => {
+        state.speed = parseFloat(e.target.value);
+        speedVal.innerText = state.speed > 0 ? state.speed.toFixed(1) + "x" : "OFF";
+        if (state.isTouring) cancelTour();
+    };
+
+    resetBtn.onclick = () => {
+        state.angle = 180; 
+        state.tilt = 5.0; 
+        state.speed = 0;
+        syncSliders();
+        tiltSlider.value = 5.0; 
+        tiltVal.innerText = "5.0°";
+        speedSlider.value = 0; 
+        speedVal.innerText = "OFF";
+        cancelTour();
+    };
+
+    labelsBtn.onclick = () => {
+        state.showLabels = !state.showLabels;
+        labelsBtn.style.borderColor = state.showLabels ? 'var(--accent)' : 'var(--text-muted)';
+    };
+
+    tourBtn.onclick = () => { 
+        state.isTouring = true; 
+        state.tourStep = 0;
+        tourBtn.classList.add('active');
+    };
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            state.angle = Math.max(0, state.angle - 1);
+            syncSliders();
+        } else if (e.key === 'ArrowRight') {
+            state.angle = Math.min(360, state.angle + 1);
+            syncSliders();
+        } else if (e.key === ' ') {
+            e.preventDefault();
+            state.speed = state.speed > 0 ? 0 : 1;
+            speedSlider.value = state.speed;
+            speedVal.innerText = state.speed > 0 ? "1.0x" : "OFF";
+        }
+    });
+}
+
+// --- PHYSICS ---
+function update() {
+    if (state.speed > 0 && !state.isTouring) {
+        state.angle += 0.5 * state.speed;
+        if (state.angle >= 360) state.angle = 0;
+        syncSliders();
+    }
+    
+    if (state.isTouring) updateTour();
+    
+    determineStatus();
+    updateParticles();
+    updateProgress();
+}
+
+function syncSliders() {
+    moonSlider.value = state.angle;
+    posVal.innerText = Math.round(state.angle) + "°";
+}
+
+function getCoords() {
+    const topY = state.h * 0.42;
+    const sideY = state.h * 0.82;
+    
+    const sx = state.safeX + (state.safeW * C.sunRel);
+    const ex = state.safeX + (state.safeW * C.earthRel);
+    
+    const totalDist = ex - sx;
+    const orbitR = totalDist * 0.22;
+    
+    const rad = state.angle * (Math.PI / 180);
+    
+    const mx = ex + Math.cos(rad) * orbitR;
+    const my = topY + Math.sin(rad) * (orbitR * 0.55);
+    
+    const tiltScale = 14;
+    const mz = Math.cos(rad) * (state.tilt * tiltScale);
+    
+    return {
+        sun: { x: sx, y: topY },
+        earth: { x: ex, y: topY },
+        moon: { x: mx, y: my, z: mz },
+        views: { topY, sideY },
+        orbitR
+    };
+}
+
+function determineStatus() {
+    const c = getCoords();
+    const zAbs = Math.abs(c.moon.z);
+    
+    let txt = "ORBITING";
+    let color = "#6b7c8f";
+    let bg = "rgba(20,25,35,0.9)";
+    let type = "None";
+    
+    // Solar Eclipse (Moon between Sun and Earth)
+    if (c.moon.x < c.earth.x) {
+        const angDiff = Math.abs(state.angle - 180);
+        
+        if (angDiff < 20) {
+            if (zAbs < C.earthR * 0.5) {
+                txt = "★ TOTAL SOLAR ECLIPSE";
+                color = "#000";
+                bg = "linear-gradient(135deg, #ffd700, #ff8c00)";
+                type = "Total Solar";
+                state.coverage = Math.max(0, 100 - angDiff * 5);
+                
+                if (!state.achievements.totalSolar) {
+                    state.achievements.totalSolar = true;
+                    showEclipseAlert("TOTAL SOLAR ECLIPSE!", "The Moon perfectly covers the Sun");
+                }
+            } else if (zAbs < C.earthR * 2) {
+                txt = "PARTIAL SOLAR ECLIPSE";
+                color = "#ffd700";
+                bg = "rgba(50,40,20,0.9)";
+                type = "Partial Solar";
+                state.coverage = Math.max(0, 60 - zAbs * 2);
+                
+                if (!state.achievements.partial) {
+                    state.achievements.partial = true;
+                }
+            } else {
+                txt = "NEAR MISS - CHECK TILT";
+                color = "#ff6b6b";
+                type = "Miss";
+                state.coverage = 0;
+                
+                if (!state.achievements.miss && angDiff < 5) {
+                    state.achievements.miss = true;
+                }
+            }
+        }
+    } 
+    // Lunar Eclipse (Earth between Sun and Moon)
+    else {
+        let ang = state.angle > 180 ? state.angle - 360 : state.angle;
+        
+        if (Math.abs(ang) < 15) {
+            if (zAbs < C.earthR * 0.7) {
+                txt = "★ TOTAL LUNAR ECLIPSE";
+                color = "#fff";
+                bg = "linear-gradient(135deg, #8b0000, #4a0000)";
+                type = "Total Lunar";
+                state.coverage = Math.max(0, 100 - Math.abs(ang) * 6);
+                
+                if (!state.achievements.totalLunar) {
+                    state.achievements.totalLunar = true;
+                    showEclipseAlert("TOTAL LUNAR ECLIPSE!", "Earth's shadow engulfs the Moon");
+                }
+            } else if (zAbs < C.earthR * 1.5) {
+                txt = "PARTIAL LUNAR ECLIPSE";
+                color = "#ff6b6b";
+                bg = "rgba(60,20,20,0.9)";
+                type = "Partial Lunar";
+                state.coverage = Math.max(0, 50 - zAbs);
+            }
+        }
+    }
+    
+    state.status = txt;
+    statusText.innerText = txt;
+    statusBadge.style.background = bg;
+    statusBadge.style.color = color;
+    statusDot.style.background = txt.includes("TOTAL") ? "#00ff88" : (txt.includes("PARTIAL") ? "#ffd700" : "#555");
+    
+    eclipseType.innerText = type;
+    coverageVal.innerText = Math.round(state.coverage) + "%";
+}
+
+function updateProgress() {
+    const { miss, partial, totalSolar, totalLunar } = state.achievements;
+    let progress = 0;
+    
+    if (miss) { progress += 25; m1.classList.add('achieved'); }
+    if (partial) { progress += 25; m2.classList.add('achieved'); }
+    if (totalSolar) { progress += 25; m3.classList.add('achieved'); }
+    if (totalLunar) { progress += 25; m4.classList.add('achieved'); }
+    
+    progressFill.style.width = progress + '%';
+}
+
+function showEclipseAlert(title, desc) {
+    alertTitle.innerText = title;
+    alertDesc.innerText = desc;
+    eclipseAlert.classList.add('show');
+    
+    // Add particles
+    const c = getCoords();
+    for (let i = 0; i < 30; i++) {
+        state.particles.push({
+            x: c.moon.x,
+            y: c.moon.y,
+            vx: (Math.random() - 0.5) * 8,
+            vy: (Math.random() - 0.5) * 8,
+            life: 1,
+            color: title.includes("SOLAR") ? '#ffd700' : '#ff4444'
+        });
+    }
+    
+    setTimeout(() => eclipseAlert.classList.remove('show'), 2500);
+}
+
+function updateParticles() {
+    state.particles = state.particles.filter(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.02;
+        p.vy += 0.1;
+        return p.life > 0;
+    });
+}
+
+// --- RENDER ---
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+function draw() {
+    // Clear with gradient background
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, state.h);
+    bgGrad.addColorStop(0, '#0a0a1a');
+    bgGrad.addColorStop(0.5, '#050510');
+    bgGrad.addColorStop(1, '#000005');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, state.w, state.h);
+    
+    drawStars();
+    
+    const c = getCoords();
+    
+    drawTopView(c);
+    drawSideView(c);
+    drawParticles();
+    drawObserverView(c);
+}
+
+function drawStars() {
+    const time = Date.now() * 0.001;
+    
+    state.stars.forEach(star => {
+        const twinkle = Math.sin(time * star.twinkleSpeed * 100 + star.x) * 0.3 + 0.7;
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness * twinkle})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+function drawParticles() {
+    state.particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+}
+
+function drawTopView(c) {
+    // View label
+    ctx.save();
+    ctx.fillStyle = "rgba(255,255,255,0.03)";
+    ctx.font = "bold 80px 'Orbitron', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("TOP VIEW", state.safeX + state.safeW / 2, c.views.topY + 200);
+    ctx.restore();
+    
+    // Sun with glow layers
+    drawSun(c.sun.x, c.sun.y, C.sunR);
+    
+    // Orbit path
+    ctx.strokeStyle = C.colors.orbit;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 10]);
+    ctx.beginPath();
+    ctx.ellipse(c.earth.x, c.earth.y, c.orbitR, c.orbitR * 0.55, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.lineWidth = 1;
+    
+    // Earth
+    drawEarth(c.earth.x, c.earth.y, C.earthR);
+    
+    // Shadow cones for solar eclipse
+    if (c.moon.x < c.earth.x) {
+        drawSolarShadows(c);
+    }
+    
+    // Moon
+    const moonColor = state.status.includes("LUNAR") && state.status.includes("TOTAL") ? '#c04040' : C.colors.moon;
+    drawMoon(c.moon.x, c.moon.y, C.moonR, moonColor);
+    
+    // Labels
+    if (state.showLabels) {
+        ctx.font = "bold 12px 'Orbitron', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#fff";
+        
+        ctx.fillText("SUN", c.sun.x, c.sun.y + C.sunR + 25);
+        ctx.fillStyle = C.colors.earth;
+        ctx.fillText("EARTH", c.earth.x, c.earth.y + C.earthR + 25);
+        ctx.fillStyle = C.colors.moon;
+        ctx.fillText("MOON", c.moon.x, c.moon.y + C.moonR + 20);
+    }
+}
+
+function drawSun(x, y, r) {
+    // Outer glow
+    const g3 = ctx.createRadialGradient(x, y, r, x, y, r * 5);
+    g3.addColorStop(0, 'rgba(255, 200, 50, 0.3)');
+    g3.addColorStop(0.5, 'rgba(255, 150, 0, 0.1)');
+    g3.addColorStop(1, 'transparent');
+    ctx.fillStyle = g3;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Corona
+    const g2 = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 2);
+    g2.addColorStop(0, C.colors.sun);
+    g2.addColorStop(0.5, 'rgba(255, 180, 50, 0.5)');
+    g2.addColorStop(1, 'transparent');
+    ctx.fillStyle = g2;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Core
+    const g1 = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, 0, x, y, r);
+    g1.addColorStop(0, '#ffffff');
+    g1.addColorStop(0.3, '#fff5e0');
+    g1.addColorStop(1, C.colors.sun);
+    ctx.fillStyle = g1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawEarth(x, y, r) {
+    // Atmosphere glow
+    const atmo = ctx.createRadialGradient(x, y, r, x, y, r * 1.5);
+    atmo.addColorStop(0, 'rgba(77, 166, 255, 0.3)');
+    atmo.addColorStop(1, 'transparent');
+    ctx.fillStyle = atmo;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Day side
+    const earthGrad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, 0, x, y, r);
+    earthGrad.addColorStop(0, '#6bc5ff');
+    earthGrad.addColorStop(0.5, C.colors.earth);
+    earthGrad.addColorStop(1, '#2a7ab8');
+    ctx.fillStyle = earthGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Night side
+    ctx.fillStyle = C.colors.earthDark;
+    ctx.beginPath();
+    ctx.arc(x, y, r, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
+}
+
+function drawMoon(x, y, r, color) {
+    // Subtle glow
+    const glow = ctx.createRadialGradient(x, y, r * 0.5, x, y, r * 2);
+    glow.addColorStop(0, 'rgba(255,255,255,0.1)');
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Moon body
+    const moonGrad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, 0, x, y, r);
+    moonGrad.addColorStop(0, '#ffffff');
+    moonGrad.addColorStop(0.5, color);
+    moonGrad.addColorStop(1, C.colors.moonDark);
+    ctx.fillStyle = moonGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Shadow side
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.beginPath();
+    ctx.arc(x, y, r, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
+}
+
+function drawSolarShadows(c) {
+    const slope = (c.moon.y - c.sun.y) / (c.moon.x - c.sun.x);
+    const yHit = c.moon.y + slope * (c.earth.x - c.moon.x);
+    
+    // Laser guide line
+    ctx.strokeStyle = "rgba(0, 242, 255, 0.3)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 8]);
+    ctx.beginPath();
+    ctx.moveTo(c.moon.x, c.moon.y);
+    ctx.lineTo(c.earth.x + 50, yHit + slope * 50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Penumbra (outer shadow)
+    const penGrad = ctx.createLinearGradient(c.moon.x, 0, c.earth.x, 0);
+    penGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    penGrad.addColorStop(0.3, 'rgba(0,0,0,0.2)');
+    penGrad.addColorStop(1, 'rgba(0,0,0,0.4)');
+    ctx.fillStyle = penGrad;
+    ctx.beginPath();
+    ctx.moveTo(c.moon.x, c.moon.y - C.moonR);
+    ctx.lineTo(c.earth.x + 30, yHit - 40);
+    ctx.lineTo(c.earth.x + 30, yHit + 40);
+    ctx.lineTo(c.moon.x, c.moon.y + C.moonR);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Umbra (inner shadow)
+    const umbGrad = ctx.createLinearGradient(c.moon.x, 0, c.earth.x, 0);
+    umbGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    umbGrad.addColorStop(0.5, 'rgba(0,0,0,0.7)');
+    umbGrad.addColorStop(1, 'rgba(0,0,0,0.95)');
+    ctx.fillStyle = umbGrad;
+    ctx.beginPath();
+    ctx.moveTo(c.moon.x, c.moon.y - C.moonR * 0.8);
+    ctx.lineTo(c.earth.x + 10, yHit - 5);
+    ctx.lineTo(c.earth.x + 10, yHit + 5);
+    ctx.lineTo(c.moon.x, c.moon.y + C.moonR * 0.8);
+    ctx.closePath();
+    ctx.fill();
+    
+    if (state.showLabels) {
+        ctx.textAlign = "left";
+        ctx.font = "bold 11px 'Exo 2', sans-serif";
+        const midX = (c.moon.x + c.earth.x) / 2;
+        
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        ctx.fillText("UMBRA", midX, yHit - 12);
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fillText("PENUMBRA", midX, yHit + 35);
+    }
+}
+
+function drawSideView(c) {
+    const y = c.views.sideY;
+    
+    // Ecliptic plane line
+    ctx.strokeStyle = "rgba(255, 200, 100, 0.2)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([8, 8]);
+    ctx.beginPath();
+    ctx.moveTo(state.safeX, y);
+    ctx.lineTo(state.safeX + state.safeW, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Label
+    ctx.fillStyle = "rgba(255,255,255,0.03)";
+    ctx.font = "bold 50px 'Orbitron', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("SIDE VIEW", state.safeX + state.safeW / 2, y - 60);
+    
+    // Bodies (smaller for side view)
+    drawSun(c.sun.x, y, C.sunR * 0.5);
+    drawEarth(c.earth.x, y, C.earthR * 0.8);
+    
+    // Moon with Z offset
+    const moonColor = state.status.includes("LUNAR") && state.status.includes("TOTAL") ? '#c04040' : C.colors.moon;
+    drawMoon(c.moon.x, y + c.moon.z, C.moonR, moonColor);
+    
+    // Tilt indicator line
+    if (Math.abs(c.moon.z) > 3) {
+        const lineColor = c.moon.z > 0 ? '#ff6b6b' : '#4da6ff';
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(c.moon.x, y);
+        ctx.lineTo(c.moon.x, y + c.moon.z);
+        ctx.stroke();
+        ctx.lineWidth = 1;
+        
+        // Dot at ecliptic
+        ctx.fillStyle = lineColor;
+        ctx.beginPath();
+        ctx.arc(c.moon.x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Label
+        if (state.showLabels) {
+            ctx.font = "10px 'Orbitron', sans-serif";
+            ctx.fillStyle = lineColor;
+            const label = c.moon.z > 0 ? "BELOW PLANE" : "ABOVE PLANE";
+            ctx.fillText(label, c.moon.x + 15, y + c.moon.z / 2);
+        }
+    }
+    
+    // Ecliptic label
+    if (state.showLabels) {
+        ctx.font = "10px 'Exo 2', sans-serif";
+        ctx.fillStyle = "rgba(255,200,100,0.5)";
+        ctx.textAlign = "left";
+        ctx.fillText("ECLIPTIC PLANE", state.safeX + 10, y - 8);
+    }
+}
+
+function drawObserverView(c) {
+    const w = obsCanvas.width;
+    const h = obsCanvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    
+    // Clear with space background
+    const bgGrad = obsCtx.createRadialGradient(cx, cy, 0, cx, cy, w / 2);
+    bgGrad.addColorStop(0, '#0a0a1a');
+    bgGrad.addColorStop(1, '#000');
+    obsCtx.fillStyle = bgGrad;
+    obsCtx.fillRect(0, 0, w, h);
+    
+    // Draw some stars
+    for (let i = 0; i < 50; i++) {
+        obsCtx.fillStyle = `rgba(255,255,255,${Math.random() * 0.5})`;
+        obsCtx.beginPath();
+        obsCtx.arc(
+            Math.random() * w,
+            Math.random() * h,
+            Math.random() * 1.5,
+            0, Math.PI * 2
+        );
+        obsCtx.fill();
+    }
+    
+    // SOLAR ECLIPSE VIEW
+    if (c.moon.x < c.earth.x) {
+        // Sun
+        const sunGrad = obsCtx.createRadialGradient(cx, cy, 0, cx, cy, 80);
+        sunGrad.addColorStop(0, '#ffffff');
+        sunGrad.addColorStop(0.3, '#fff5e0');
+        sunGrad.addColorStop(0.8, '#ffd700');
+        sunGrad.addColorStop(1, '#ff8c00');
+        obsCtx.fillStyle = sunGrad;
+        obsCtx.beginPath();
+        obsCtx.arc(cx, cy, 70, 0, Math.PI * 2);
+        obsCtx.fill();
+        
+        // Calculate moon position in observer view
+        let angDiff = state.angle - 180;
+        if (angDiff > 180) angDiff -= 360;
+        if (angDiff < -180) angDiff += 360;
+        
+        const ox = angDiff * 8;
+        const oy = c.moon.z * 6;
+        
+        // Moon silhouette
+        obsCtx.fillStyle = "#000";
+        obsCtx.beginPath();
+        obsCtx.arc(cx + ox, cy + oy, 75, 0, Math.PI * 2);
+        obsCtx.fill();
+        
+        // Corona during total eclipse
+        if (state.status.includes("TOTAL") && state.status.includes("SOLAR")) {
+            // Outer corona
+            obsCtx.strokeStyle = "rgba(255,255,255,0.3)";
+            obsCtx.lineWidth = 20;
+            obsCtx.beginPath();
+            obsCtx.arc(cx + ox, cy + oy, 85, 0, Math.PI * 2);
+            obsCtx.stroke();
+            
+            // Inner corona
+            obsCtx.strokeStyle = "rgba(255,255,255,0.7)";
+            obsCtx.lineWidth = 4;
+            obsCtx.shadowBlur = 30;
+            obsCtx.shadowColor = "#fff";
+            obsCtx.beginPath();
+            obsCtx.arc(cx + ox, cy + oy, 78, 0, Math.PI * 2);
+            obsCtx.stroke();
+            
+            // Corona rays
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const length = 40 + Math.random() * 30;
+                obsCtx.strokeStyle = `rgba(255,255,255,${0.2 + Math.random() * 0.3})`;
+                obsCtx.lineWidth = 2;
+                obsCtx.beginPath();
+                obsCtx.moveTo(cx + ox + Math.cos(angle) * 78, cy + oy + Math.sin(angle) * 78);
+                obsCtx.lineTo(cx + ox + Math.cos(angle) * (78 + length), cy + oy + Math.sin(angle) * (78 + length));
+                obsCtx.stroke();
+            }
+            
+            obsCtx.shadowBlur = 0;
+        }
+        
+        obsCtx.lineWidth = 1;
+    }
+    // LUNAR ECLIPSE VIEW
+    else if (c.moon.x > c.earth.x) {
+        let moonColor = '#e0e0e0';
+        
+        if (state.status.includes("TOTAL") && state.status.includes("LUNAR")) {
+            moonColor = '#b04040';
+        } else if (state.status.includes("PARTIAL")) {
+            moonColor = '#808080';
+        }
+        
+        // Moon
+        const moonGrad = obsCtx.createRadialGradient(cx - 20, cy - 20, 0, cx, cy, 65);
+        moonGrad.addColorStop(0, '#ffffff');
+        moonGrad.addColorStop(0.3, moonColor);
+        moonGrad.addColorStop(1, moonColor === '#b04040' ? '#601010' : '#888');
+        obsCtx.fillStyle = moonGrad;
+        obsCtx.beginPath();
+        obsCtx.arc(cx, cy, 60, 0, Math.PI * 2);
+        obsCtx.fill();
+        
+        // Crater details
+        obsCtx.fillStyle = 'rgba(0,0,0,0.1)';
+        obsCtx.beginPath();
+        obsCtx.arc(cx + 15, cy - 20, 12, 0, Math.PI * 2);
+        obsCtx.fill();
+        obsCtx.beginPath();
+        obsCtx.arc(cx - 25, cy + 10, 8, 0, Math.PI * 2);
+        obsCtx.fill();
+        obsCtx.beginPath();
+        obsCtx.arc(cx + 5, cy + 25, 6, 0, Math.PI * 2);
+        obsCtx.fill();
+    }
+    // Clear sky
+    else {
+        obsCtx.fillStyle = "rgba(255,255,255,0.2)";
+        obsCtx.font = "16px 'Orbitron', sans-serif";
+        obsCtx.textAlign = "center";
+        obsCtx.fillText("CLEAR SKY", cx, cy);
+    }
+}
+
+// --- GUIDED TOUR ---
+function updateTour() {
+    const n = narratorText;
+    
+    if (state.tourStep === 0) {
+        state.angle = 120;
+        state.tilt = 5.0;
+        state.speed = 0.6;
+        syncSliders();
+        tiltSlider.value = 5.0;
+        tiltVal.innerText = "5.0°";
+        speedSlider.value = 0.6;
+        speedVal.innerText = "0.6x";
+        
+        n.innerHTML = "<strong style='color:var(--gold)'>STEP 1: The Miss</strong><br><br>The Moon's orbit is tilted 5°.<br>Watch how the shadow <strong>misses</strong> Earth...";
+        state.tourStep = 1;
+    }
+    else if (state.tourStep === 1) {
+        if (state.angle > 190) {
+            state.speed = 0;
+            speedSlider.value = 0;
+            speedVal.innerText = "OFF";
+            state.tourTimer = Date.now();
+            state.tourStep = 2;
+            n.innerHTML = "See the gap in the <strong>Side View</strong>?<br><br>The Moon passed <span style='color:#ff6b6b'>below</span> Earth's shadow path!";
+        }
+    }
+    else if (state.tourStep === 2) {
+        if (Date.now() - state.tourTimer > 3500) {
+            n.innerHTML = "<strong style='color:var(--gold)'>STEP 2: The Alignment</strong><br><br>Now reducing orbital tilt to <strong>0°</strong>...";
+            state.tilt -= 0.08;
+            tiltSlider.value = state.tilt;
+            tiltVal.innerText = state.tilt.toFixed(1) + "°";
+            
+            if (state.tilt <= 0) {
+                state.tilt = 0;
+                tiltSlider.value = 0;
+                tiltVal.innerText = "0.0°";
+                state.tourStep = 3;
+                state.tourTimer = Date.now();
+            }
+        }
+    }
+    else if (state.tourStep === 3) {
+        if (Date.now() - state.tourTimer > 2000) {
+            state.angle = 145;
+            state.speed = 0.4;
+            syncSliders();
+            speedSlider.value = 0.4;
+            speedVal.innerText = "0.4x";
+            n.innerHTML = "<strong style='color:var(--gold)'>STEP 3: Totality!</strong><br><br>Perfect alignment achieved!<br>Watch the <strong>Observatory</strong> view...";
+            state.tourStep = 4;
+        }
+    }
+    else if (state.tourStep === 4) {
+        if (state.angle > 175 && state.angle < 185) {
+            state.speed = 0.15;
+            speedSlider.value = 0.15;
+            speedVal.innerText = "0.2x";
+            n.innerHTML = "<span style='color:var(--gold); font-size:1.2rem; font-family: Orbitron'>★ TOTAL ECLIPSE! ★</span><br><br>The corona is visible around the Moon!";
+        }
+        if (state.angle > 210) {
+            state.isTouring = false;
+            state.speed = 0;
+            speedSlider.value = 0;
+            speedVal.innerText = "OFF";
+            syncSliders();
+            tourBtn.classList.remove('active');
+            n.innerHTML = "<strong style='color:var(--success)'>✓ Tour Complete!</strong><br><br>You've learned why eclipses don't happen every month.<br><br>Try achieving a <strong>Lunar Eclipse</strong> next!";
+        }
+    }
+}
+
+function cancelTour() {
+    state.isTouring = false;
+    tourBtn.classList.remove('active');
+    narratorText.innerHTML = "<strong>Manual Mode</strong><br><br>Explore freely using the controls!";
+}
+</script>
+</body>
+</html>

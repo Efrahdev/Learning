@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 The Amazing World of Levers!</title>
+    <style>
+        /*
+        ============================================================
+        LEVER LEARNING EXPERIENCE - STYLESHEET
+        ============================================================
+        Design Philosophy:
+        - Bold, high-contrast colors for visual clarity
+        - Smooth animations that feel "alive"
+        - Child-friendly but not childish aesthetics
+        - Every visual element serves a learning purpose
+        ============================================================
+        */
+
+        /* ---------- CSS RESET & BASE STYLES ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary palette - warm and inviting */
+            --color-bg: #1a1a2e;
+            --color-bg-light: #16213e;
+            --color-surface: #0f3460;
+            --color-accent: #e94560;
+            
+            /* Component colors - consistent throughout */
+            --color-fulcrum: #ffd700;
+            --color-effort: #4ecdc4;
+            --color-load: #ff6b6b;
+            --color-lever: #a8d8ea;
+            
+            /* UI colors */
+            --color-text: #ffffff;
+            --color-text-dim: #b8c5d6;
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            
+            /* Shadows and effects */
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 20px rgba(78, 205, 196, 0.4);
+            
+            /* Animation timings */
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-light) 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ---------- MAIN LAYOUT ---------- */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* ---------- HEADER STYLES ---------- */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-effort), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(78, 205, 196, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text-dim);
+            font-weight: 300;
+        }
+
+        /* ---------- NAVIGATION TABS ---------- */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: var(--color-surface);
+            border: 2px solid transparent;
+            border-radius: 50px;
+            color: var(--color-text-dim);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            background: rgba(78, 205, 196, 0.2);
+            color: var(--color-text);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            color: white;
+            border-color: var(--color-effort);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .nav-tab .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ---------- VISUALIZATION CONTAINER ---------- */
+        .viz-container {
+            background: var(--color-surface);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viz-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .viz-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- SECTION HEADERS ---------- */
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--color-text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ---------- SVG CANVAS AREA ---------- */
+        .svg-canvas {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(180deg, 
+                rgba(15, 52, 96, 0.5) 0%, 
+                rgba(26, 26, 46, 0.8) 100%);
+            border-radius: 16px;
+            margin: 20px 0;
+            position: relative;
+            overflow: visible;
+        }
+
+        .svg-canvas svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------- INTERACTIVE CONTROLS ---------- */
+        .controls-panel {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            font-weight: 600;
+            min-width: 140px;
+            color: var(--color-text);
+        }
+
+        .control-slider {
+            flex: 1;
+            min-width: 200px;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--color-effort);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+            transition: var(--transition-fast);
+        }
+
+        .control-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.8);
+        }
+
+        .control-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--color-effort);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* ---------- INFO CARDS ---------- */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .info-card.fulcrum { border-color: var(--color-fulcrum); }
+        .info-card.effort { border-color: var(--color-effort); }
+        .info-card.load { border-color: var(--color-load); }
+
+        .info-card .card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .info-card .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .info-card .card-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .info-card.fulcrum .card-value { color: var(--color-fulcrum); }
+        .info-card.effort .card-value { color: var(--color-effort); }
+        .info-card.load .card-value { color: var(--color-load); }
+
+        /* ---------- CALCULATION DISPLAY ---------- */
+        .calc-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .calc-equation {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .calc-term {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .calc-term.effort-term { background: rgba(78, 205, 196, 0.3); color: var(--color-effort); }
+        .calc-term.load-term { background: rgba(255, 107, 107, 0.3); color: var(--color-load); }
+        .calc-operator { font-size: 1.5rem; color: var(--color-text-dim); }
+
+        .calc-result {
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .calc-result.balanced { 
+            background: rgba(74, 222, 128, 0.2); 
+            color: var(--color-success);
+            border: 2px solid var(--color-success);
+        }
+
+        .calc-result.effort-wins { 
+            background: rgba(78, 205, 196, 0.2); 
+            color: var(--color-effort);
+            border: 2px solid var(--color-effort);
+        }
+
+        .calc-result.load-wins { 
+            background: rgba(255, 107, 107, 0.2); 
+            color: var(--color-load);
+            border: 2px solid var(--color-load);
+        }
+
+        /* ---------- GUIDE CHARACTER ---------- */
+        .guide-bubble {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .guide-bubble::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+            background: var(--color-surface);
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .guide-bubble p {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .guide-bubble .guide-question {
+            font-style: italic;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* ---------- ACTION BUTTONS ---------- */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-effort), #45b7aa);
+            color: white;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
+            border: 2px solid var(--color-text-dim);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--color-text);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        /* ---------- THREE CLASSES GRID ---------- */
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .class-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            border: 3px solid transparent;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .class-card.class-1 { border-color: #60a5fa; }
+        .class-card.class-2 { border-color: #34d399; }
+        .class-card.class-3 { border-color: #f472b6; }
+
+        .class-card.active {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .class-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-card.class-1 h3 { color: #60a5fa; }
+        .class-card.class-2 h3 { color: #34d399; }
+        .class-card.class-3 h3 { color: #f472b6; }
+
+        .class-card .class-diagram {
+            height: 80px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .class-card .examples {
+            font-size: 0.9rem;
+            color: var(--color-text-dim);
+        }
+
+        .class-card .ma-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .class-card.class-1 .ma-badge { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+        .class-card.class-2 .ma-badge { background: rgba(52, 211, 153, 0.2); color: #34d399; }
+        .class-card.class-3 .ma-badge { background: rgba(244, 114, 182, 0.2); color: #f472b6; }
+
+        /* ---------- LEGEND ---------- */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.fulcrum { background: var(--color-fulcrum); }
+        .legend-dot.effort { background: var(--color-effort); }
+        .legend-dot.load { background: var(--color-load); }
+
+        /* ---------- PROGRESS INDICATOR ---------- */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-effort), var(--color-accent));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* ---------- ANIMATION CLASSES ---------- */
+        .animate-bounce {
+            animation: bounce 0.6s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .animate-glow {
+            animation: glow 1.5s ease infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px currentColor); }
+            to { filter: drop-shadow(0 0 20px currentColor); }
+        }
+
+        /* ---------- TOOLTIP ---------- */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            max-width: 250px;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* ---------- RESPONSIVE DESIGN ---------- */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .viz-container {
+                padding: 15px;
+                border-radius: 16px;
+            }
+
+            .nav-tab {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-value {
+                text-align: center;
+            }
+
+            .svg-canvas {
+                height: 300px;
+            }
+        }
+
+        /* ---------- SPECIAL STATES ---------- */
+        .hidden { display: none !important; }
+        .invisible { visibility: hidden; }
+        .disabled { opacity: 0.5; pointer-events: none; }
+
+        /* Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ============================================================
+             HEADER SECTION
+             Purpose: Welcome the child and set expectations
+             ============================================================ -->
+        <header class="header">
+            <h1>🎯 The Amazing World of Levers!</h1>
+            <p class="subtitle">Discover the simple machine that changed human history</p>
+        </header>
+
+        <!-- ============================================================
+             NAVIGATION TABS
+             Purpose: Allow exploration in any order (play mode)
+             ============================================================ -->
+        <nav class="nav-tabs" role="tablist" aria-label="Learning sections">
+            <button class="nav-tab active" data-section="intro" role="tab" aria-selected="true">
+                <span class="tab-icon">🌟</span>
+                <span>Meet the Lever</span>
+            </button>
+            <button class="nav-tab" data-section="seesaw" role="tab" aria-selected="false">
+                <span class="tab-icon">⚖️</span>
+                <span>Balance Lab</span>
+            </button>
+            <button class="nav-tab" data-section="classes" role="tab" aria-selected="false">
+                <span class="tab-icon">🔬</span>
+                <span>3 Classes</span>
+            </button>
+            <button class="nav-tab" data-section="ma-explorer" role="tab" aria-selected="false">
+                <span class="tab-icon">💪</span>
+                <span>Power Explorer</span>
+            </button>
+        </nav>
+
+        <!-- ============================================================
+             MAIN VISUALIZATION CONTAINER
+             ============================================================ -->
+        <main class="viz-container">
+            
+            <!-- ========================================
+                 SECTION 1: INTRODUCTION TO LEVER COMPONENTS
+                 Learning Goal: Identify Fulcrum, Effort, Load
+                 ======================================== -->
+            <section id="intro" class="viz-section active" role="tabpanel">
+                <div class="section-header">
+                    <h2>🌟 Meet the Three Parts of Every Lever</h2>
+                    <p>Every lever in the universe has exactly three parts. Let's discover them!</p>
+                </div>
+
+                <!-- Interactive SVG Canvas -->
+                <div class="svg-canvas" id="intro-canvas">
+                    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                        <!-- Background grid for spatial awareness -->
+                        <defs>
+                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                            </pattern>
+                            
+                            <!-- Glow filters for emphasis -->
+                            <filter id="glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="4" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="4" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="4" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+
+                            <!-- Arrow marker -->
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#4ecdc4"/>
+                            </marker>
+                        </defs>
+
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+
+                        <!-- Ground line -->
+                        <line x1="50" y1="320" x2="750" y2="320" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+                        <!-- THE LEVER SYSTEM - Initially hidden, revealed step by step -->
+                        <g id="lever-system" class="lever-group">
+                            
+                            <!-- Fulcrum (triangle) -->
+                            <g id="fulcrum-group" class="component" style="opacity: 0">
+                                <polygon 
+                                    id="fulcrum"
+                                    points="400,320 360,260 440,260" 
+                                    fill="#ffd700"
+                                    filter="url(#glow-yellow)"
+                                    class="interactive-element"
+                                    data-component="fulcrum"
+                                />
+                                <text x="400" y="350" text-anchor="middle" fill="#ffd700" font-size="16" font-weight="bold" class="label">
+                                    FULCRUM
+                                </text>
+                                <text x="400" y="368" text-anchor="middle" fill="rgba(255,215,0,0.7)" font-size="12">
+                                    (Pivot Point)
+                                </text>
+                            </g>
+
+                            <!-- Lever bar -->
+                            <g id="lever-bar-group" style="opacity: 0">
+                                <rect 
+                                    id="lever-bar"
+                                    x="100" y="240" 
+                                    width="600" height="16" 
+                                    rx="8" 
+                                    fill="#a8d8ea"
+                                    transform-origin="400 248"
+                                />
+                            </g>
+
+                            <!-- Load (heavy object) -->
+                            <g id="load-group" class="component" style="opacity: 0">
+                                <rect 
+                                    id="load"
+                                    x="610" y="180" 
+                                    width="70" height="60" 
+                                    rx="8" 
+                                    fill="#ff6b6b"
+                                    filter="url(#glow-red)"
+                                    class="interactive-element"
+                                    data-component="load"
+                                />
+                                <text x="645" y="215" text-anchor="middle" fill="white" font-size="14" font-weight="bold">
+                                    100 kg
+                                </text>
+                                <text x="645" y="160" text-anchor="middle" fill="#ff6b6b" font-size="16" font-weight="bold" class="label">
+                                    LOAD
+                                </text>
+                                <text x="645" y="145" text-anchor="middle" fill="rgba(255,107,107,0.7)" font-size="12">
+                                    (What you lift)
+                                </text>
+                            </g>
+
+                            <!-- Effort (arrow and hand) -->
+                            <g id="effort-group" class="component" style="opacity: 0">
+                                <!-- Effort arrow -->
+                                <line 
+                                    id="effort-arrow"
+                                    x1="150" y1="160" 
+                                    x2="150" y2="230" 
+                                    stroke="#4ecdc4" 
+                                    stroke-width="6"
+                                    marker-end="url(#arrowhead)"
+                                    filter="url(#glow-cyan)"
+                                />
+                                <!-- Hand icon -->
+                                <text x="150" y="140" text-anchor="middle" font-size="36">👋</text>
+                                <text x="150" y="100" text-anchor="middle" fill="#4ecdc4" font-size="16" font-weight="bold" class="label">
+                                    EFFORT
+                                </text>
+                                <text x="150" y="85" text-anchor="middle" fill="rgba(78,205,196,0.7)" font-size="12">
+                                    (Your push)
+                                </text>
+                            </g>
+
+                            <!-- Distance labels (shown later) -->
+                            <g id="distance-labels" style="opacity: 0">
+                                <!-- Effort arm -->
+                                <line x1="150" y1="280" x2="400" y2="280" stroke="#4ecdc4" stroke-width="2" stroke-dasharray="5,5"/>
+                                <text x="275" y="300" text-anchor="middle" fill="#4ecdc4" font-size="14" font-weight="bold">
+                                    Effort Arm
+                                </text>
+                                
+                                <!-- Load arm -->
+                                <line x1="400" y1="280" x2="645" y2="280" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5"/>
+                                <text x="522" y="300" text-anchor="middle" fill="#ff6b6b" font-size="14" font-weight="bold">
+                                    Load Arm
+                                </text>
+                            </g>
+                        </g>
+
+                        <!-- Step indicator text -->
+                        <text id="step-text" x="400" y="50" text-anchor="middle" fill="white" font-size="20" font-weight="bold">
+                            Click "Build the Lever" to begin!
+                        </text>
+                    </svg>
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="legend-dot fulcrum"></span>
+                        <span>Fulcrum (Pivot)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot effort"></span>
+                        <span>Effort (Your Force)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot load"></span>
+                        <span>Load (The Weight)</span>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="btn-group">
+                    <button id="build-lever-btn" class="btn btn-primary">
+                        <span>🔧</span> Build the Lever
+                    </button>
+                    <button id="animate-lever-btn" class="btn btn-secondary" disabled>
+                        <span>▶️</span> See It Work!
+                    </button>
+                    <button id="reset-intro-btn" class="btn btn-secondary">
+                        <span>🔄</span> Reset
+                    </button>
+                </div>
+
+                <!-- Guide bubble -->
+                <div class="guide-bubble">
+                    <p>Every lever is just a stiff bar that rotates around one fixed point. That's it!</p>
+                    <p class="guide-question">🤔 Can you think of something in your house that works like a lever?</p>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SECTION 2: INTERACTIVE SEESAW (LAW OF THE LEVER)
+                 Learning Goal: Understand weight × distance balance
+                 ======================================== -->
+            <section id="seesaw" class="viz-section" role="tabpanel">
+                <div class="section-header">
+                    <h2>⚖️ The Balance Lab</h2>
+                    <p>Move the weights and discover the secret law that controls all levers!</p>
+                </div>
+
+                <!-- Interactive SVG Seesaw -->
+                <div class="svg-canvas" id="seesaw-canvas">
+                    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <linearGradient id="seesaw-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#a8d8ea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Ground -->
+                        <rect x="0" y="350" width="800" height="50" fill="#1a1a2e"/>
+                        <line x1="0" y1="350" x2="800" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+
+                        <!-- Fulcrum -->
+                        <polygon id="seesaw-fulcrum" points="400,350 360,280 440,280" fill="#ffd700"/>
+                        
+                        <!-- Seesaw plank (rotates) -->
+                        <g id="seesaw-plank" transform-origin="400 270">
+                            <rect x="80" y="262" width="640" height="16" rx="8" fill="url(#seesaw-gradient)"/>
+                            
+                            <!-- Left weight (draggable) -->
+                            <g id="left-weight" class="draggable-weight" data-side="left">
+                                <rect id="left-weight-box" x="140" y="212" width="60" height="50" rx="8" fill="#4ecdc4"/>
+                                <text id="left-weight-text" x="170" y="243" text-anchor="middle" fill="white" font-size="14" font-weight="bold">40kg</text>
+                                <text id="left-weight-emoji" x="170" y="200" text-anchor="middle" font-size="24">🧒</text>
+                            </g>
+
+                            <!-- Right weight (draggable) -->
+                            <g id="right-weight" class="draggable-weight" data-side="right">
+                                <rect id="right-weight-box" x="580" y="212" width="60" height="50" rx="8" fill="#ff6b6b"/>
+                                <text id="right-weight-text" x="610" y="243" text-anchor="middle" fill="white" font-size="14" font-weight="bold">40kg</text>
+                                <text id="right-weight-emoji" x="610" y="200" text-anchor="middle" font-size="24">🧒</text>
+                            </g>
+
+                            <!-- Distance markers -->
+                            <g id="seesaw-markers">
+                                <!-- Tick marks every 50px from center -->
+                                <line x1="100" y1="275" x2="100" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                                <line x1="150" y1="275" x2="150" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="200" y1="275" x2="200" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                                <line x1="250" y1="275" x2="250" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="300" y1="275" x2="300" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                                <line x1="350" y1="275" x2="350" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="400" y1="270" x2="400" y2="290" stroke="#ffd700" stroke-width="3"/>
+                                <line x1="450" y1="275" x2="450" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="500" y1="275" x2="500" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                                <line x1="550" y1="275" x2="550" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="600" y1="275" x2="600" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                                <line x1="650" y1="275" x2="650" y2="285" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <line x1="700" y1="275" x2="700" y2="285" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+                            </g>
+                        </g>
+
+                        <!-- Distance labels (update dynamically) -->
+                        <text id="left-dist-label" x="170" y="320" text-anchor="middle" fill="#4ecdc4" font-size="14" font-weight="bold">2.3m</text>
+                        <text id="right-dist-label" x="610" y="320" text-anchor="middle" fill="#ff6b6b" font-size="14" font-weight="bold">2.1m</text>
+                    </svg>
+                </div>
+
+                <!-- Calculation Display -->
+                <div class="calc-display">
+                    <div class="calc-equation">
+                        <span class="calc-term effort-term" id="left-calc">40 × 2.3 = 92</span>
+                        <span class="calc-operator">vs</span>
+                        <span class="calc-term load-term" id="right-calc">40 × 2.1 = 84</span>
+                    </div>
+                    <div class="calc-result effort-wins" id="balance-result">
+                        ⬅️ Left Side Wins!
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls-panel">
+                    <div class="control-row">
+                        <span class="control-label" style="color: #4ecdc4;">🧒 Left Position:</span>
+                        <input type="range" class="control-slider" id="left-pos-slider" min="100" max="380" value="170">
+                        <span class="control-value" id="left-pos-value">2.3m</span>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label" style="color: #4ecdc4;">⚖️ Left Weight:</span>
+                        <input type="range" class="control-slider" id="left-weight-slider" min="10" max="100" value="40">
+                        <span class="control-value" id="left-weight-value">40kg</span>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label" style="color: #ff6b6b;">🧒 Right Position:</span>
+                        <input type="range" class="control-slider" id="right-pos-slider" min="420" max="700" value="610">
+                        <span class="control-value" id="right-pos-value">2.1m</span>
+                    </div>
+                    <div class="control-row">
+                        <span class="control-label" style="color: #ff6b6b;">⚖️ Right Weight:</span>
+                        <input type="range" class="control-slider" id="right-weight-slider" min="10" max="100" value="40">
+                        <span class="control-value" id="right-weight-value">40kg</span>
+                    </div>
+                </div>
+
+                <!-- Guide -->
+                <div class="guide-bubble">
+                    <p><strong>The Secret Law:</strong> Weight × Distance must be EQUAL on both sides for balance!</p>
+                    <p class="guide-question">🤔 Can a 20kg kid balance against an 80kg adult? Try it!</p>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SECTION 3: THREE CLASSES OF LEVERS
+                 Learning Goal: Identify and distinguish lever classes
+                 ======================================== -->
+            <section id="classes" class="viz-section" role="tabpanel">
+                <div class="section-header">
+                    <h2>🔬 The Three Families of Levers</h2>
+                    <p>Every lever belongs to one of three "classes". Click each to see how they work!</p>
+                </div>
+
+                <!-- Three class cards -->
+                <div class="classes-grid">
+                    <!-- Class 1 -->
+                    <div class="class-card class-1 active" data-class="1">
+                        <h3>📐 Class 1</h3>
+                        <p><strong>Fulcrum in the Middle</strong></p>
+                        <div class="class-diagram">
+                            <svg viewBox="0 0 200 60" width="200" height="60">
+                                <rect x="10" y="25" width="180" height="8" rx="4" fill="#a8d8ea"/>
+                                <polygon points="100,55 85,33 115,33" fill="#ffd700"/>
+                                <circle cx="30" cy="20" r="12" fill="#4ecdc4"/>
+                                <text x="30" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">E</text>
+                                <circle cx="170" cy="20" r="12" fill="#ff6b6b"/>
+                                <text x="170" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">L</text>
+                            </svg>
+                        </div>
+                        <p class="examples">✂️ Scissors, ⚖️ Seesaw, 🔨 Hammer (pulling nails)</p>
+                        <span class="ma-badge">MA can be any value</span>
+                    </div>
+
+                    <!-- Class 2 -->
+                    <div class="class-card class-2" data-class="2">
+                        <h3>🛒 Class 2</h3>
+                        <p><strong>Load in the Middle</strong></p>
+                        <div class="class-diagram">
+                            <svg viewBox="0 0 200 60" width="200" height="60">
+                                <rect x="10" y="25" width="180" height="8" rx="4" fill="#a8d8ea"/>
+                                <polygon points="15,55 5,33 25,33" fill="#ffd700"/>
+                                <circle cx="100" cy="20" r="12" fill="#ff6b6b"/>
+                                <text x="100" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">L</text>
+                                <circle cx="180" cy="20" r="12" fill="#4ecdc4"/>
+                                <text x="180" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">E</text>
+                            </svg>
+                        </div>
+                        <p class="examples">🛒 Wheelbarrow, 🍾 Bottle opener, 🥜 Nutcracker</p>
+                        <span class="ma-badge">MA always > 1 (Force multiplier!)</span>
+                    </div>
+
+                    <!-- Class 3 -->
+                    <div class="class-card class-3" data-class="3">
+                        <h3>🎣 Class 3</h3>
+                        <p><strong>Effort in the Middle</strong></p>
+                        <div class="class-diagram">
+                            <svg viewBox="0 0 200 60" width="200" height="60">
+                                <rect x="10" y="25" width="180" height="8" rx="4" fill="#a8d8ea"/>
+                                <polygon points="15,55 5,33 25,33" fill="#ffd700"/>
+                                <circle cx="60" cy="20" r="12" fill="#4ecdc4"/>
+                                <text x="60" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">E</text>
+                                <circle cx="170" cy="20" r="12" fill="#ff6b6b"/>
+                                <text x="170" y="24" text-anchor="middle" fill="white" font-size="10" font-weight="bold">L</text>
+                            </svg>
+                        </div>
+                        <p class="examples">🎣 Fishing rod, ⚾ Baseball bat, 💪 Your arm!</p>
+                        <span class="ma-badge">MA always < 1 (Speed multiplier!)</span>
+                    </div>
+                </div>
+
+                <!-- Detailed View -->
+                <div class="svg-canvas" id="class-detail-canvas">
+                    <svg viewBox="0 0 800 350" preserveAspectRatio="xMidYMid meet">
+                        <!-- Class 1 Animation -->
+                        <g id="class-1-demo" class="class-demo active">
+                            <text x="400" y="40" text-anchor="middle" fill="#60a5fa" font-size="24" font-weight="bold">Class 1: Fulcrum in the Middle</text>
+                            
+                            <!-- Lever bar -->
+                            <g id="class1-lever" transform-origin="400 200">
+                                <rect x="100" y="192" width="600" height="16" rx="8" fill="#a8d8ea"/>
+                                
+                                <!-- Effort side -->
+                                <g transform="translate(150, 0)">
+                                    <circle cy="150" r="30" fill="#4ecdc4"/>
+                                    <text y="155" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PUSH</text>
+                                    <line x1="0" y1="120" x2="0" y2="80" stroke="#4ecdc4" stroke-width="4" marker-end="url(#arrowhead)"/>
+                                </g>
+                                
+                                <!-- Load side -->
+                                <g transform="translate(650, 0)">
+                                    <rect x="-25" y="142" width="50" height="50" rx="8" fill="#ff6b6b"/>
+                                    <text y="173" text-anchor="middle" fill="white" font-size="12" font-weight="bold">LOAD</text>
+                                </g>
+                            </g>
+                            
+                            <!-- Fulcrum -->
+                            <polygon points="400,300 360,208 440,208" fill="#ffd700"/>
+                            <text x="400" y="330" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">FULCRUM</text>
+
+                            <!-- Description -->
+                            <text x="400" y="80" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="14">
+                                Push down on one end → The other end goes UP
+                            </text>
+                        </g>
+
+                        <!-- Class 2 Animation -->
+                        <g id="class-2-demo" class="class-demo" style="display: none;">
+                            <text x="400" y="40" text-anchor="middle" fill="#34d399" font-size="24" font-weight="bold">Class 2: Load in the Middle</text>
+                            
+                            <g id="class2-lever" transform-origin="100 200">
+                                <rect x="100" y="192" width="600" height="16" rx="8" fill="#a8d8ea"/>
+                                
+                                <!-- Load in middle -->
+                                <g transform="translate(350, 0)">
+                                    <rect x="-25" y="142" width="50" height="50" rx="8" fill="#ff6b6b"/>
+                                    <text y="173" text-anchor="middle" fill="white" font-size="12" font-weight="bold">LOAD</text>
+                                </g>
+                                
+                                <!-- Effort at end -->
+                                <g transform="translate(650, 0)">
+                                    <circle cy="150" r="30" fill="#4ecdc4"/>
+                                    <text y="155" text-anchor="middle" fill="white" font-size="14" font-weight="bold">LIFT</text>
+                                </g>
+                            </g>
+                            
+                            <!-- Fulcrum at end -->
+                            <polygon points="100,300 70,208 130,208" fill="#ffd700"/>
+                            <text x="100" y="330" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">FULCRUM</text>
+
+                            <text x="400" y="80" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="14">
+                                Lift one end → Everything rises together (FORCE multiplier!)
+                            </text>
+                        </g>
+
+                        <!-- Class 3 Animation -->
+                        <g id="class-3-demo" class="class-demo" style="display: none;">
+                            <text x="400" y="40" text-anchor="middle" fill="#f472b6" font-size="24" font-weight="bold">Class 3: Effort in the Middle</text>
+                            
+                            <g id="class3-lever" transform-origin="100 200">
+                                <rect x="100" y="192" width="600" height="16" rx="8" fill="#a8d8ea"/>
+                                
+                                <!-- Effort in middle -->
+                                <g transform="translate(250, 0)">
+                                    <circle cy="150" r="30" fill="#4ecdc4"/>
+                                    <text y="155" text-anchor="middle" fill="white" font-size="14" font-weight="bold">PULL</text>
+                                </g>
+                                
+                                <!-- Load at far end -->
+                                <g transform="translate(650, 0)">
+                                    <rect x="-25" y="142" width="50" height="50" rx="8" fill="#ff6b6b"/>
+                                    <text y="173" text-anchor="middle" fill="white" font-size="12" font-weight="bold">LOAD</text>
+                                </g>
+                            </g>
+                            
+                            <!-- Fulcrum at end -->
+                            <polygon points="100,300 70,208 130,208" fill="#ffd700"/>
+                            <text x="100" y="330" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">FULCRUM</text>
+
+                            <text x="400" y="80" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="14">
+                                Small pull in the middle → Big, FAST movement at the end! (SPEED multiplier!)
+                            </text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="btn-group">
+                    <button id="animate-class-btn" class="btn btn-primary">
+                        <span>▶️</span> Animate This Class
+                    </button>
+                </div>
+
+                <div class="guide-bubble">
+                    <p><strong>Remember:</strong> The class is determined by what's in the MIDDLE!</p>
+                    <p class="guide-question">🤔 Your arm is a Class 3 lever. Can you figure out where your elbow (fulcrum), muscle (effort), and hand (load) are?</p>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SECTION 4: MECHANICAL ADVANTAGE EXPLORER
+                 Learning Goal: Understand MA and the force-distance trade-off
+                 ======================================== -->
+            <section id="ma-explorer" class="viz-section" role="tabpanel">
+                <div class="section-header">
+                    <h2>💪 Power Explorer</h2>
+                    <p>Drag the fulcrum and discover how levers multiply your strength!</p>
+                </div>
+
+                <div class="svg-canvas" id="ma-canvas">
+                    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <marker id="force-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#4ecdc4"/>
+                            </marker>
+                        </defs>
+
+                        <!-- Ground -->
+                        <line x1="50" y1="320" x2="750" y2="320" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+                        <!-- Lever system -->
+                        <g id="ma-lever-system">
+                            <!-- Fulcrum (draggable) -->
+                            <g id="ma-fulcrum-group" class="draggable" style="cursor: ew-resize;">
+                                <polygon id="ma-fulcrum" points="400,320 360,260 440,260" fill="#ffd700"/>
+                                <text id="ma-fulcrum-label" x="400" y="345" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                                    ⟵ DRAG ME! ⟶
+                                </text>
+                            </g>
+
+                            <!-- Lever bar (rotates based on fulcrum position) -->
+                            <g id="ma-bar-group">
+                                <rect id="ma-bar" x="100" y="244" width="600" height="12" rx="6" fill="#a8d8ea"/>
+                            </g>
+
+                            <!-- Fixed Load at right end -->
+                            <g id="ma-load-group">
+                                <rect id="ma-load" x="640" y="190" width="60" height="54" rx="8" fill="#ff6b6b"/>
+                                <text x="670" y="222" text-anchor="middle" fill="white" font-size="14" font-weight="bold">100kg</text>
+                                <text x="670" y="175" text-anchor="middle" fill="#ff6b6b" font-size="12" font-weight="bold">LOAD</text>
+                            </g>
+
+                            <!-- Effort at left end (size changes) -->
+                            <g id="ma-effort-group">
+                                <line id="ma-effort-arrow" x1="130" y1="180" x2="130" y2="235" stroke="#4ecdc4" stroke-width="6"/>
+                                <polygon id="ma-effort-head" points="122,235 130,250 138,235" fill="#4ecdc4"/>
+                                <text x="130" y="165" text-anchor="middle" font-size="28">💪</text>
+                                <text id="ma-effort-value" x="130" y="140" text-anchor="middle" fill="#4ecdc4" font-size="18" font-weight="bold">25kg</text>
+                            </g>
+
+                            <!-- Effort arm measurement -->
+                            <g id="ma-effort-arm-group">
+                                <line id="ma-effort-arm-line" x1="130" y1="280" x2="400" y2="280" stroke="#4ecdc4" stroke-width="3" stroke-dasharray="8,4"/>
+                                <text id="ma-effort-arm-label" x="265" y="300" text-anchor="middle" fill="#4ecdc4" font-size="14" font-weight="bold">Effort Arm: 2.7m</text>
+                            </g>
+
+                            <!-- Load arm measurement -->
+                            <g id="ma-load-arm-group">
+                                <line id="ma-load-arm-line" x1="400" y1="280" x2="670" y2="280" stroke="#ff6b6b" stroke-width="3" stroke-dasharray="8,4"/>
+                                <text id="ma-load-arm-label" x="535" y="300" text-anchor="middle" fill="#ff6b6b" font-size="14" font-weight="bold">Load Arm: 2.7m</text>
+                            </g>
+                        </g>
+
+                        <!-- MA Display -->
+                        <g id="ma-display">
+                            <rect x="300" y="30" width="200" height="70" rx="12" fill="rgba(0,0,0,0.4)"/>
+                            <text x="400" y="55" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="12">MECHANICAL ADVANTAGE</text>
+                            <text id="ma-value-display" x="400" y="85" text-anchor="middle" fill="#4ade80" font-size="28" font-weight="bold">1.0×</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="info-cards">
+                    <div class="info-card effort">
+                        <div class="card-icon">💪</div>
+                        <div class="card-title">Force You Need</div>
+                        <div class="card-value" id="needed-force">100 kg</div>
+                    </div>
+                    <div class="info-card fulcrum">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-title">Mechanical Advantage</div>
+                        <div class="card-value" id="ma-card-value">1.0×</div>
+                    </div>
+                    <div class="info-card load">
+                        <div class="card-icon">🪨</div>
+                        <div class="card-title">Load Weight</div>
+                        <div class="card-value">100 kg</div>
+                    </div>
+                </div>
+
+                <!-- Insight Display -->
+                <div class="guide-bubble" id="ma-insight">
+                    <p id="ma-insight-text"><strong>Try it!</strong> Drag the fulcrum closer to the load (right side) and watch your needed force drop!</p>
+                    <p class="guide-question">🤔 What happens when the fulcrum is exactly in the middle?</p>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="btn-group">
+                    <button id="ma-reset-btn" class="btn btn-secondary">
+                        <span>🔄</span> Reset Fulcrum
+                    </button>
+                    <button id="ma-optimize-btn" class="btn btn-primary">
+                        <span>🎯</span> Show Best Position
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Tooltip element -->
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script>
+        /*
+        ============================================================
+        LEVER LEARNING EXPERIENCE - JAVASCRIPT
+        ============================================================
+        Structure:
+        1. Global State & Constants
+        2. Utility Functions
+        3. Section 1: Intro Animation Controller
+        4. Section 2: Seesaw Physics Simulation
+        5. Section 3: Three Classes Controller
+        6. Section 4: MA Explorer Controller
+        7. Navigation Controller
+        8. Initialization
+        ============================================================
+        */
+
+        // ============================================================
+        // 1. GLOBAL STATE & CONSTANTS
+        // ============================================================
+
+        const state = {
+            currentSection: 'intro',
+            intro: {
+                step: 0,
+                animating: false
+            },
+            seesaw: {
+                leftWeight: 40,
+                rightWeight: 40,
+                leftPos: 170,    // x position on SVG
+                rightPos: 610,
+                centerX: 400
+            },
+            classes: {
+                activeClass: 1,
+                animating: false
+            },
+            ma: {
+                fulcrumX: 400,
+                minX: 200,
+                maxX: 600,
+                loadX: 670,
+                effortX: 130,
+                loadWeight: 100,
+                dragging: false
+            }
+        };
+
+        // Lever physics constants
+        const PHYSICS = {
+            PIXELS_PER_METER: 100,
+            MAX_ROTATION_DEG: 15,
+            ANIMATION_DURATION: 600
+        };
+
+        // ============================================================
+        // 2. UTILITY FUNCTIONS
+        // ============================================================
+
+        /**
+         * Converts pixel distance to meters for display
+         * @param {number} pixels - Distance in pixels
+         * @returns {string} - Formatted distance string
+         */
+        function pixelsToMeters(pixels) {
+            return (Math.abs(pixels) / PHYSICS.PIXELS_PER_METER).toFixed(1);
+        }
+
+        /**
+         * Animates an element's opacity
+         * @param {Element} el - DOM element
+         * @param {number} targetOpacity - Target opacity (0-1)
+         * @param {number} duration - Animation duration in ms
+         */
+        function animateOpacity(el, targetOpacity, duration = 500) {
+            return new Promise(resolve => {
+                el.style.transition = `opacity ${duration}ms ease`;
+                el.style.opacity = targetOpacity;
+                setTimeout(resolve, duration);
+            });
+        }
+
+        /**
+         * Smoothly animate a number change
+         * @param {Element} el - Element to update
+         * @param {number} start - Starting value
+         * @param {number} end - Ending value
+         * @param {number} duration - Animation duration
+         * @param {function} formatter - Function to format the display value
+         */
+        function animateNumber(el, start, end, duration, formatter = v => v) {
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = start + (end - start) * eased;
+                
+                el.textContent = formatter(current);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        /**
+         * Clamp a value between min and max
+         */
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        // ============================================================
+        // 3. SECTION 1: INTRO ANIMATION CONTROLLER
+        // Purpose: Step-by-step reveal of lever components
+        // ============================================================
+
+        const IntroController = {
+            steps: [
+                {
+                    element: 'fulcrum-group',
+                    text: '▲ First, the FULCRUM appears — the fixed point everything rotates around!'
+                },
+                {
+                    element: 'lever-bar-group',
+                    text: '═══ Next, the LEVER BAR — a rigid bar that doesn\'t bend!'
+                },
+                {
+                    element: 'load-group',
+                    text: '🪨 Now the LOAD — this is what we want to lift (100kg is heavy!)' 
+                },
+                {
+                    element: 'effort-group',
+                    text: '💪 Finally, the EFFORT — your push that makes the magic happen!'
+                },
+                {
+                    element: 'distance-labels',
+                    text: '📏 The DISTANCES matter! Effort Arm and Load Arm control everything!'
+                }
+            ],
+
+            init() {
+                const buildBtn = document.getElementById('build-lever-btn');
+                const animateBtn = document.getElementById('animate-lever-btn');
+                const resetBtn = document.getElementById('reset-intro-btn');
+
+                buildBtn.addEventListener('click', () => this.nextStep());
+                animateBtn.addEventListener('click', () => this.animateLever());
+                resetBtn.addEventListener('click', () => this.reset());
+            },
+
+            async nextStep() {
+                if (state.intro.animating) return;
+                
+                const stepIndex = state.intro.step;
+                if (stepIndex >= this.steps.length) {
+                    // All steps complete
+                    document.getElementById('animate-lever-btn').disabled = false;
+                    return;
+                }
+
+                state.intro.animating = true;
+                const step = this.steps[stepIndex];
+                
+                // Update instruction text
+                const stepText = document.getElementById('step-text');
+                stepText.textContent = step.text;
+
+                // Reveal the element
+                const el = document.getElementById(step.element);
+                await animateOpacity(el, 1, 600);
+
+                state.intro.step++;
+                state.intro.animating = false;
+
+                // Update button text
+                const buildBtn = document.getElementById('build-lever-btn');
+                if (state.intro.step >= this.steps.length) {
+                    buildBtn.textContent = '✅ Complete!';
+                    buildBtn.disabled = true;
+                    document.getElementById('animate-lever-btn').disabled = false;
+                    document.getElementById('step-text').textContent = 
+                        'Now click "See It Work!" to watch the lever in action!';
+                } else {
+                    buildBtn.innerHTML = `<span>🔧</span> Add Next Part (${state.intro.step + 1}/${this.steps.length})`;
+                }
+            },
+
+            animateLever() {
+                const leverBar = document.getElementById('lever-bar');
+                const effortArrow = document.getElementById('effort-arrow');
+                const loadGroup = document.getElementById('load-group');
+                
+                // Create rotation animation
+                leverBar.style.transition = 'transform 0.8s ease-in-out';
+                leverBar.style.transformOrigin = '400px 248px';
+                
+                // Animate the lever rotation
+                let rotation = 0;
+                const animate = () => {
+                    rotation += 0.5;
+                    const angle = Math.sin(rotation * 0.1) * 10;
+                    leverBar.style.transform = `rotate(${angle}deg)`;
+                    
+                    // Move effort and load with lever
+                    const effortY = 195 + Math.sin(rotation * 0.1) * 30;
+                    const loadY = 195 - Math.sin(rotation * 0.1) * 30;
+                    
+                    if (rotation < 60) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        leverBar.style.transform = 'rotate(0deg)';
+                    }
+                };
+                
+                animate();
+                
+                document.getElementById('step-text').textContent = 
+                    '🎉 Push down on one side → The other side goes UP! That\'s the lever magic!';
+            },
+
+            reset() {
+                state.intro.step = 0;
+                state.intro.animating = false;
+
+                // Hide all elements
+                this.steps.forEach(step => {
+                    const el = document.getElementById(step.element);
+                    el.style.opacity = '0';
+                    el.style.transition = 'none';
+                });
+
+                // Reset buttons
+                const buildBtn = document.getElementById('build-lever-btn');
+                buildBtn.innerHTML = '<span>🔧</span> Build the Lever';
+                buildBtn.disabled = false;
+                document.getElementById('animate-lever-btn').disabled = true;
+                document.getElementById('step-text').textContent = 'Click "Build the Lever" to begin!';
+                document.getElementById('lever-bar').style.transform = 'rotate(0deg)';
+            }
+        };
+
+        // ============================================================
+        // 4. SECTION 2: SEESAW PHYSICS SIMULATION
+        // Purpose: Real-time balance calculation and visualization
+        // ============================================================
+
+        const SeesawController = {
+            init() {
+                // Get slider elements
+                const leftPosSlider = document.getElementById('left-pos-slider');
+                const leftWeightSlider = document.getElementById('left-weight-slider');
+                const rightPosSlider = document.getElementById('right-pos-slider');
+                const rightWeightSlider = document.getElementById('right-weight-slider');
+
+                // Add event listeners
+                leftPosSlider.addEventListener('input', (e) => {
+                    state.seesaw.leftPos = parseInt(e.target.value);
+                    this.update();
+                });
+
+                leftWeightSlider.addEventListener('input', (e) => {
+                    state.seesaw.leftWeight = parseInt(e.target.value);
+                    this.update();
+                });
+
+                rightPosSlider.addEventListener('input', (e) => {
+                    state.seesaw.rightPos = parseInt(e.target.value);
+                    this.update();
+                });
+
+                rightWeightSlider.addEventListener('input', (e) => {
+                    state.seesaw.rightWeight = parseInt(e.target.value);
+                    this.update();
+                });
+
+                // Initial update
+                this.update();
+            },
+
+            update() {
+                const { leftWeight, rightWeight, leftPos, rightPos, centerX } = state.seesaw;
+                
+                // Calculate distances from center (in meters)
+                const leftDist = (centerX - leftPos) / PHYSICS.PIXELS_PER_METER;
+                const rightDist = (rightPos - centerX) / PHYSICS.PIXELS_PER_METER;
+
+                // Calculate torques
+                const leftTorque = leftWeight * leftDist;
+                const rightTorque = rightWeight * rightDist;
+
+                // Calculate rotation angle based on torque difference
+                const torqueDiff = leftTorque - rightTorque;
+                const maxTorque = 200; // Normalization factor
+                const rotationAngle = clamp(torqueDiff / maxTorque * PHYSICS.MAX_ROTATION_DEG, 
+                    -PHYSICS.MAX_ROTATION_DEG, PHYSICS.MAX_ROTATION_DEG);
+
+                // Update SVG elements
+                this.updateVisuals(leftWeight, rightWeight, leftPos, rightPos, leftDist, rightDist, rotationAngle);
+                
+                // Update calculations display
+                this.updateCalculations(leftWeight, rightWeight, leftDist, rightDist, leftTorque, rightTorque);
+            },
+
+            updateVisuals(leftWeight, rightWeight, leftPos, rightPos, leftDist, rightDist, angle) {
+                // Rotate the seesaw plank
+                const plank = document.getElementById('seesaw-plank');
+                plank.style.transition = 'transform 0.3s ease-out';
+                plank.style.transformOrigin = '400px 270px';
+                plank.style.transform = `rotate(${angle}deg)`;
+
+                // Update left weight position and value
+                const leftWeightBox = document.getElementById('left-weight-box');
+                const leftWeightText = document.getElementById('left-weight-text');
+                leftWeightBox.setAttribute('x', leftPos - 30);
+                leftWeightText.setAttribute('x', leftPos);
+                leftWeightText.textContent = `${leftWeight}kg`;
+
+                // Update left emoji position
+                document.getElementById('left-weight-emoji').setAttribute('x', leftPos);
+
+                // Update right weight position and value
+                const rightWeightBox = document.getElementById('right-weight-box');
+                const rightWeightText = document.getElementById('right-weight-text');
+                rightWeightBox.setAttribute('x', rightPos - 30);
+                rightWeightText.setAttribute('x', rightPos);
+                rightWeightText.textContent = `${rightWeight}kg`;
+
+                // Update right emoji position
+                document.getElementById('right-weight-emoji').setAttribute('x', rightPos);
+
+                // Update distance labels
+                document.getElementById('left-dist-label').textContent = `${leftDist.toFixed(1)}m`;
+                document.getElementById('left-dist-label').setAttribute('x', leftPos);
+                document.getElementById('right-dist-label').textContent = `${rightDist.toFixed(1)}m`;
+                document.getElementById('right-dist-label').setAttribute('x', rightPos);
+
+                // Update slider value displays
+                document.getElementById('left-pos-value').textContent = `${leftDist.toFixed(1)}m`;
+                document.getElementById('left-weight-value').textContent = `${leftWeight}kg`;
+                document.getElementById('right-pos-value').textContent = `${rightDist.toFixed(1)}m`;
+                document.getElementById('right-weight-value').textContent = `${rightWeight}kg`;
+            },
+
+            updateCalculations(leftWeight, rightWeight, leftDist, rightDist, leftTorque, rightTorque) {
+                // Update equation display
+                const leftCalc = document.getElementById('left-calc');
+                const rightCalc = document.getElementById('right-calc');
+                const result = document.getElementById('balance-result');
+
+                leftCalc.textContent = `${leftWeight} × ${leftDist.toFixed(1)} = ${leftTorque.toFixed(0)}`;
+                rightCalc.textContent = `${rightWeight} × ${rightDist.toFixed(1)} = ${rightTorque.toFixed(0)}`;
+
+                // Determine result
+                const diff = Math.abs(leftTorque - rightTorque);
+                
+                result.classList.remove('balanced', 'effort-wins', 'load-wins');
+                
+                if (diff < 2) {
+                    result.textContent = '⚖️ PERFECTLY BALANCED!';
+                    result.classList.add('balanced');
+                } else if (leftTorque > rightTorque) {
+                    result.textContent = '⬅️ Left Side Wins!';
+                    result.classList.add('effort-wins');
+                } else {
+                    result.textContent = '➡️ Right Side Wins!';
+                    result.classList.add('load-wins');
+                }
+            }
+        };
+
+        // ============================================================
+        // 5. SECTION 3: THREE CLASSES CONTROLLER
+        // Purpose: Interactive class selection and animation
+        // ============================================================
+
+        const ClassesController = {
+            init() {
+                // Class card click handlers
+                const cards = document.querySelectorAll('.class-card');
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const classNum = parseInt(card.dataset.class);
+                        this.selectClass(classNum);
+                    });
+                });
+
+                // Animate button
+                document.getElementById('animate-class-btn').addEventListener('click', () => {
+                    this.animateCurrentClass();
+                });
+            },
+
+            selectClass(classNum) {
+                state.classes.activeClass = classNum;
+
+                // Update card states
+                document.querySelectorAll('.class-card').forEach(card => {
+                    card.classList.toggle('active', parseInt(card.dataset.class) === classNum);
+                });
+
+                // Show corresponding demo
+                document.querySelectorAll('.class-demo').forEach(demo => {
+                    demo.style.display = 'none';
+                });
+                document.getElementById(`class-${classNum}-demo`).style.display = 'block';
+            },
+
+            animateCurrentClass() {
+                if (state.classes.animating) return;
+                state.classes.animating = true;
+
+                const classNum = state.classes.activeClass;
+                const leverGroup = document.getElementById(`class${classNum}-lever`);
+                
+                if (!leverGroup) {
+                    state.classes.animating = false;
+                    return;
+                }
+
+                // Animation based on class type
+                let originX, angle;
+                
+                switch(classNum) {
+                    case 1:
+                        originX = 400;
+                        angle = 12;
+                        break;
+                    case 2:
+                        originX = 100;
+                        angle = 8;
+                        break;
+                    case 3:
+                        originX = 100;
+                        angle = -15;
+                        break;
+                }
+
+                leverGroup.style.transition = 'transform 0.5s ease-in-out';
+                leverGroup.style.transformOrigin = `${originX}px 200px`;
+                
+                // Animate down then back
+                leverGroup.style.transform = `rotate(${angle}deg)`;
+                
+                setTimeout(() => {
+                    leverGroup.style.transform = 'rotate(0deg)';
+                    setTimeout(() => {
+                        state.classes.animating = false;
+                    }, 500);
+                }, 800);
+            }
+        };
+
+        // ============================================================
+        // 6. SECTION 4: MECHANICAL ADVANTAGE EXPLORER
+        // Purpose: Interactive fulcrum positioning with real-time MA calculation
+        // ============================================================
+
+        const MAController = {
+            init() {
+                const fulcrumGroup = document.getElementById('ma-fulcrum-group');
+                const svg = document.querySelector('#ma-canvas svg');
+                
+                // Mouse events for dragging
+                fulcrumGroup.addEventListener('mousedown', (e) => this.startDrag(e));
+                svg.addEventListener('mousemove', (e) => this.drag(e));
+                svg.addEventListener('mouseup', () => this.endDrag());
+                svg.addEventListener('mouseleave', () => this.endDrag());
+
+                // Touch events for mobile
+                fulcrumGroup.addEventListener('touchstart', (e) => this.startDrag(e));
+                svg.addEventListener('touchmove', (e) => this.drag(e));
+                svg.addEventListener('touchend', () => this.endDrag());
+
+                // Buttons
+                document.getElementById('ma-reset-btn').addEventListener('click', () => this.reset());
+                document.getElementById('ma-optimize-btn').addEventListener('click', () => this.optimize());
+
+                // Initial update
+                this.update();
+            },
+
+            startDrag(e) {
+                e.preventDefault();
+                state.ma.dragging = true;
+                document.getElementById('ma-fulcrum-group').style.cursor = 'grabbing';
+            },
+
+            drag(e) {
+                if (!state.ma.dragging) return;
+                
+                const svg = document.querySelector('#ma-canvas svg');
+                const rect = svg.getBoundingClientRect();
+                const scaleX = 800 / rect.width;
+                
+                let clientX;
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                } else {
+                    clientX = e.clientX;
+                }
+                
+                const svgX = (clientX - rect.left) * scaleX;
+                state.ma.fulcrumX = clamp(svgX, state.ma.minX, state.ma.maxX);
+                
+                this.update();
+            },
+
+            endDrag() {
+                state.ma.dragging = false;
+                document.getElementById('ma-fulcrum-group').style.cursor = 'ew-resize';
+            },
+
+            update() {
+                const { fulcrumX, loadX, effortX, loadWeight } = state.ma;
+
+                // Calculate arm lengths
+                const effortArm = fulcrumX - effortX;
+                const loadArm = loadX - fulcrumX;
+
+                // Calculate mechanical advantage
+                const ma = effortArm / loadArm;
+                
+                // Calculate required effort force
+                const requiredForce = loadWeight / ma;
+
+                // Update SVG elements
+                this.updateVisuals(fulcrumX, effortArm, loadArm, ma, requiredForce);
+                
+                // Update info cards and insight
+                this.updateInfo(ma, requiredForce, effortArm, loadArm);
+            },
+
+            updateVisuals(fulcrumX, effortArm, loadArm, ma, requiredForce) {
+                // Move fulcrum
+                const fulcrum = document.getElementById('ma-fulcrum');
+                fulcrum.setAttribute('points', 
+                    `${fulcrumX},320 ${fulcrumX-40},260 ${fulcrumX+40},260`);
+                
+                // Update fulcrum label position
+                document.getElementById('ma-fulcrum-label').setAttribute('x', fulcrumX);
+
+                // Update effort arm line
+                const effortArmLine = document.getElementById('ma-effort-arm-line');
+                effortArmLine.setAttribute('x2', fulcrumX);
+                
+                const effortArmLabel = document.getElementById('ma-effort-arm-label');
+                effortArmLabel.setAttribute('x', (130 + fulcrumX) / 2);
+                effortArmLabel.textContent = `Effort Arm: ${pixelsToMeters(effortArm)}m`;
+
+                // Update load arm line
+                const loadArmLine = document.getElementById('ma-load-arm-line');
+                loadArmLine.setAttribute('x1', fulcrumX);
+                
+                const loadArmLabel = document.getElementById('ma-load-arm-label');
+                loadArmLabel.setAttribute('x', (fulcrumX + 670) / 2);
+                loadArmLabel.textContent = `Load Arm: ${pixelsToMeters(loadArm)}m`;
+
+                // Update effort arrow size based on required force
+                const arrowScale = Math.min(requiredForce / 50, 3);
+                const arrowLength = 40 + arrowScale * 20;
+                
+                const effortArrow = document.getElementById('ma-effort-arrow');
+                effortArrow.setAttribute('y1', 250 - arrowLength);
+                effortArrow.setAttribute('stroke-width', 4 + arrowScale * 2);
+
+                // Update effort value display
+                document.getElementById('ma-effort-value').textContent = `${Math.round(requiredForce)}kg`;
+
+                // Update MA display
+                document.getElementById('ma-value-display').textContent = `${ma.toFixed(1)}×`;
+            },
+
+            updateInfo(ma, requiredForce, effortArm, loadArm) {
+                // Update info cards
+                document.getElementById('needed-force').textContent = `${Math.round(requiredForce)} kg`;
+                document.getElementById('ma-card-value').textContent = `${ma.toFixed(1)}×`;
+
+                // Update insight text based on current state
+                const insight = document.getElementById('ma-insight-text');
+                
+                if (ma > 3) {
+                    insight.innerHTML = `<strong>💪 SUPER STRONG!</strong> With MA of ${ma.toFixed(1)}×, you only need ${Math.round(requiredForce)}kg of force to lift 100kg! The fulcrum is very close to the load.`;
+                } else if (ma > 1.5) {
+                    insight.innerHTML = `<strong>👍 Good leverage!</strong> MA of ${ma.toFixed(1)}× means you need ${Math.round(requiredForce)}kg — less than the 100kg load!`;
+                } else if (ma > 0.8) {
+                    insight.innerHTML = `<strong>⚖️ Balanced</strong> With MA around 1, you need about the same force as the load weight.`;
+                } else {
+                    insight.innerHTML = `<strong>🏃 Speed mode!</strong> MA of ${ma.toFixed(1)}× means you need MORE force (${Math.round(requiredForce)}kg), but the load will move faster!`;
+                }
+
+                // Color code the MA display
+                const maDisplay = document.getElementById('ma-value-display');
+                if (ma >= 2) {
+                    maDisplay.style.fill = '#4ade80'; // Green - great advantage
+                } else if (ma >= 1) {
+                    maDisplay.style.fill = '#fbbf24'; // Yellow - moderate
+                } else {
+                    maDisplay.style.fill = '#f87171'; // Red - disadvantage
+                }
+            },
+
+            reset() {
+                state.ma.fulcrumX = 400;
+                this.update();
+            },
+
+            optimize() {
+                // Animate fulcrum to optimal position (close to load)
+                const targetX = 580;
+                const startX = state.ma.fulcrumX;
+                const duration = 1000;
+                const startTime = performance.now();
+
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Ease out
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    state.ma.fulcrumX = startX + (targetX - startX) * eased;
+                    
+                    this.update();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+
+                requestAnimationFrame(animate);
+            }
+        };
+
+        // ============================================================
+        // 7. NAVIGATION CONTROLLER
+        // Purpose: Handle section switching
+        // ============================================================
+
+        const NavigationController = {
+            init() {
+                const tabs = document.querySelectorAll('.nav-tab');
+                
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const section = tab.dataset.section;
+                        this.switchSection(section);
+                    });
+                });
+            },
+
+            switchSection(sectionId) {
+                // Update state
+                state.currentSection = sectionId;
+
+                // Update tabs
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.section === sectionId);
+                    tab.setAttribute('aria-selected', tab.dataset.section === sectionId);
+                });
+
+                // Update sections
+                document.querySelectorAll('.viz-section').forEach(section => {
+                    section.classList.toggle('active', section.id === sectionId);
+                });
+            }
+        };
+
+        // ============================================================
+        // 8. INITIALIZATION
+        // Purpose: Bootstrap all controllers when DOM is ready
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 Lever Learning Experience Initializing...');
+            
+            // Initialize all controllers
+            NavigationController.init();
+            IntroController.init();
+            SeesawController.init();
+            ClassesController.init();
+            MAController.init();
+
+            console.log('✅ All systems ready!');
+        });
+
+        // ============================================================
+        // ACCESSIBILITY HELPERS
+        // ============================================================
+
+        // Keyboard navigation for tabs
+        document.addEventListener('keydown', (e) => {
+            if (e.target.classList.contains('nav-tab')) {
+                const tabs = Array.from(document.querySelectorAll('.nav-tab'));
+                const currentIndex = tabs.indexOf(e.target);
+                
+                if (e.key === 'ArrowRight') {
+                    const nextIndex = (currentIndex + 1) % tabs.length;
+                    tabs[nextIndex].focus();
+                    tabs[nextIndex].click();
+                } else if (e.key === 'ArrowLeft') {
+                    const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    tabs[prevIndex].focus();
+                    tabs[prevIndex].click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

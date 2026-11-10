@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volume 1 · Part 2 · Module 2 — Velocity and Acceleration from Rates of Change</title>
+<style>
+:root{
+  --ink:#1b2532; --mut:#5a6673; --paper:#f5f7f8; --card:#ffffff; --rule:#dde3e8;
+  --blue:#2b59c3; --blue-bg:#eef3fc; --blue-line:#c3d2f0;
+  --green:#1e7a55; --green-bg:#ecf6f1; --green-line:#bfe0d2;
+  --red:#b3372e; --red-bg:#fbefed; --red-line:#ecc8c3;
+  --gold:#8a6a00; --gold-bg:#fbf5e4; --gold-line:#e7d9a8;
+  --plum:#6d4aa8; --plum-bg:#f2eefa; --plum-line:#d6c8ee;
+  --teal:#0b6e6e; --teal-bg:#e9f5f5; --teal-line:#bfe0e0;
+  --serif: "Charter","Bitstream Charter","Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+  --sans: "Avenir Next","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17.5px;line-height:1.68}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
+/* ---------- hero ---------- */
+.hero{
+  background:
+    linear-gradient(rgba(245,247,248,.0), var(--paper) 96%),
+    repeating-linear-gradient(0deg, rgba(43,89,195,.07) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, rgba(43,89,195,.07) 0 1px, transparent 1px 26px),
+    #f9fbfd;
+  border-bottom:1px solid var(--rule); padding:44px 0 30px; margin-bottom:8px;
+}
+.kick{font:600 12px/1.4 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--blue)}
+h1{font-family:var(--serif); font-weight:700; font-size:clamp(28px,4.6vw,40px); line-height:1.16; margin:.35em 0 .3em}
+.sub{color:var(--mut); font-size:1.05em; max-width:46em; margin:0}
+/* ---------- headings ---------- */
+h2{font-family:var(--serif); font-size:1.62em; line-height:1.25; margin:2.1em 0 .5em; padding-top:.6em}
+h3{font-family:var(--serif); font-size:1.22em; margin:1.8em 0 .4em}
+h4{font-family:var(--sans); font-size:.98em; letter-spacing:.02em; margin:1.5em 0 .35em}
+.chip{display:inline-block; font:700 12px/1 var(--sans); letter-spacing:.1em; color:#fff; background:var(--ink);
+  border-radius:6px; padding:6px 10px; vertical-align:middle; margin-right:10px; transform:translateY(-2px)}
+/* signature divider: the slope/area duality */
+.duo{display:flex; align-items:center; gap:12px; margin:3em 0 0; color:var(--mut); font:600 11.5px var(--sans); letter-spacing:.1em; text-transform:uppercase}
+.duo::before,.duo::after{content:""; flex:1; border-top:1px solid var(--rule)}
+/* ---------- knowledge blocks ---------- */
+.box{border:1px solid var(--rule); border-radius:12px; background:var(--card); padding:16px 20px; margin:20px 0}
+.box p:first-of-type{margin-top:.35em}
+.box p:last-child{margin-bottom:.2em}
+.tag{display:inline-block; font:700 10.5px/1 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+  padding:4px 9px; border-radius:999px; margin-bottom:2px}
+.def{background:var(--blue-bg); border-color:var(--blue-line)} .def .tag{background:var(--blue); color:#fff}
+.derive{background:var(--green-bg); border-color:var(--green-line)} .derive .tag{background:var(--green); color:#fff}
+.miscon{background:var(--red-bg); border-color:var(--red-line)} .miscon .tag{background:var(--red); color:#fff}
+.anchor{background:var(--gold-bg); border-color:var(--gold-line)} .anchor .tag{background:var(--gold); color:#fff}
+.oly{background:var(--plum-bg); border-color:var(--plum-line)} .oly .tag{background:var(--plum); color:#fff}
+.note{background:var(--teal-bg); border-color:var(--teal-line)} .note .tag{background:var(--teal); color:#fff}
+/* ---------- equations & math ---------- */
+.eq{font-size:1.13em; text-align:center; background:#fff; border:1px solid var(--rule); border-radius:10px;
+  padding:12px 14px; margin:16px auto; overflow-x:auto}
+.eq.key{border-color:var(--blue-line); background:var(--blue-bg); box-shadow:inset 3px 0 0 var(--blue)}
+var, .v{font-style:italic; font-family:var(--serif)}
+.fr{display:inline-flex; flex-direction:column; vertical-align:-0.72em; text-align:center; line-height:1.12; margin:0 .18em; font-size:.94em}
+.fr>span:first-child{border-bottom:1.4px solid currentColor; padding:0 .3em}
+.fr>span:last-child{padding:0 .3em}
+sup,sub{line-height:0}
+/* ---------- tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:.95em; background:#fff}
+th,td{border:1px solid var(--rule); padding:8px 11px; text-align:left; vertical-align:top}
+th{background:#eef1f4; font-family:var(--sans); font-size:.86em; letter-spacing:.03em}
+tr:nth-child(even) td{background:#fafbfc}
+/* ---------- problems & solutions ---------- */
+.problem{border:1px solid var(--rule); border-left:5px solid var(--blue); border-radius:10px; background:#fff; padding:14px 18px; margin:22px 0}
+.problem .ptag{font:700 11px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--blue)}
+.sol{border-top:1px dashed var(--rule); margin-top:12px; padding-top:12px}
+.sol .stag{font:700 10.5px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--green)}
+.lbl{font-family:var(--sans); font-weight:700; font-size:.86em; color:var(--mut)}
+details{border:1px solid var(--rule); border-radius:10px; background:#fff; padding:10px 16px; margin:12px 0}
+summary{cursor:pointer; font:600 15px var(--sans); color:var(--blue)}
+details[open] summary{margin-bottom:8px}
+/* ---------- figures ---------- */
+figure{margin:26px 0; text-align:center; background:#fff; border:1px solid var(--rule); border-radius:12px; padding:16px 10px 10px}
+figure svg{max-width:100%; height:auto}
+figcaption{font-style:italic; font-size:.92em; color:var(--mut); margin-top:8px; padding:0 12px}
+/* ---------- toc ---------- */
+.toc{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:18px 22px; margin:26px 0;
+  columns:2; column-gap:34px; font-family:var(--sans); font-size:.92em}
+.toc a{color:var(--ink); text-decoration:none; display:block; padding:3.5px 0; break-inside:avoid; border-bottom:1px dotted var(--rule)}
+.toc a:hover{color:var(--blue)}
+.toc .tt{font-weight:700; color:var(--blue); border:none}
+ul,ol{padding-left:1.35em}
+li{margin:.32em 0}
+a{color:var(--blue)}
+.small{font-size:.9em; color:var(--mut)}
+mark{background:#fff3bf; padding:0 3px; border-radius:3px}
+@media (max-width:640px){ .toc{columns:1} body{font-size:16.5px} .box,.problem{padding:12px 14px} }
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <div class="kick">Physics Master Knowledge Base · Volume 1 — Mechanics Foundations · Part 2</div>
+  <h1>Module 2 · Velocity and Acceleration from Rates of Change</h1>
+  <p class="sub">Your speedometer displays a number at a frozen instant — yet "how fast" is defined by <em>two</em> instants. Resolving that paradox honestly forces the invention of the limit, the derivative, and the entire machinery of instantaneous motion. This module builds all of it from zero, then derives every constant-acceleration law three independent ways.</p>
+</div></div>
+
+<div class="wrap">
+
+<nav class="toc">
+  <a class="tt" href="#s0">0 · Invocation Control &amp; Dependency Map</a>
+  <a href="#sQ">Generating Physical Questions</a>
+  <a class="tt" href="#p1">I · Intuitive Foundation</a>
+  <a class="tt" href="#p2">II · Formal Construction</a>
+  <a href="#c1">II.1 The Limit</a>
+  <a href="#c2">II.2 Instantaneous Velocity</a>
+  <a href="#c3">II.3 The Differentiation Toolkit</a>
+  <a href="#c4">II.4 Instantaneous Speed</a>
+  <a href="#c5">II.5 Acceleration</a>
+  <a href="#c6">II.6 The Sign Algebra of Motion</a>
+  <a href="#c7">II.7 Constant Acceleration — Five Laws</a>
+  <a href="#c8">II.8 Free Fall</a>
+  <a class="tt" href="#p3">III · Mathematical Consolidation</a>
+  <a class="tt" href="#p4">IV · Geometry, Vectors, Graphs</a>
+  <a class="tt" href="#p5">V · Alternative Viewpoints</a>
+  <a class="tt" href="#p6">VI · Assumptions &amp; Failure Modes</a>
+  <a class="tt" href="#p7">VII · Misconceptions</a>
+  <a class="tt" href="#p8">VIII · Connections</a>
+  <a class="tt" href="#p9">IX · Olympiad Insight</a>
+  <a class="tt" href="#p10">X · Training Blocks A–G</a>
+  <a class="tt" href="#p11">XI · Error-Diagnosis Loop</a>
+  <a class="tt" href="#p12">XII · Module Synthesis</a>
+  <a class="tt" href="#p13">XIII · Mastery Gate</a>
+  <a class="tt" href="#p14">XIV · Retention Schedule</a>
+  <a class="tt" href="#p15">XV · Independent Mastery Set</a>
+  <a href="#ledger">Continuity Ledger → Module 3</a>
+</nav>
+
+<h2 id="s0"><span class="chip">0</span>Invocation Control</h2>
+<ol>
+  <li><b>Requested module:</b> Volume 1, Module 2 — <em>Velocity and Acceleration from Rates of Change</em>.</li>
+  <li><b>Prerequisites:</b> everything in Module 1 — frames and sign conventions, the particle model, position <var>x</var>(<var>t</var>), Δ-notation and its invariances, displacement vs distance with |Δ<var>x</var>| ≤ distance, uniform motion <var>x</var> = <var>x</var><sub>0</sub> + <var>v̄t</var>, both averages and the chord picture, unit/dimension bookkeeping.</li>
+  <li><b>Prerequisite status:</b> Module 1 complete. Volume 0 (formal calculus) has not been generated; therefore <mark>the limit and the derivative are built self-contained inside this module</mark>, at full working rigor, with only the ε-δ formalism and the Mean Value Theorem honestly deferred to Volume 0 — and flagged wherever they would tighten an argument.</li>
+  <li><b>Assumptions carried forward:</b> the notation standard (Δ for finite change; the symbol <var>d</var> was reserved in Module 1 and is activated here); +direction always declared in writing before computing.</li>
+  <li><b>Scope boundary:</b> this module owns the <em>forward</em> problem — from <var>x</var>(<var>t</var>) down to <var>v</var> and <var>a</var> — plus the constant-acceleration model and free fall. The <em>inverse</em> problem (rebuilding motion from <var>v</var>–<var>t</var> and <var>a</var>–<var>t</var> graphs, general areas, integration proper) is the entire purpose of Module 3. That is a conceptual boundary, not an omission.</li>
+</ol>
+
+<h3>Dependency Architecture</h3>
+<figure>
+<svg viewBox="0 0 860 470" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="13">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5a6673"/></marker>
+  </defs>
+  <style> .nd{fill:#fff;stroke:#c3d2f0;stroke-width:1.5;rx:9} .tt{fill:#1b2532;font-weight:600} .ln{stroke:#5a6673;stroke-width:1.4;marker-end:url(#ar);fill:none} .sub2{fill:#5a6673;font-size:11.5px}</style>
+  <rect class="nd" x="290" y="12" width="280" height="44" rx="9"/><text class="tt" x="430" y="30" text-anchor="middle">Central question</text><text class="sub2" x="430" y="46" text-anchor="middle">what is "how fast" AT one instant?</text>
+  <path class="ln" d="M430,56 V84"/>
+  <rect class="nd" x="290" y="86" width="280" height="44" rx="9"/><text class="tt" x="430" y="104" text-anchor="middle">The Limit (II.1)</text><text class="sub2" x="430" y="120" text-anchor="middle">value a shrinking-window average settles on</text>
+  <path class="ln" d="M430,130 V158"/>
+  <rect class="nd" x="250" y="160" width="360" height="44" rx="9"/><text class="tt" x="430" y="178" text-anchor="middle">Instantaneous velocity  v = dx/dt (II.2)</text><text class="sub2" x="430" y="194" text-anchor="middle">chord → tangent; the derivative is born</text>
+  <path class="ln" d="M340,204 C300,225 230,225 200,238"/>
+  <path class="ln" d="M520,204 C560,225 630,225 660,238"/>
+  <rect class="nd" x="60" y="240" width="290" height="44" rx="9"/><text class="tt" x="205" y="258" text-anchor="middle">Differentiation toolkit (II.3)</text><text class="sub2" x="205" y="274" text-anchor="middle">power rule + linearity, derived</text>
+  <rect class="nd" x="510" y="240" width="290" height="44" rx="9"/><text class="tt" x="655" y="258" text-anchor="middle">Instantaneous speed = |v| (II.4)</text><text class="sub2" x="655" y="274" text-anchor="middle">a theorem, unlike the averages</text>
+  <path class="ln" d="M205,284 C240,306 330,306 380,318"/>
+  <path class="ln" d="M655,284 C620,306 530,306 480,318"/>
+  <rect class="nd" x="270" y="320" width="320" height="44" rx="9"/><text class="tt" x="430" y="338" text-anchor="middle">Acceleration a = dv/dt = d²x/dt² (II.5)</text><text class="sub2" x="430" y="354" text-anchor="middle">the derivative machine, applied twice</text>
+  <path class="ln" d="M340,364 C300,382 240,382 205,394"/>
+  <path class="ln" d="M520,364 C560,382 620,382 655,394"/>
+  <rect class="nd" x="60" y="396" width="290" height="44" rx="9"/><text class="tt" x="205" y="414" text-anchor="middle">Sign algebra of motion (II.6)</text><text class="sub2" x="205" y="430" text-anchor="middle">v·a decides speeding vs slowing</text>
+  <rect class="nd" x="510" y="396" width="290" height="60" rx="9"/><text class="tt" x="655" y="414" text-anchor="middle">Constant-a model (II.7) → Free fall (II.8)</text><text class="sub2" x="655" y="430" text-anchor="middle">five laws, each derived three ways;</text><text class="sub2" x="655" y="446" text-anchor="middle">symmetry theorems of vertical flight</text>
+</svg>
+<figcaption>Module 2 dependency order. Nothing appears before its prerequisites: the limit must exist before the derivative; the derivative before acceleration; the sign algebra before free fall (which is one long exercise in signs). Reversing any arrow produces circular definitions.</figcaption>
+</figure>
+
+<p><b>Why this order is forced.</b> Instantaneous velocity is <em>defined</em> as a limit, so the limit concept must exist first (II.1 → II.2). Computing derivatives of actual position functions requires rules, so the toolkit follows the definition (II.2 → II.3). Acceleration is the same limiting operation applied to velocity — it cannot precede velocity (II.5). The constant-acceleration laws are statements <em>about</em> acceleration, and free fall is their premier application; both sit last. The sign algebra (II.6) must precede free fall because a thrown ball is the canonical battlefield of sign errors.</p>
+
+<h2 id="sQ"><span class="chip">Q</span>Generating Physical Questions</h2>
+<ul>
+  <li>A speed camera photographs your car twice, 0.01 s apart, and issues a fine for "speeding at this instant." Your lawyer objects: speed requires an interval, and any interval contains many speeds. Who is right — and what, precisely, would make the fine legitimate?</li>
+  <li>A cricket ball thrown straight up hangs, for one heartbeat, motionless at the top. Is anything still <em>happening</em> to it at that instant? If its velocity is zero, why does it not stay there?</li>
+  <li>Galileo claimed that a falling stone gains speed "equally in equal times." What experiment could test this when free fall is over in under two seconds — and what fingerprint would constant acceleration leave in easily-measured distances?</li>
+  <li>Two cars pass the same lamppost together, at the same velocity. One minute later they are far apart. What third quantity — invisible in a single snapshot of positions <em>and</em> velocities — was hiding the difference?</li>
+</ul>
+
+<div class="duo">Part I · Intuitive Foundation — the paradox and its resolution</div>
+
+<h2 id="p1"><span class="chip">I</span>Intuitive Foundation</h2>
+
+<h3>I.1 The speedometer paradox, stated exactly</h3>
+<p>Module 1 ended on a cliff. Average velocity is honest bookkeeping: <var>v̄</var> = Δ<var>x</var>/Δ<var>t</var>, the slope of a chord. But your speedometer does something apparently impossible: it displays a velocity <em>now</em> — at a single instant, with Δ<var>t</var> = 0. Set Δ<var>t</var> = 0 in the definition and Δ<var>x</var> = 0 too (nothing has had time to move), so the reading should be the meaningless expression 0/0. Not zero — <em>undefined</em>: 0/0 has no value, because <em>every</em> number <var>q</var> satisfies 0 = <var>q</var> · 0, so division cannot pick one.</p>
+<p>Yet physics cannot live without velocity-at-an-instant. The projectile's velocity at the top of its arc, the car's velocity at the moment of impact, the exact instant a rocket's velocity crosses escape speed — all are single-instant questions. The concept is <em>needed</em>; the definition, as it stands, cannot deliver it. This tension is not a nuisance to be waved away. Its honest resolution is the founding act of calculus, and physics — this exact problem, in Newton's hands — is where calculus was born.</p>
+
+<h3>I.2 The resolution in one idea: zoom until the motion looks uniform</h3>
+<p>Here is the physical insight that dissolves the paradox. Take any smooth motion — a car pulling away, a stone falling — and film it. Play one second of the film: the speed visibly changes. Now play one <em>hundredth</em> of a second: the speed barely changes. One millionth: to any instrument you own, the motion within that sliver is indistinguishable from <em>uniform</em> motion — the one kind of motion for which Module 1 already gives an exact, unambiguous velocity.</p>
+
+<figure>
+<svg viewBox="0 0 560 215" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12">
+  <style>.fr2{fill:#fff;stroke:#dde3e8;stroke-width:1.2}.cv{fill:none;stroke:#2b59c3;stroke-width:2.4}.dsh{stroke:#b3372e;stroke-width:1.4;stroke-dasharray:5 4;fill:none}.cap{fill:#5a6673}</style>
+  <rect class="fr2" x="15" y="15" width="160" height="155" rx="8"/>
+  <path class="cv" d="M30,155 Q95,25 160,135"/>
+  <text class="cap" x="95" y="192" text-anchor="middle">zoom ×1 — clearly curved</text>
+  <rect class="fr2" x="200" y="15" width="160" height="155" rx="8"/>
+  <path class="cv" d="M215,140 Q280,85 345,55"/>
+  <text class="cap" x="280" y="192" text-anchor="middle">zoom ×10 — gently curved</text>
+  <rect class="fr2" x="385" y="15" width="160" height="155" rx="8"/>
+  <path class="dsh" d="M400,128 L530,62"/>
+  <path class="cv" d="M400,128 Q465,93 530,62"/>
+  <text class="cap" x="465" y="192" text-anchor="middle">zoom ×100 — indistinguishable from a line</text>
+</svg>
+<figcaption>A patch of any smooth <var>x</var>–<var>t</var> curve, magnified. Under enough magnification the curve hugs a straight line (dashed) so tightly no measurement separates them. <b>Smooth motion is locally uniform</b> — and locally uniform motion has a well-defined velocity. That local straight line's slope is the number the speedometer shows.</figcaption>
+</figure>
+
+<div class="box anchor"><span class="tag">Reasoning anchor</span>
+<p><b>Every smooth motion, viewed through a strong enough microscope, is uniform motion.</b> Instantaneous velocity is the velocity of the uniform motion the real motion is imitating locally. All of differential calculus is bookkeeping for this single idea.</p></div>
+
+<h3>I.3 Observation, measurement, model — kept honestly apart</h3>
+<p>Separate three things that this module will constantly braid together, so you always know which strand you are holding.</p>
+<table>
+<tr><th>Strand</th><th>What it is</th><th>Its velocity</th></tr>
+<tr><td><b>Observation</b></td><td>Real instruments always straddle a small but finite window. A car speedometer counts wheel rotations over ~0.1 s; a radar gun compares wave reflections over milliseconds; a phone's GPS differences positions ~1 s apart.</td><td>An <em>average</em> velocity over a tiny Δ<var>t</var>. Different instruments, different windows, slightly different numbers.</td></tr>
+<tr><td><b>Extrapolation</b></td><td>Shrink the instrument's window repeatedly and record the sequence of averages. For smooth motion the sequence <em>settles</em>: past some point, further shrinking changes nothing measurable.</td><td>The trend of the sequence — a number the data points at but no single measurement equals.</td></tr>
+<tr><td><b>Model</b></td><td>Mathematics idealizes the trend into an exact object: the <em>limit</em>. This is a definition we choose because it is instrument-independent — it does not care whose gadget, with which window, did the measuring.</td><td><b>Instantaneous velocity</b>: the limit itself. A property of the motion, not of any measurement of it.</td></tr>
+</table>
+<p>This is the same move Module 1 made with frames: strip away the arbitrary choice (there, the origin; here, the instrument's window size) and call whatever survives <em>the physics</em>. Instantaneous velocity is the invariant of shrinking measurement windows.</p>
+
+<h3>I.4 Why a second quantity is coming: the two-cars puzzle</h3>
+<p>The fourth generating question already tells you this module cannot stop at velocity. Two cars alongside each other, with equal velocities, at one instant — yet a minute later, far apart. Position agreed; velocity agreed; the future disagreed. So the pair (<var>x</var>, <var>v</var>) at an instant does not determine what happens next. The missing information is <em>how the velocity itself is changing</em> — one car's needle was climbing, the other's steady. That "rate of change of the rate of change" is acceleration, and the deep reason it completes the story (why <var>x</var>, <var>v</var>, <var>a</var> suffice and no fourth quantity is needed) is a fact about <em>forces</em>, delivered by Newton in Volume 2. Kinematics builds the vocabulary; dynamics will explain why the vocabulary is complete.</p>
+
+<div class="duo">Part II · Formal Construction — eight concepts, each built to protocol</div>
+
+<h2 id="p2"><span class="chip">II</span>Formal Construction</h2>
+
+<h3 id="c1">II.1 The Limit — the mathematics of "settles on"</h3>
+
+<p><b>Generating question.</b> "Zoom until it looks uniform" is a picture. Physics needs the picture upgraded to a procedure that always gives one definite number and never touches the forbidden 0/0. The limit is that procedure.</p>
+
+<p><b>The procedure, run by hand.</b> Let a particle move with <var>x</var>(<var>t</var>) = <var>t</var><sup>2</sup> (SI units; you met this curve in Module 1 as the archetypal non-uniform motion). Ask: what is its velocity <em>at</em> <var>t</var> = 3 s? Forbidden to set Δ<var>t</var> = 0, we compute the <em>average</em> velocity over the window from 3 to 3 + Δ<var>t</var> — for a general, symbolic Δ<var>t</var>:</p>
+<div class="eq"><var>v̄</var>(Δ<var>t</var>) = <span class="fr"><span><var>x</var>(3 + Δ<var>t</var>) − <var>x</var>(3)</span><span>Δ<var>t</var></span></span> = <span class="fr"><span>(3 + Δ<var>t</var>)<sup>2</sup> − 9</span><span>Δ<var>t</var></span></span> = <span class="fr"><span>9 + 6Δ<var>t</var> + (Δ<var>t</var>)<sup>2</sup> − 9</span><span>Δ<var>t</var></span></span> = <span class="fr"><span>Δ<var>t</var> (6 + Δ<var>t</var>)</span><span>Δ<var>t</var></span></span> = 6 + Δ<var>t</var></div>
+<p>Watch what the algebra did. The dangerous Δ<var>t</var> in the denominator <b>cancelled</b> — legitimately, because Δ<var>t</var> is small but <em>not zero</em>, and dividing by a nonzero number is always allowed. After cancellation, the expression 6 + Δ<var>t</var> is perfectly tame. Now interrogate it numerically, from <em>both sides</em> of the instant:</p>
+<table>
+<tr><th>Δ<var>t</var> (s)</th><td>+1</td><td>+0.1</td><td>+0.01</td><td>+0.001</td><td>−0.001</td><td>−0.01</td><td>−0.1</td><td>−1</td></tr>
+<tr><th><var>v̄</var> = 6 + Δ<var>t</var> (m/s)</th><td>7</td><td>6.1</td><td>6.01</td><td>6.001</td><td>5.999</td><td>5.99</td><td>5.9</td><td>5</td></tr>
+</table>
+<p>The averages do not blow up, do not oscillate, do not depend on which side you approach from. They <b>close in on 6 from both directions</b>, and you can force them as close to 6 as you please — within a millionth, within a billionth — merely by taking Δ<var>t</var> small enough. That is what "settles on" means, made precise.</p>
+
+<div class="box def"><span class="tag">Definition · Limit</span>
+<p>A quantity <var>f</var>(Δ<var>t</var>) has the <b>limit</b> <var>L</var> as Δ<var>t</var> → 0, written <span class="v">lim</span><sub>Δ<var>t</var>→0</sub> <var>f</var>(Δ<var>t</var>) = <var>L</var>, if <var>f</var> can be forced to stay as close to <var>L</var> as anyone demands, by keeping Δ<var>t</var> sufficiently small (on <em>either</em> side of 0, Δ<var>t</var> ≠ 0).</p>
+<p>Read every clause: (i) Δ<var>t</var> is never set <em>equal</em> to 0 — the limit is about the approach, not the arrival, so 0/0 is never evaluated; (ii) "as close as anyone demands" — the challenger names any tolerance, however savage, and small-enough Δ<var>t</var> must meet it; (iii) "either side" — a genuine limit is two-sided; approach from the future (Δ<var>t</var> &gt; 0) and from the past (Δ<var>t</var> &lt; 0) must agree. <span class="small">(The professional ε-δ formalization of this sentence is Volume 0, Module 7 material; nothing in mechanics up to and including IPhO needs more than the working version stated here — but you should know a sharper version exists.)</span></p></div>
+
+<p><b>Non-examples — because a definition is only understood when you can watch it fail.</b> (i) <var>f</var>(Δ<var>t</var>) = 1/Δ<var>t</var> has <em>no</em> limit as Δ<var>t</var> → 0: it explodes past every bound. (ii) <var>f</var>(Δ<var>t</var>) = |Δ<var>t</var>|/Δ<var>t</var> equals +1 for every positive Δ<var>t</var> and −1 for every negative Δ<var>t</var>: each side settles, but on <em>different</em> numbers, so the two-sided limit does not exist. Case (ii) is not a curiosity — it is exactly what happens to velocity at a sharp bounce (see II.2, kinks), which is why the definition insists on both sides.</p>
+
+<div class="box derive"><span class="tag">Derived · The three limit laws</span>
+<p>Suppose <var>f</var> → <var>L</var> and <var>g</var> → <var>M</var> as Δ<var>t</var> → 0. Then:</p>
+<p style="text-align:center"><b>(Sum)</b> <var>f</var> + <var>g</var> → <var>L</var> + <var>M</var> &nbsp;&nbsp;&nbsp; <b>(Scale)</b> <var>c f</var> → <var>c L</var> &nbsp;&nbsp;&nbsp; <b>(Product)</b> <var>f g</var> → <var>L M</var></p>
+<p><em>Why each is true (working justification):</em> write <var>f</var> = <var>L</var> + (small error <var>e</var><sub>1</sub>), <var>g</var> = <var>M</var> + (small error <var>e</var><sub>2</sub>), where "small" means shrinkable below any tolerance. Then <var>f</var> + <var>g</var> = (<var>L</var> + <var>M</var>) + (<var>e</var><sub>1</sub> + <var>e</var><sub>2</sub>): the sum of two shrinkable errors is shrinkable. And <var>f g</var> = <var>L M</var> + <var>L e</var><sub>2</sub> + <var>M e</var><sub>1</sub> + <var>e</var><sub>1</sub><var>e</var><sub>2</sub>: each correction term contains at least one shrinkable factor multiplied by something bounded, so all three corrections shrink. Errors add, scale, and multiply the way small numbers do — that is the entire content. These three laws are the license behind every derivative rule in II.3; nothing there will be pulled from thin air.</p></div>
+
+<div class="box anchor"><span class="tag">Reasoning anchor</span>
+<p><b>A limit is a destination, not a value at the destination.</b> Cancel first (Δ<var>t</var> ≠ 0 makes it legal), <em>then</em> let Δ<var>t</var> → 0. The whole art is postponing zero until it is harmless.</p></div>
+
+<h3 id="c2">II.2 Instantaneous Velocity — the derivative is born</h3>
+
+<div class="box def"><span class="tag">Definition · Instantaneous velocity</span>
+<p>The <b>instantaneous velocity</b> of a particle at time <var>t</var> is the limit of its average velocity over a window at <var>t</var>, as the window shrinks to nothing:</p>
+<div class="eq key"><var>v</var>(<var>t</var>) &nbsp;=&nbsp; <span class="v">lim</span><sub>Δ<var>t</var>→0</sub> <span class="fr"><span><var>x</var>(<var>t</var> + Δ<var>t</var>) − <var>x</var>(<var>t</var>)</span><span>Δ<var>t</var></span></span> &nbsp;≡&nbsp; <span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span></div>
+<p>The right-hand symbol — read "dee-<var>x</var> by dee-<var>t</var>", called the <b>derivative</b> of <var>x</var> with respect to <var>t</var> — is pure notation for the limit on its left. The letter <var>d</var> (reserved since Module 1) means "Δ, pushed to the limit": an <em>infinitesimal</em> change, one already inside the limiting process. Signed like Δ<var>x</var> was: <var>v</var> &gt; 0 means motion toward +<var>x</var> at this instant. Units m/s; dimensions [<var>v</var>] = LT<sup>−1</sup> — a limit of ratios inherits the ratio's dimensions. Every value <var>v</var>(<var>t</var>) at every <var>t</var> assembles into a new <em>function of time</em>: differentiation eats the function <var>x</var>(<var>t</var>) and produces the function <var>v</var>(<var>t</var>).</p></div>
+
+<p><b>Worked from the definition</b> — velocity at a <em>general</em> instant for <var>x</var> = <var>t</var><sup>2</sup>, not just at <var>t</var> = 3:</p>
+<div class="eq"><span class="fr"><span>(<var>t</var> + Δ<var>t</var>)<sup>2</sup> − <var>t</var><sup>2</sup></span><span>Δ<var>t</var></span></span> = <span class="fr"><span>2<var>t</var>·Δ<var>t</var> + (Δ<var>t</var>)<sup>2</sup></span><span>Δ<var>t</var></span></span> = 2<var>t</var> + Δ<var>t</var> &nbsp;⟶&nbsp; <b><var>v</var>(<var>t</var>) = 2<var>t</var></b></div>
+<p>Check it against the hand computation: <var>v</var>(3) = 6 m/s ✓. One symbolic computation has replaced infinitely many numerical tables — that is the leverage the derivative buys.</p>
+
+<h4>Geometry: the chord pivots into the tangent</h4>
+<p>Module 1 established: average velocity = slope of the <b>chord</b> joining two points of the <var>x</var>–<var>t</var> graph. Now watch the limit happen geometrically. Hold the first point A fixed at (<var>t</var><sub>0</sub>, <var>x</var>(<var>t</var><sub>0</sub>)) and slide the second point B along the curve toward A. The chord AB swings, and as B closes in, the chord tightens onto one final resting line — the line that <em>grazes</em> the curve at A.</p>
+
+<figure>
+<svg viewBox="0 0 560 372" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12.5">
+  <style>.ax{stroke:#1b2532;stroke-width:1.6}.crv{fill:none;stroke:#1b2532;stroke-width:2.6}.ch1{stroke:#9db8e8;stroke-width:1.6}.ch2{stroke:#6f93d9;stroke-width:1.7}.ch3{stroke:#4272c9;stroke-width:1.8}.tg{stroke:#b3372e;stroke-width:2.4}.pt{fill:#1b2532}.pl{fill:#4272c9}.lb{fill:#5a6673}</style>
+  <line class="ax" x1="60" y1="330" x2="535" y2="330"/><line class="ax" x1="60" y1="330" x2="60" y2="25"/>
+  <text class="lb" x="528" y="348">t</text><text class="lb" x="38" y="35">x</text>
+  <path class="crv" d="M60,330 Q264,330 468,49"/>
+  <line class="ch1" x1="291" y1="240" x2="445" y2="80"/>
+  <line class="ch2" x1="291" y1="240" x2="368" y2="170"/>
+  <line class="ch3" x1="291" y1="240" x2="329.5" y2="207.5"/>
+  <line class="tg" x1="175.5" y1="330" x2="491" y2="84"/>
+  <circle class="pt" cx="291" cy="240" r="5"/>
+  <circle class="pl" cx="445" cy="80" r="4"/><circle class="pl" cx="368" cy="170" r="4"/><circle class="pl" cx="329.5" cy="207.5" r="4"/>
+  <text x="278" y="264" font-weight="600">A</text>
+  <text class="lb" x="452" y="74">B₁</text><text class="lb" x="376" y="164">B₂</text><text class="lb" x="337" y="202">B₃</text>
+  <text fill="#4272c9" x="392" y="132">chords: average v</text>
+  <text fill="#4272c9" x="392" y="148">over shrinking Δt</text>
+  <text fill="#b3372e" x="150" y="240">tangent at A:</text>
+  <text fill="#b3372e" x="150" y="256" font-weight="600">slope = v(t₀)</text>
+  <text class="lb" x="279" y="348">t₀</text>
+</svg>
+<figcaption>The curve <var>x</var> = <var>t</var><sup>2</sup> with A fixed at <var>t</var><sub>0</sub> = 3. As B slides in (B₁ → B₂ → B₃ → A), the chord slopes run 8, 7, 6.5, … → 6 — the exact sequence of the numerical table — and the chord pivots onto the red <b>tangent</b>, slope 6. Drawn to scale.</figcaption>
+</figure>
+
+<div class="box def"><span class="tag">Definition · Tangent line</span>
+<p>The <b>tangent</b> to a curve at a point A is the line through A whose slope is the limit of chord slopes as the chord's second endpoint approaches A. Note the honesty of this: we did not "already know" what a tangent was and then discover its slope is the derivative — <em>the derivative is what defines the tangent</em>. (School geometry's "line touching a circle at one point" is a special case that does not generalize; a tangent may perfectly well re-cross the curve elsewhere.)</p></div>
+
+<div class="box anchor"><span class="tag">Reasoning anchor</span>
+<p><b>Average = chord. Instantaneous = tangent.</b> On any <var>x</var>–<var>t</var> graph, "how fast at this instant" is a question about the tangent's slope at that point, and nothing else. Half of all graph questions surrender to this sentence alone.</p></div>
+
+<h4>Theory: what the definition demands of x(t) — continuity and smoothness</h4>
+<p>The limit does not exist for free; the position function must cooperate. Two requirements, both with physical meaning:</p>
+<p><b>(a) Continuity — no teleporting.</b> A particle cannot jump instantaneously from one position to another: it must pass through the intermediate positions. Graphically, <var>x</var>(<var>t</var>) is an unbroken curve. This is a <em>physical</em> input (Module 1's boundary table already flagged it), and it is mathematically necessary too: if <var>x</var> jumped at <var>t</var>, then Δ<var>x</var>/Δ<var>t</var> would blow up as Δ<var>t</var> → 0 and no velocity would exist there.</p>
+<p><b>(b) Smoothness — no perfect corners.</b> Suppose a ball hits a wall and its graph has a sharp kink: slope +5 just before, −5 just after. The one-sided limits disagree (+5 from the past, −5 from the future — precisely non-example (ii) of II.1), so <em>velocity at the kink instant is undefined</em>. Reality's escape: real collisions are not instantaneous; slowed a millionfold, the "kink" is a very tight but smooth turn, and velocity exists throughout. The perfect kink is an <em>idealization</em> — a useful one, formalized as the impulse approximation in Volume 3 — and the price of using it is one instant with no defined velocity. Knowing exactly what an idealization costs is part of owning it.</p>
+
+<h4>Notation: three dialects for one idea</h4>
+<table>
+<tr><th>Notation</th><th>Read as</th><th>Origin &amp; when preferred</th></tr>
+<tr><td><span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span></td><td>"the derivative of <var>x</var> with respect to <var>t</var>"</td><td>Leibniz. Preferred in physics: it displays <em>which</em> variable changes with respect to <em>which</em>, and it makes dimensional analysis automatic ([<var>dx</var>/<var>dt</var>] = L/T on sight).</td></tr>
+<tr><td><var>ẋ</var></td><td>"<var>x</var>-dot"</td><td>Newton. One dot per time-derivative (<var>ẍ</var> = second). Compact; standard in advanced mechanics. Time only.</td></tr>
+<tr><td><var>x</var>′(<var>t</var>)</td><td>"<var>x</var>-prime of <var>t</var>"</td><td>Lagrange. Emphasizes that differentiation manufactures a new <em>function</em>. Common in mathematics.</td></tr>
+</table>
+<p><b>One caution, stated now and enforced forever:</b> <var>dx</var>/<var>dt</var> is <em>not</em> a fraction of two ordinary numbers — it is a single symbol for a limit of fractions. It frequently <em>behaves</em> like a fraction (that good behavior is why Leibniz designed it so, and it can be made fully rigorous), but you may not casually rip <var>dx</var> and <var>dt</var> apart until the legitimate techniques for doing so are built (Module 3 and Volume 0, Module 8). Until then: one symbol, one meaning.</p>
+
+<h3 id="c3">II.3 The Differentiation Toolkit — every rule earned</h3>
+
+<p><b>Generating question.</b> Physics hands us position functions constantly — <var>t</var><sup>2</sup>, 5<var>t</var><sup>3</sup> − 2<var>t</var>, <var>ut</var> + ½<var>at</var><sup>2</sup>. Running the raw limit each time is honest but slow. We now run it <em>once per pattern</em>, harvest the rules, and never need the raw computation again — while always retaining the ability to reproduce it (Block B will make sure).</p>
+
+<div class="box derive"><span class="tag">Derived · Rule 1 — constants</span>
+<p><var>x</var>(<var>t</var>) = <var>c</var> (parked at position <var>c</var>). Then <var>x</var>(<var>t</var> + Δ<var>t</var>) − <var>x</var>(<var>t</var>) = <var>c</var> − <var>c</var> = 0 for every window, so every average is 0 and the limit is 0.</p>
+<div class="eq"><span class="fr"><span><var>d</var></span><span><var>dt</var></span></span>(<var>c</var>) = 0 &nbsp;&nbsp;—&nbsp; <em>no change, no rate of change.</em></div></div>
+
+<div class="box derive"><span class="tag">Derived · Rule 2 — straight lines</span>
+<p><var>x</var>(<var>t</var>) = <var>ct</var>: the difference quotient is [<var>c</var>(<var>t</var>+Δ<var>t</var>) − <var>ct</var>]/Δ<var>t</var> = <var>c</var> exactly, for every window — no limit even needed. So <var>d</var>(<var>ct</var>)/<var>dt</var> = <var>c</var>. This is Module 1's uniform motion re-derived: constant slope, at every instant, equal to the average over any interval.</p></div>
+
+<div class="box derive"><span class="tag">Derived · Rule 3 — the power rule, by counting</span>
+<p>For <var>x</var> = <var>t</var><sup>3</sup>: expand (<var>t</var> + Δ<var>t</var>)<sup>3</sup> = <var>t</var><sup>3</sup> + 3<var>t</var><sup>2</sup>Δ<var>t</var> + 3<var>t</var>(Δ<var>t</var>)<sup>2</sup> + (Δ<var>t</var>)<sup>3</sup>. Then</p>
+<div class="eq"><span class="fr"><span>(<var>t</var>+Δ<var>t</var>)<sup>3</sup> − <var>t</var><sup>3</sup></span><span>Δ<var>t</var></span></span> = 3<var>t</var><sup>2</sup> + 3<var>t</var>·Δ<var>t</var> + (Δ<var>t</var>)<sup>2</sup> &nbsp;⟶&nbsp; 3<var>t</var><sup>2</sup></div>
+<p><b>Now the general power <var>t</var><sup><var>n</var></sup>, by a counting argument that shows <em>why</em> the rule is what it is.</b> Write (<var>t</var> + Δ<var>t</var>)<sup><var>n</var></sup> as a product of <var>n</var> identical brackets: (<var>t</var> + Δ<var>t</var>)(<var>t</var> + Δ<var>t</var>)···(<var>t</var> + Δ<var>t</var>). Multiplying out means: from <em>each</em> bracket, pick either <var>t</var> or Δ<var>t</var>, multiply your picks, and sum over all possible pick-patterns. Sort the results by how many Δ<var>t</var>'s were picked:</p>
+<ul>
+<li><b>Zero Δ<var>t</var>'s:</b> pick <var>t</var> from all <var>n</var> brackets — one way — giving <var>t</var><sup><var>n</var></sup>.</li>
+<li><b>Exactly one Δ<var>t</var>:</b> choose <em>which</em> bracket donates it — <var>n</var> ways — each giving <var>t</var><sup><var>n</var>−1</sup>Δ<var>t</var>. Total: <var>n</var> <var>t</var><sup><var>n</var>−1</sup> Δ<var>t</var>.</li>
+<li><b>Two or more Δ<var>t</var>'s:</b> every such term carries a factor (Δ<var>t</var>)<sup>2</sup> at least. Bundle them all as (Δ<var>t</var>)<sup>2</sup> × (bounded stuff).</li>
+</ul>
+<div class="eq">(<var>t</var> + Δ<var>t</var>)<sup><var>n</var></sup> = <var>t</var><sup><var>n</var></sup> + <var>n</var> <var>t</var><sup><var>n</var>−1</sup> Δ<var>t</var> + (Δ<var>t</var>)<sup>2</sup>·(bounded)</div>
+<p>Subtract <var>t</var><sup><var>n</var></sup>, divide by Δ<var>t</var>, let Δ<var>t</var> → 0: the middle term survives untouched, the bundle dies with its surviving factor of Δ<var>t</var>.</p>
+<div class="eq key"><span class="fr"><span><var>d</var></span><span><var>dt</var></span></span> <var>t</var><sup><var>n</var></sup> = <var>n</var> <var>t</var><sup><var>n</var>−1</sup></div>
+<p><em>Interpretation of the two visible moves:</em> the exponent drops by one because one bracket "spent" its <var>t</var> on the change; the factor <var>n</var> appears because any of the <var>n</var> brackets could have been the spender. The rule is combinatorics, not magic. <span class="small">(This expansion-to-first-order is also your first sighting of a Taylor series — the systematic version arrives in Volume 0, Module 10.)</span></p></div>
+
+<div class="box derive"><span class="tag">Derived · Rule 4 — linearity (sum &amp; constant multiple)</span>
+<p>Δ-algebra from Module 1: Δ(<var>x</var> + <var>y</var>) = Δ<var>x</var> + Δ<var>y</var> and Δ(<var>cx</var>) = <var>c</var>Δ<var>x</var> (both are one-line checks from "final minus initial"). Divide each identity by Δ<var>t</var>, apply the Sum and Scale limit laws of II.1:</p>
+<div class="eq"><span class="fr"><span><var>d</var></span><span><var>dt</var></span></span>(<var>x</var> + <var>y</var>) = <span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span> + <span class="fr"><span><var>dy</var></span><span><var>dt</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="fr"><span><var>d</var></span><span><var>dt</var></span></span>(<var>c x</var>) = <var>c</var> <span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span></div>
+<p><em>Physical reading:</em> if a total displacement is the sum of two contributions, the total rate is the sum of the rates. Rates inherit the bookkeeping of the changes they came from.</p></div>
+
+<p><b>The toolkit's reach.</b> Rules 1–4 differentiate <em>any polynomial in <var>t</var>, term by term</em> — and polynomials cover every motion this module and the next several need. Worked specimen, every step visible once (and never again):</p>
+<div class="eq"><var>x</var> = 4<var>t</var><sup>3</sup> − 6<var>t</var><sup>2</sup> + 5<var>t</var> − 7 &nbsp;⟹&nbsp; <var>v</var> = <span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span> = 4(3<var>t</var><sup>2</sup>) − 6(2<var>t</var>) + 5(1) − 0 = 12<var>t</var><sup>2</sup> − 12<var>t</var> + 5</div>
+<p><b>What the toolkit does not yet contain — and why that is deliberate.</b> No product rule, quotient rule, chain rule, and no derivatives of sin, cos, exponentials. Under this curriculum's founding law, mathematics enters when physics <em>demands</em> it: those tools are demanded by circular motion, oscillations, and decay (Modules 7, Volume 5, Volume 9), and each will be built at its point of need. What you have now is complete for everything up to and including projectile motion.</p>
+
+<div class="box note"><span class="tag">Dimensional theory of the derivative</span>
+<p>A derivative's dimensions are always [numerator]/[denominator]: [<var>dx</var>/<var>dt</var>] = LT<sup>−1</sup>, and later [<var>dv</var>/<var>dt</var>] = LT<sup>−2</sup> — because a limit of ratios keeps the ratio's dimensions. Practical weapon: in any derived formula, each differentiation with respect to <var>t</var> must strip exactly one power of T. If your algebra produces <var>v</var> = 2<var>t</var><sup>2</sup> from <var>x</var> = <var>t</var><sup>2</sup>, dimensions convict it instantly. Free, permanent error detection — use it after every differentiation until it is reflex.</p></div>
+
+<h3 id="c4">II.4 Instantaneous Speed — a theorem, not a definition</h3>
+
+<p><b>Generating question.</b> Module 1 left a deliberate asymmetry: average speed and |average velocity| are genuinely different numbers whenever motion reverses. Does the same gap infect the instantaneous quantities? Remarkably — no. And the reason why is a small, perfect illustration of what "instantaneous" buys you.</p>
+
+<div class="box derive"><span class="tag">Theorem · instantaneous speed = |instantaneous velocity|</span>
+<p><b>Claim.</b> For motion with continuous velocity, the limit of (distance in window)/(window) equals |<var>v</var>(<var>t</var>)| at every instant.</p>
+<p><b>Argument.</b> The gap between average speed and |average velocity| has exactly one source: <em>reversals inside the window</em> (Module 1's master inequality, with its equality condition "no reversal"). Now shrink the window around an instant where <var>v</var>(<var>t</var>) ≠ 0. Velocity is continuous, so sufficiently near <var>t</var> it keeps the sign it has <em>at</em> <var>t</var> — a small enough window contains <b>no reversal at all</b>. Within such windows, distance = |Δ<var>x</var>| <em>exactly</em>, so the two averages coincide exactly, so their limits coincide: speed(<var>t</var>) = |<var>v</var>(<var>t</var>)|. At an instant where <var>v</var>(<var>t</var>) = 0, continuity forces |<var>v</var>| to be arbitrarily small throughout small windows; the distance covered in a window of width Δ<var>t</var> is then at most (largest |<var>v</var>| in the window)·Δ<var>t</var>, so distance/Δ<var>t</var> → 0 = |<var>v</var>(<var>t</var>)|. ∎</p>
+<p><b>Physical soul of the proof:</b> zoomed in far enough, the motion has no time to turn around. Reversal is a finite-interval phenomenon; the instant is too small to hide one.</p></div>
+
+<table>
+<tr><th></th><th>Speed vs velocity — AVERAGE</th><th>Speed vs velocity — INSTANTANEOUS</th></tr>
+<tr><td><b>Relation</b></td><td>avg speed ≥ |avg velocity|; equality only for unreversed motion</td><td>speed = |<var>v</var>|, always (a theorem)</td></tr>
+<tr><td><b>Why</b></td><td>a finite interval can contain reversals that cancel Δ<var>x</var> but not path length</td><td>a shrinking window eventually contains no reversal</td></tr>
+<tr><td><b>Exam consequence</b></td><td>the word "average" forces you to ask <em>which</em> average</td><td>"speed at instant <var>t</var>" may be computed as |<var>dx</var>/<var>dt</var>| without fear</td></tr>
+</table>
+
+<h3 id="c5">II.5 Acceleration — the derivative machine, applied twice</h3>
+
+<p><b>Generating question.</b> The two-cars puzzle (I.4): position and velocity at an instant do not determine the future; the missing quantity is the rate at which velocity itself changes. We already own a machine that converts "quantity" into "rate of that quantity." Feed it velocity.</p>
+
+<div class="box def"><span class="tag">Definition · Acceleration</span>
+<div class="eq key"><var>ā</var> = <span class="fr"><span>Δ<var>v</var></span><span>Δ<var>t</var></span></span> &nbsp;(average) &nbsp;&nbsp;&nbsp;&nbsp; <var>a</var>(<var>t</var>) = <span class="v">lim</span><sub>Δ<var>t</var>→0</sub> <span class="fr"><span>Δ<var>v</var></span><span>Δ<var>t</var></span></span> = <span class="fr"><span><var>dv</var></span><span><var>dt</var></span></span> = <span class="fr"><span><var>d</var><sup>2</sup><var>x</var></span><span><var>dt</var><sup>2</sup></span></span> &nbsp;(instantaneous)</div>
+<p>Signed (a 1-D vector), like everything built from Δ<var>x</var>. Units m/s² — read it physically: <em>"metres per second, of velocity, gained per second."</em> An acceleration of 3 m/s² means the velocity reading climbs by 3 m/s during each second (exactly, if <var>a</var> is constant; instantaneously, in general). Structurally this section is II.2 verbatim with <var>v</var> in the role of <var>x</var> — same limit, same chord-to-tangent geometry <em>on the v–t graph</em>: <b>average acceleration = chord slope of <var>v</var>–<var>t</var>; instantaneous acceleration = tangent slope of <var>v</var>–<var>t</var></b>. You are not learning a second mechanism; you are re-running the only mechanism there is.</p></div>
+
+<p><b>The second-derivative notation, decoded.</b> <var>d</var><sup>2</sup><var>x</var>/<var>dt</var><sup>2</sup> abbreviates <span class="fr"><span><var>d</var></span><span><var>dt</var></span></span><big>(</big><span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span><big>)</big> — the operation <var>d</var>/<var>dt</var> applied twice to <var>x</var>. The superscripts are operation-counting, <em>not</em> squaring: nothing is multiplied by itself. (The placement — <var>d</var><sup>2</sup> up top, <var>dt</var><sup>2</sup> below — is Leibniz's bookkeeping so that dimensions read off correctly: L above, T<sup>2</sup> below, giving LT<sup>−2</sup> ✓.) The full chain, run on our specimen:</p>
+<div class="eq"><var>x</var> = <var>t</var><sup>3</sup> &nbsp;⟶<sub><var>d</var>/<var>dt</var></sub>&nbsp; <var>v</var> = 3<var>t</var><sup>2</sup> &nbsp;⟶<sub><var>d</var>/<var>dt</var></sub>&nbsp; <var>a</var> = 6<var>t</var> &nbsp;⟶<sub><var>d</var>/<var>dt</var></sub>&nbsp; <span class="fr"><span><var>da</var></span><span><var>dt</var></span></span> = 6 &nbsp;(the "jerk")</div>
+<p><b>Does the ladder ever end?</b> In principle you may differentiate forever (the third rate, <em>jerk</em>, is real engineering: passengers feel sudden <em>changes</em> of acceleration — a train easing its brakes on gently is minimizing jerk). But physics will grant acceleration a privileged position: Newton's second law (Volume 2) fixes <var>a</var> directly from forces, which — together with starting position and velocity — determines the entire future. That is <em>why</em> kinematics stops building vocabulary here: <var>x</var>, <var>v</var>, <var>a</var> is not an arbitrary stopping point but the complete set the laws of dynamics will consume. The puzzle of I.4 will be closed, not shelved.</p>
+
+<div class="box derive"><span class="tag">Derived · Acceleration is the curvature of the x–t graph</span>
+<p><var>a</var> is the rate of change of <var>v</var>, and <var>v</var> is the slope of <var>x</var>–<var>t</var>. Therefore <var>a</var> &gt; 0 means <em>the slope of x–t is increasing</em> — reading left to right, the graph turns steadily upward (concave up, a cup ∪). <var>a</var> &lt; 0: slope decreasing, graph bends downward (a cap ∩). <var>a</var> = 0 over an interval: slope frozen, graph straight. This "slope-of-the-slope" reading turns curvature into data:</p>
+<table>
+<tr><th>x–t graph shows…</th><th>slope (= v)</th><th>bending (= a)</th><th>motion</th></tr>
+<tr><td>straight, rising</td><td>+, constant</td><td>0</td><td>uniform, toward +x</td></tr>
+<tr><td>cup ∪, falling then rising</td><td>− → 0 → +</td><td>+</td><td>reverses at the bottom; a &gt; 0 throughout — <em>including at the turning instant</em></td></tr>
+<tr><td>cap ∩, rising then falling</td><td>+ → 0 → −</td><td>−</td><td>the thrown ball's shape (II.8)</td></tr>
+<tr><td>straightening from a bend</td><td>varies</td><td>→ 0</td><td>acceleration dying out</td></tr>
+</table></div>
+
+<div class="box anchor"><span class="tag">Reasoning anchor</span>
+<p><b>Value → slope → bend.</b> On an <var>x</var>–<var>t</var> graph: height is position, steepness is velocity, curvature is acceleration. Three layers of information stacked in one picture — always ask which layer a question is interrogating.</p></div>
+
+<h3 id="c6">II.6 The Sign Algebra of Motion — the deadliest misconception, dismantled</h3>
+
+<p><b>Generating question.</b> Velocity and acceleration are both signed. Two signs give four combinations. What does each combination <em>feel</em> like — and in particular, when is the object speeding up versus slowing down?</p>
+
+<p><b>The derivation — from the definition, not from vibes.</b> "Speeding up" means the <em>speed</em> |<var>v</var>| is increasing. Track |<var>v</var>| over a small window: <var>v</var> changes by approximately <var>a</var>·Δ<var>t</var>. If <var>a</var> has the <em>same sign</em> as <var>v</var>, the change pushes <var>v</var> further from zero — |<var>v</var>| grows. If <var>a</var> has the <em>opposite sign</em>, the change pulls <var>v</var> toward zero — |<var>v</var>| shrinks. The whole classification compresses into one product:</p>
+<div class="eq key"><var>v</var>·<var>a</var> &gt; 0 &nbsp;⟹&nbsp; speeding up &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <var>v</var>·<var>a</var> &lt; 0 &nbsp;⟹&nbsp; slowing down &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (signs, not sizes, decide)</div>
+
+<figure>
+<svg viewBox="0 0 560 175" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12">
+  <defs>
+    <marker id="vb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2b59c3"/></marker>
+    <marker id="ra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b3372e"/></marker>
+  </defs>
+  <style>.cd{fill:#fff;stroke:#dde3e8;stroke-width:1.3}.vl{stroke:#2b59c3;stroke-width:3;marker-end:url(#vb)}.al{stroke:#b3372e;stroke-width:2.2;marker-end:url(#ra)}.hd{font-weight:600;fill:#1b2532}.vr{font-weight:700}.lb{fill:#5a6673;font-size:11px}</style>
+  <rect class="cd" x="10"  y="12" width="127" height="130" rx="9"/>
+  <rect class="cd" x="149" y="12" width="127" height="130" rx="9"/>
+  <rect class="cd" x="288" y="12" width="127" height="130" rx="9"/>
+  <rect class="cd" x="427" y="12" width="127" height="130" rx="9"/>
+  <text class="hd" x="73"  y="34" text-anchor="middle">v &gt; 0, a &gt; 0</text>
+  <text class="hd" x="212" y="34" text-anchor="middle">v &gt; 0, a &lt; 0</text>
+  <text class="hd" x="351" y="34" text-anchor="middle">v &lt; 0, a &lt; 0</text>
+  <text class="hd" x="490" y="34" text-anchor="middle">v &lt; 0, a &gt; 0</text>
+  <line class="vl" x1="30" y1="66" x2="112" y2="66"/><text class="lb" x="73" y="58" text-anchor="middle">v</text>
+  <line class="al" x1="42" y1="92" x2="100" y2="92"/><text class="lb" x="73" y="110" text-anchor="middle">a</text>
+  <line class="vl" x1="169" y1="66" x2="251" y2="66"/><text class="lb" x="212" y="58" text-anchor="middle">v</text>
+  <line class="al" x1="239" y1="92" x2="181" y2="92"/><text class="lb" x="212" y="110" text-anchor="middle">a</text>
+  <line class="vl" x1="397" y1="66" x2="315" y2="66"/><text class="lb" x="351" y="58" text-anchor="middle">v</text>
+  <line class="al" x1="385" y1="92" x2="327" y2="92"/><text class="lb" x="351" y="110" text-anchor="middle">a</text>
+  <line class="vl" x1="536" y1="66" x2="454" y2="66"/><text class="lb" x="490" y="58" text-anchor="middle">v</text>
+  <line class="al" x1="448" y1="92" x2="506" y2="92"/><text class="lb" x="490" y="110" text-anchor="middle">a</text>
+  <text class="vr" x="73"  y="132" text-anchor="middle" fill="#1e7a55">SPEEDS UP</text>
+  <text class="vr" x="212" y="132" text-anchor="middle" fill="#b3372e">SLOWS</text>
+  <text class="vr" x="351" y="132" text-anchor="middle" fill="#1e7a55">SPEEDS UP</text>
+  <text class="vr" x="490" y="132" text-anchor="middle" fill="#b3372e">SLOWS</text>
+</svg>
+<figcaption>The four sign states. Blue arrow: velocity. Red arrow: acceleration. Aligned arrows ⟹ speed grows; opposed arrows ⟹ speed shrinks. Note the third panel: <var>a</var> &lt; 0 yet the object <b>speeds up</b>, because it is already moving in the −direction and the acceleration deepens it.</figcaption>
+</figure>
+
+<div class="box miscon"><span class="tag">Misconception — the deadliest in kinematics</span>
+<p><b>Tempting intuition:</b> "Negative acceleration means slowing down; deceleration and negative acceleration are the same thing."</p>
+<p><b>Hidden assumption:</b> that the object is moving in the +direction — usually because everyday examples (a car braking on a rightward road) quietly are.</p>
+<p><b>Why it fails:</b> the sign of <var>a</var> states which way the <em>velocity is being pushed</em>, not whether the speed shrinks. A ball moving in the −direction with <var>a</var> &lt; 0 is being pushed <em>deeper</em> into negative velocity: it speeds up.</p>
+<p><b>More accurate model:</b> read the <em>pair</em> (<var>v</var>, <var>a</var>). Same sign — faster; opposite signs — slower. Better still, banish the word "deceleration" from your written solutions: it is frame- and direction-relative slang. State signs.</p>
+<p><b>Why it matters in problems:</b> a ball thrown upward has <var>a</var> = −<var>g</var> at every instant of flight (up-positive convention) — yet on the way down it is speeding up under that same negative acceleration. Every vertical-motion problem in II.8 is a live minefield for this error, and JEE/NSEP set the mines deliberately.</p></div>
+
+<div class="box anchor"><span class="tag">Reasoning anchor</span>
+<p><b>Never read the sign of <var>a</var> alone; read it against the sign of <var>v</var>.</b> Aligned = speeding up. Opposed = slowing. That is the entire law.</p></div>
+
+<h3 id="c7">II.7 Constant Acceleration — the five laws, each one earned</h3>
+
+<p><b>Generating question.</b> The simplest non-trivial acceleration is a constant one — and nature, remarkably, serves it up in the single most common motion on Earth (free fall, next section). What exact predictions does "<var>a</var> = constant" force?</p>
+
+<div class="box def"><span class="tag">The model and its notation</span>
+<p><b>Assumption (the model):</b> <var>a</var> is the same number at every instant of the interval considered. Consequence, immediate and load-bearing: since instantaneous and average acceleration then coincide over any window, <mark>the <var>v</var>–<var>t</var> graph is a straight line</mark> of slope <var>a</var> — and every derivation below secretly leans on that straightness. <b>Standard symbols</b> (all signed components along a declared axis; the vector versions <var>v⃗</var> = <var>u⃗</var> + <var>a⃗t</var> etc. reduce to these in 1-D): <var>u</var> = velocity at <var>t</var> = 0; <var>v</var> = velocity at time <var>t</var>; <var>a</var> = the constant acceleration; <var>s</var> = displacement (not distance!) accumulated between 0 and <var>t</var>.</p></div>
+
+<h4>Law 1 — velocity grows linearly</h4>
+<div class="box derive"><span class="tag">Derived</span>
+<p>Constant <var>a</var> means <var>ā</var> = <var>a</var> over the interval [0, <var>t</var>]: (<var>v</var> − <var>u</var>)/<var>t</var> = <var>a</var>. Rearrange:</p>
+<div class="eq key"><var>v</var> = <var>u</var> + <var>at</var></div>
+<p>Reading: start with <var>u</var>; each second deposits <var>a</var> more. Straight line on the <var>v</var>–<var>t</var> plane: intercept <var>u</var>, slope <var>a</var>. Dimensions: [<var>at</var>] = LT<sup>−2</sup>·T = LT<sup>−1</sup> ✓.</p></div>
+
+<h4>Law 2 — displacement: three independent derivations</h4>
+<p>One law, three proofs — because each proof exposes a different face of the physics, and an Olympiad solver needs all three faces.</p>
+
+<div class="box derive"><span class="tag">Derivation A · by area (the geometric face)</span>
+<p><em>First, the key sub-idea — why displacement is the area under a v–t graph at all.</em> For uniform motion, displacement = <var>v</var> × <var>t</var>: numerically the area of a rectangle of height <var>v</var> and width <var>t</var>. For changing velocity, slice time into slivers so thin that within each the motion is effectively uniform (the zoom principle of Part I — this is its first industrial application): each sliver contributes ≈ <var>v</var>·Δ<var>t</var> of displacement, which is the area of a thin rectangle under the graph. Summing slivers sums the rectangles; refining the slicing turns the staircase of rectangles into the exact region under the curve. <span class="small">(Signed: slivers where <var>v</var> &lt; 0 contribute negative displacement — area below the axis counts negative. The full, general theory of this sum-of-slivers — integration — is Module 3's opening act; constant acceleration needs only the straight-line case, computed now.)</span></p>
+<p>For constant <var>a</var>, the region under the straight <var>v</var>–<var>t</var> line from 0 to <var>t</var> is a rectangle plus a triangle:</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12.5">
+  <style>.ax2{stroke:#1b2532;stroke-width:1.6}.rc{fill:#dbe7fa;stroke:none}.tr{fill:#d3ecdf;stroke:none}.vt{stroke:#1b2532;stroke-width:2.6}.dd{stroke:#5a6673;stroke-width:1;stroke-dasharray:4 4}.lb2{fill:#5a6673}.em{fill:#1b2532;font-weight:600}</style>
+  <polygon class="rc" points="60,208 480,208 480,280 60,280"/>
+  <polygon class="tr" points="60,208 480,208 480,100"/>
+  <line class="ax2" x1="60" y1="280" x2="535" y2="280"/><line class="ax2" x1="60" y1="280" x2="60" y2="30"/>
+  <line class="vt" x1="60" y1="208" x2="480" y2="100"/>
+  <line class="dd" x1="60" y1="100" x2="480" y2="100"/><line class="dd" x1="480" y1="100" x2="480" y2="280"/>
+  <text class="lb2" x="528" y="298">t</text><text class="lb2" x="34" y="40">v</text>
+  <text class="em" x="40" y="212">u</text><text class="em" x="40" y="104">v</text>
+  <text class="lb2" x="476" y="298">t</text><text class="lb2" x="56" y="298">0</text>
+  <text class="em" x="255" y="250" text-anchor="middle">rectangle: u·t</text>
+  <text class="lb2" x="255" y="266" text-anchor="middle">(what pure coasting at u would give)</text>
+  <text class="em" x="330" y="168" text-anchor="middle">triangle: ½(v−u)·t = ½at²</text>
+  <text class="lb2" x="330" y="184" text-anchor="middle">(the bonus the acceleration piles on)</text>
+</svg>
+<figcaption>The <var>v</var>–<var>t</var> line for constant <var>a</var>, its under-region split into the coasting rectangle and the acceleration triangle. The triangle's base is <var>t</var> and its height is <var>v</var> − <var>u</var> = <var>at</var> — <em>both</em> grow with <var>t</var>, which is exactly why the second term is quadratic: ½ · <var>t</var> · <var>at</var> = ½<var>at</var><sup>2</sup>. The <var>t</var><sup>2</sup> is not decoration; it is the geometry of a growing triangle.</figcaption>
+</figure>
+
+<div class="box derive"><span class="tag">Derivation A, concluded</span>
+<div class="eq key"><var>s</var> = <var>ut</var> + ½<var>at</var><sup>2</sup></div>
+<p>Term-by-term physics: <var>ut</var> is the displacement of the coasting twin (Module 1's fictitious uniform mover at the <em>initial</em> velocity); ½<var>at</var><sup>2</sup> is the accumulating correction the acceleration adds. Kill the acceleration (<var>a</var> = 0) and only the coast survives — the formula degrades gracefully into Module 1's uniform law, exactly as any correct generalization must.</p></div>
+
+<div class="box derive"><span class="tag">Derivation B · by symmetry pairing (the averaging face)</span>
+<p>Because <var>v</var>(<var>t</var>) is a straight line, its values pair off around the midpoint of the interval. Take any instant <var>t</var>′ and its mirror <var>t</var> − <var>t</var>′ (equally far from the two ends). Sum their velocities:</p>
+<div class="eq">[<var>u</var> + <var>at</var>′] + [<var>u</var> + <var>a</var>(<var>t</var> − <var>t</var>′)] = 2<var>u</var> + <var>at</var> = <var>u</var> + (<var>u</var> + <var>at</var>) = <var>u</var> + <var>v</var> &nbsp;— the same for <em>every</em> pair.</div>
+<p>Every mirror-pair of instants averages to (<var>u</var> + <var>v</var>)/2 — early slowness and late swiftness offset exactly, sliver by paired sliver. So the time-average of the velocity is the plain midpoint value, and displacement = (time-average of <var>v</var>) × <var>t</var>:</p>
+<div class="eq key"><var>s</var> = <span class="fr"><span><var>u</var> + <var>v</var></span><span>2</span></span> · <var>t</var> &nbsp;&nbsp;&nbsp;&nbsp;(Law 3, arriving as a by-product)</div>
+<p><b>Boundary, in red ink:</b> the innocent-looking mean (<var>u</var> + <var>v</var>)/2 is a privilege of the <em>straight</em> <var>v</var>–<var>t</var> line. Curve the line (varying <var>a</var>) and the mirror-pairs no longer sum to a constant — the shortcut dies. Module 1's harmonic-mean trap taught you to distrust naive averaging; here, at last, is the one situation where the naive average is exactly right, and the precise reason why.</p></div>
+
+<div class="box derive"><span class="tag">Derivation C · by guess-and-verify (the calculus face)</span>
+<p>The most modern proof, and a template you will reuse for years. We <em>seek</em> a function <var>x</var>(<var>t</var>) whose derivative is the known velocity <var>u</var> + <var>at</var>. <b>Propose</b> <var>x</var>(<var>t</var>) = <var>x</var><sub>0</sub> + <var>ut</var> + ½<var>at</var><sup>2</sup> and <b>verify</b> with the toolkit:</p>
+<div class="eq"><span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span> = 0 + <var>u</var>(1) + ½<var>a</var>(2<var>t</var>) = <var>u</var> + <var>at</var> ✓ &nbsp;&nbsp;&nbsp; and differentiating again: <span class="fr"><span><var>dv</var></span><span><var>dt</var></span></span> = <var>a</var> ✓</div>
+<p>The candidate reproduces the required velocity at every instant and starts at <var>x</var><sub>0</sub>. <b>But is it the only motion that does?</b> Yes — by a principle worth naming:</p>
+<p style="border-left:3px solid #1e7a55; padding-left:12px"><b>The no-change theorem.</b> <em>If a quantity's instantaneous rate of change is zero at every instant of an interval, the quantity is constant on that interval.</em> Physically: a car whose speedometer reads exactly zero for the whole trip has not moved. Apply it: if two motions share the same <var>v</var>(<var>t</var>) throughout, their <em>difference</em> has zero rate at every instant, hence never changes; if they also share a starting position, the difference is zero forever — the motions are identical. <span class="small">(The theorem is physically self-evident and true; its airtight mathematical proof needs the Mean Value Theorem, delivered in Volume 0, Module 8. Flagged, not fudged.)</span></p>
+<p><em>What this face reveals:</em> "find the motion given the acceleration" is our first <b>differential equation</b> — a law prescribing rates, solved by exhibiting a function with those rates. Newton's mechanics will consist of exactly such problems (Volume 0, Module 9 makes this systematic). The ½ in ½<var>at</var><sup>2</sup>, mysterious to memorizers, is transparent here: it is precisely the coefficient that the power rule's factor of 2 will cancel.</p></div>
+
+<h4>Law 4 — eliminating time</h4>
+<div class="box derive"><span class="tag">Derived</span>
+<p>Problems often supply speeds and distances but neither give nor want the time. Solve Law 1 for it — <var>t</var> = (<var>v</var> − <var>u</var>)/<var>a</var> — and substitute into Law 3:</p>
+<div class="eq"><var>s</var> = <span class="fr"><span><var>u</var> + <var>v</var></span><span>2</span></span> · <span class="fr"><span><var>v</var> − <var>u</var></span><span><var>a</var></span></span> = <span class="fr"><span><var>v</var><sup>2</sup> − <var>u</var><sup>2</sup></span><span>2<var>a</var></span></span> &nbsp;&nbsp;⟹&nbsp;&nbsp; <span style="border:1.5px solid #2b59c3; border-radius:8px; padding:3px 10px; background:#eef3fc"><var>v</var><sup>2</sup> = <var>u</var><sup>2</sup> + 2<var>as</var></span></div>
+<p>Note the algebra's gift: (<var>u</var>+<var>v</var>)(<var>v</var>−<var>u</var>) = <var>v</var><sup>2</sup> − <var>u</var><sup>2</sup>, the difference of squares. And note the physics' whisper: a relation between <em>squared speeds</em> and <em>displacement</em>, with time expelled. In Volume 3 this exact shape — multiplied through by ½<var>m</var> — becomes the work–energy theorem. Law 4 is energy conservation traveling incognito; remember its face.</p></div>
+
+<h4>Law 5 — displacement during the n-th second</h4>
+<div class="box derive"><span class="tag">Derived</span>
+<p>The displacement <em>during</em> second number <var>n</var> (from <var>t</var> = <var>n</var>−1 to <var>t</var> = <var>n</var>) is a difference of two Law-2 evaluations:</p>
+<div class="eq"><var>s</var><sub><var>n</var></sub> = <big>[</big><var>un</var> + ½<var>an</var><sup>2</sup><big>]</big> − <big>[</big><var>u</var>(<var>n</var>−1) + ½<var>a</var>(<var>n</var>−1)<sup>2</sup><big>]</big> = <var>u</var> + <span class="fr"><span><var>a</var></span><span>2</span></span>(2<var>n</var> − 1)</div>
+<p><b>The dimensional puzzle, resolved — do not skip this.</b> As printed, both terms look like velocities (m/s), yet <var>s</var><sub><var>n</var></sub> is a displacement in metres. The formula is written in SI shorthand: a factor of (1 s) multiplies <var>u</var> and a factor of (1 s²) multiplies the second term — invisible because both equal 1 in SI. Fully honest form: <var>s</var><sub><var>n</var></sub> = <var>u</var>·(1 s) + ½<var>a</var>(2<var>n</var>−1)·(1 s²), dimensions clean. Two consequences: (i) the formula is <em>only</em> valid with SI inputs — feed it km/h and it lies; (ii) <var>s</var><sub><var>n</var></sub> is "displacement over a one-second window," not a rate. Exam setters know students memorize this law blind; the dimensional trap is set accordingly.</p></div>
+
+<h4>The boundary that governs all five — and a live counterexample</h4>
+<div class="box miscon"><span class="tag">Boundary · constant a only</span>
+<p>Every derivation above leaned on the straightness of the <var>v</var>–<var>t</var> line: the trapezoid (A), the mirror-pairing (B), the specific quadratic guess (C). If <var>a</var> varies, all five laws are void. <b>Watch one fail.</b> Take <var>x</var> = <var>t</var><sup>3</sup> (so <var>v</var> = 3<var>t</var><sup>2</sup>, <var>a</var> = 6<var>t</var> — manifestly not constant), and ask for <var>v</var> at <var>t</var> = 2 s. Truth: <var>v</var> = 3(4) = 12 m/s. Now misuse Law 1 with <var>u</var> = 0: which "<var>a</var>" do you plug in? Using <var>a</var>(2) = 12 gives <var>v</var> = 24 — wrong by ×2. Using <var>a</var>(0) = 0 gives <var>v</var> = 0 — absurd. Only the true time-average of <var>a</var> (here 6 m/s², the value at <var>t</var> = 1) rescues Law 1, and in general you do not know that average in advance. <b>Discipline:</b> before touching any of the five laws, write the sentence "assuming constant acceleration because …" — and have a because. In INPhO's descriptive format, that sentence is also worth marks.</p></div>
+
+<div class="box note"><span class="tag">Consistency web — the free error-detector</span>
+<p>The five laws are not independent: any two of {Law 1, Law 2} generate the rest. A constant-acceleration problem is therefore <em>over-determined</em> — after solving with one law, a second law re-derives your answer from different inputs. Two routes agreeing is powerful evidence of correctness; disagreeing is certain proof of error. Institute the habit now: <b>every constant-a answer gets one independent cross-check.</b> It costs twenty seconds and catches the majority of algebra slips before an examiner does.</p></div>
+
+<h3 id="c8">II.8 Free Fall — nature's constant-acceleration laboratory</h3>
+
+<p><b>The empirical pillar.</b> Near the Earth's surface, with air resistance removed, <em>every</em> body — stone or feather, heavy or light — falls with the <em>same</em> constant downward acceleration:</p>
+<div class="eq key"><var>g</var> ≈ 9.8 m/s² &nbsp;(use 10 m/s² where a problem says so) &nbsp;&nbsp;—&nbsp; the same for all bodies, directed vertically down.</div>
+<p>Three separations, in the Module-1 spirit of keeping strands apart. <b>Observed:</b> in vacuum, a feather and a hammer released together land together — demonstrated on the Moon by Apollo 15, and in evacuated drop-towers on Earth; measured <var>g</var> varies slightly with location (≈9.78 at the equator, ≈9.83 at the poles, smaller at altitude). <b>Idealized:</b> "free fall" assumes air resistance negligible and <var>g</var> uniform over the trajectory — excellent for a dense ball over tens of metres; poor for a feather in air or a rocket over hundreds of kilometres (Part VI). <b>Not yet explained:</b> <em>why</em> all masses share one acceleration is one of the deepest facts in physics — gravitational force is proportional to exactly the mass that resists acceleration. Newton takes the first pass at it (Volumes 2 and 4); Einstein rebuilt physics around it. Kinematics records the fact and computes with it.</p>
+<p><b>The entire technique of free-fall problems is sign discipline.</b> Declare an axis; then <var>g</var> enters as a component: up-positive ⟹ <var>a</var> = −<var>g</var>; down-positive ⟹ <var>a</var> = +<var>g</var>. The symbol <var>g</var> itself always denotes the positive magnitude 9.8 m/s². Both conventions give identical physics (Concept 7 of Module 1 guarantees it); mixing them mid-solution gives garbage. Block C, Problem C2 runs one problem through <em>both</em> conventions as proof and vaccination.</p>
+
+<h4>The anatomy of a vertical throw — every classic result derived</h4>
+<p>Throw a ball straight up with speed <var>u</var>; up-positive, origin at the hand, <var>a</var> = −<var>g</var>. The two governing laws: <var>v</var>(<var>t</var>) = <var>u</var> − <var>gt</var> and <var>y</var>(<var>t</var>) = <var>ut</var> − ½<var>gt</var><sup>2</sup>.</p>
+<ul>
+<li><b>Apex time.</b> The top of the flight is where the ball stops rising: <var>v</var> = 0 ⟹ <mark><var>t</var><sub>up</sub> = <var>u</var>/<var>g</var></mark>.</li>
+<li><b>Maximum height.</b> Law 4 with <var>v</var> = 0: 0 = <var>u</var><sup>2</sup> − 2<var>gH</var> ⟹ <mark><var>H</var> = <var>u</var><sup>2</sup>/2<var>g</var></mark>. Read the scaling: double the throw speed, <em>quadruple</em> the height — the square in Law 4 at work.</li>
+<li><b>Total flight time.</b> Return to launch height: <var>y</var> = 0 ⟹ <var>t</var>(<var>u</var> − ½<var>gt</var>) = 0 ⟹ <var>t</var> = 0 (launch — the equation politely returns the moment you already knew) or <mark><var>T</var> = 2<var>u</var>/<var>g</var> = 2<var>t</var><sub>up</sub></mark>: descent takes exactly as long as ascent.</li>
+<li><b>Return velocity.</b> <var>v</var>(<var>T</var>) = <var>u</var> − <var>g</var>(2<var>u</var>/<var>g</var>) = −<var>u</var>: same speed, opposite direction.</li>
+</ul>
+
+<div class="box derive"><span class="tag">Derived · The symmetry theorems of vertical flight</span>
+<p><b>Theorem S1 (mirror in time).</b> The height at equal time-offsets before and after the apex is the same: <var>y</var>(<var>t</var><sub>up</sub> + τ) = <var>y</var>(<var>t</var><sub>up</sub> − τ). <em>Proof.</em> Expand with <var>gt</var><sub>up</sub> = <var>u</var>:</p>
+<div class="eq"><var>y</var>(<var>t</var><sub>up</sub> ± τ) = <var>u</var>(<var>t</var><sub>up</sub> ± τ) − ½<var>g</var>(<var>t</var><sub>up</sub> ± τ)<sup>2</sup> = <big>[</big><var>ut</var><sub>up</sub> − ½<var>gt</var><sub>up</sub><sup>2</sup><big>]</big> ± τ(<var>u</var> − <var>gt</var><sub>up</sub>) − ½<var>g</var>τ<sup>2</sup> = <var>H</var> − ½<var>g</var>τ<sup>2</sup></div>
+<p>The ± term carries the factor (<var>u</var> − <var>gt</var><sub>up</sub>) = <var>v</var>(<var>t</var><sub>up</sub>) = 0 — it vanishes <em>because the apex is where velocity vanishes</em>. The flight is a palindrome centered on its apex.</p>
+<p><b>Theorem S2 (equal speeds at equal heights).</b> From Law 4, <var>v</var><sup>2</sup> = <var>u</var><sup>2</sup> − 2<var>gy</var>: the <em>speed</em> at height <var>y</var> depends only on <var>y</var>, not on the direction of travel or the time of visit. Passing 15 m on the way up and on the way down: same speed, opposite velocity.</p>
+<p><b>Why the symmetry exists at all</b> — the structural reason, which generalizes: the acceleration is constant, hence indifferent to the direction of time. Run the film of the descent backwards and it satisfies the same law as the ascent (velocities flip sign; the acceleration, a <em>second</em> derivative, does not — two sign flips cancel). Any motion governed by constant <var>a</var> inherits this time-reversal symmetry; air resistance, which opposes the <em>current</em> velocity, breaks it — and real trajectories in air are indeed asymmetric (slower coming down, shorter on the far side). Symmetry present ⟹ idealization holding; symmetry broken ⟹ look for the velocity-dependent intruder. That inference pattern is pure Olympiad.</p></div>
+
+<figure>
+<svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12.5">
+  <style>.ax3{stroke:#1b2532;stroke-width:1.6}.ln3{stroke:#1b2532;stroke-width:2.6}.up{fill:#d3ecdf}.dn{fill:#f6dedb}.dd3{stroke:#5a6673;stroke-width:1;stroke-dasharray:4 4}.lb3{fill:#5a6673}.em3{fill:#1b2532;font-weight:600}</style>
+  <polygon class="up" points="60,80 250,160 60,160"/>
+  <polygon class="dn" points="250,160 440,240 440,160"/>
+  <line class="ax3" x1="60" y1="160" x2="535" y2="160"/><line class="ax3" x1="60" y1="270" x2="60" y2="25"/>
+  <line class="ln3" x1="60" y1="80" x2="440" y2="240"/>
+  <line class="dd3" x1="250" y1="160" x2="250" y2="270"/><line class="dd3" x1="440" y1="240" x2="440" y2="270"/>
+  <text class="lb3" x="528" y="152">t</text><text class="lb3" x="34" y="35">v</text>
+  <text class="em3" x="36" y="84">+u</text><text class="lb3" x="30" y="244">−u</text>
+  <text class="lb3" x="244" y="286">u/g</text><text class="lb3" x="430" y="286">2u/g</text>
+  <text class="em3" x="130" y="128">area +u²/2g = H (rise)</text>
+  <text class="em3" x="278" y="212">area −u²/2g (fall)</text>
+  <text class="lb3" x="300" y="120">slope = −g everywhere —</text>
+  <text class="lb3" x="300" y="136">including at t = u/g, where v = 0</text>
+  <circle cx="250" cy="160" r="4.5" fill="#b3372e"/>
+</svg>
+<figcaption>The complete throw on one <var>v</var>–<var>t</var> line: intercept +<var>u</var>, constant slope −<var>g</var>, zero-crossing at the apex. Green area (+<var>u</var><sup>2</sup>/2<var>g</var>) is the rise; red area below the axis is <em>negative</em> displacement of equal size — net displacement zero at <var>t</var> = 2<var>u</var>/<var>g</var>, while total distance is 2<var>H</var> = <var>u</var><sup>2</sup>/<var>g</var> (Module 1's split, now under acceleration). The red dot marks the exam's favorite lie: <var>v</var> = 0 there, but the slope — the acceleration — never flinches.</figcaption>
+</figure>
+
+<div class="box miscon"><span class="tag">Misconception · "at the top, a = 0"</span>
+<p><b>Tempting intuition:</b> the ball hangs motionless at the apex, so "nothing is happening" — acceleration must be zero.</p>
+<p><b>Hidden assumption:</b> that acceleration is a property of <em>moving</em>, so no motion ⟹ no acceleration.</p>
+<p><b>Why it fails:</b> acceleration is the rate of change of velocity, and at the apex velocity is changing as briskly as ever — from small-positive to small-negative, straight through zero. On the graph above: the line crosses the axis without the slightest change of slope.</p>
+<p><b>More accurate model:</b> <var>v</var> = 0 is a statement about the <em>value</em>; <var>a</var> ≠ 0 is a statement about the <em>trend</em>. A zero with a nonzero trend is a zero just passing through.</p>
+<p><b>Why it matters:</b> if <var>a</var> were truly 0 at the apex, the velocity would stop changing while at 0 — the ball would hover forever. Balls do not hover; the misconception refutes itself. Direct MCQ bait in NSEP/JEE, and the same confusion re-attacks later at pendulum turning points and spring extremes (Volume 5).</p></div>
+
+<div class="box derive"><span class="tag">Derived · Galileo's odd-number rule — the fingerprint of constant acceleration</span>
+<p>From rest (<var>u</var> = 0), Law 5 gives <var>s</var><sub><var>n</var></sub> = ½<var>a</var>(2<var>n</var> − 1)·(1 s²): successive-second displacements proportional to 1, 3, 5, 7, … And for any <var>u</var>, subtracting consecutive Law-5 values: <var>s</var><sub><var>n</var>+1</sub> − <var>s</var><sub><var>n</var></sub> = <var>a</var>·(1 s²) — <b>successive equal-time displacements always form an arithmetic progression with common difference <var>a</var>·(Δ<var>t</var>)<sup>2</sup></b> (Module 1, Block C5, now proved in full generality and for any window Δ<var>t</var>). This is a <em>diagnostic instrument</em>: given strobe data, take differences of differences — constant ⟹ constant acceleration, and the constant divided by (Δ<var>t</var>)<sup>2</sup> <em>is</em> <var>a</var>. It is also history: Galileo, lacking clocks fast enough for free fall, rolled balls down gentle inclines — <em>diluting</em> gravity to a measurable trickle while preserving its constancy — and found the odd numbers. Slowing a phenomenon down without changing its structure remains a first-rank experimental idea.</p></div>
+
+<div class="box anchor"><span class="tag">Reasoning anchors · II.7–II.8</span>
+<p>1. <b>Constant <var>a</var> ⟺ straight <var>v</var>–<var>t</var> line</b> — and all five laws are just that line's geometry (slope, trapezoid area, mirror symmetry).</p>
+<p>2. <b>½<var>at</var><sup>2</sup> is a triangle</b> whose base and height both grow with <var>t</var>; the ½ is the triangle's half, pre-paid for the power rule's 2.</p>
+<p>3. <b><var>v</var><sup>2</sup> = <var>u</var><sup>2</sup> + 2<var>as</var> is the time-free law</b> — reach for it the moment a problem talks speeds-and-distances and never mentions the clock.</p>
+<p>4. <b>Free fall is a palindrome about its apex</b> — equal times, equal speeds at equal heights — because constant acceleration cannot tell time's arrow. Air resistance can, and breaks it.</p></div>
+
+<div class="duo">Parts III–IX · Consolidation, viewpoints, boundaries, insight</div>
+
+<h2 id="p3"><span class="chip">III</span>Mathematical Consolidation</h2>
+
+<h4>The differentiation table so far — each row re-derivable on demand</h4>
+<table>
+<tr><th>x(t)</th><th>dx/dt</th><th>Built in</th><th>Physical reading</th></tr>
+<tr><td><var>c</var></td><td>0</td><td>II.3 Rule 1</td><td>parked ⟹ zero velocity</td></tr>
+<tr><td><var>ct</var></td><td><var>c</var></td><td>II.3 Rule 2</td><td>uniform motion re-derived</td></tr>
+<tr><td><var>t</var><sup><var>n</var></sup></td><td><var>n t</var><sup><var>n</var>−1</sup></td><td>II.3 Rule 3 (counting)</td><td>the workhorse</td></tr>
+<tr><td><var>x</var> + <var>y</var>, <var>cx</var></td><td>sum / scale of rates</td><td>II.3 Rule 4</td><td>rates inherit Δ-bookkeeping</td></tr>
+</table>
+
+<h4>The general polynomial motion — and the coefficient dictionary</h4>
+<p>Let <var>x</var>(<var>t</var>) = <var>c</var><sub>0</sub> + <var>c</var><sub>1</sub><var>t</var> + <var>c</var><sub>2</sub><var>t</var><sup>2</sup> + <var>c</var><sub>3</sub><var>t</var><sup>3</sup>. Differentiating twice with the toolkit:</p>
+<div class="eq"><var>v</var> = <var>c</var><sub>1</sub> + 2<var>c</var><sub>2</sub><var>t</var> + 3<var>c</var><sub>3</sub><var>t</var><sup>2</sup> &nbsp;&nbsp;&nbsp;&nbsp; <var>a</var> = 2<var>c</var><sub>2</sub> + 6<var>c</var><sub>3</sub><var>t</var></div>
+<p>Set <var>t</var> = 0 in all three lines and read off what each coefficient <em>is</em>: <var>c</var><sub>0</sub> = <var>x</var><sub>0</sub> (initial position), <var>c</var><sub>1</sub> = <var>u</var> (initial velocity), <var>c</var><sub>2</sub> = <var>a</var><sub>0</sub>/2 (<em>half</em> the initial acceleration — the ½ of ½<var>at</var><sup>2</sup> was never special to free fall), and <var>c</var><sub>3</sub> = (initial jerk)/6. Notice the divisors: 1, 1, 2, 6 = 1!, 1!, 2!, 3!. The coefficient of <var>t</var><sup><var>n</var></sup> is the <var>n</var>-th rate at <var>t</var> = 0 divided by <var>n</var>! — the factorials pre-pay the cascading factors the power rule will charge. You have just seen the skeleton of the <b>Taylor series</b>, years ahead of its formal arrival (Volume 0, Module 10). When you meet it there, it will be a friend, not a formula.</p>
+
+<h4>Quadratics in time — the solver's contract</h4>
+<p>Constant-acceleration position laws are quadratic in <var>t</var>, so questions "when is the particle at <var>y</var> = …?" produce <var>at</var><sup>2</sup> + <var>bt</var> + <var>c</var> = 0 with up to two roots. The physics of the root count: <b>two real roots</b> — the particle visits that position twice (up and down through the same height); <b>one (repeated) root</b> — it barely grazes the position (the apex case); <b>no real root (negative discriminant)</b> — the event never happens (the ball never reaches that height). And a root at negative <var>t</var> is not garbage: it answers a legitimate question about the <em>extrapolated past</em> — "when <em>would</em> the particle have been there, had this motion always been running?" Block F turns this into a full technique. The discriminant is a physical instrument, not an algebra chore.</p>
+
+<h4>Δ versus d — the standing discipline</h4>
+<table>
+<tr><th>Symbol</th><th>Means</th><th>May divide by it?</th><th>Typical habitat</th></tr>
+<tr><td>Δ<var>x</var>, Δ<var>t</var></td><td>finite, actual changes between two real events</td><td>yes — ordinary numbers</td><td>data, averages, chords, tables</td></tr>
+<tr><td><var>dx</var>/<var>dt</var></td><td>one indivisible symbol: the limit of Δ<var>x</var>/Δ<var>t</var></td><td>not separable (yet — Module 3 earns the license)</td><td>instantaneous laws, tangents</td></tr>
+</table>
+
+<h2 id="p4"><span class="chip">IV</span>Geometry, Vectors, and Graphs</h2>
+
+<figure>
+<svg viewBox="0 0 860 175" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="13.5">
+  <defs>
+    <marker id="g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1e7a55"/></marker>
+    <marker id="g2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5a6673"/></marker>
+  </defs>
+  <style>.bx{fill:#fff;stroke:#c3d2f0;stroke-width:1.6}.tl{fill:#1b2532;font-weight:700;font-size:17px}.sb{fill:#5a6673;font-size:11.5px}.fw{stroke:#1e7a55;stroke-width:2.2;marker-end:url(#g1)}.bw{stroke:#5a6673;stroke-width:1.6;stroke-dasharray:6 5;marker-end:url(#g2)}.fl{fill:#1e7a55;font-weight:600}.bl{fill:#5a6673}</style>
+  <rect class="bx" x="40" y="48" width="180" height="66" rx="11"/><text class="tl" x="130" y="78" text-anchor="middle">x(t)</text><text class="sb" x="130" y="98" text-anchor="middle">position</text>
+  <rect class="bx" x="340" y="48" width="180" height="66" rx="11"/><text class="tl" x="430" y="78" text-anchor="middle">v(t)</text><text class="sb" x="430" y="98" text-anchor="middle">velocity</text>
+  <rect class="bx" x="640" y="48" width="180" height="66" rx="11"/><text class="tl" x="730" y="78" text-anchor="middle">a(t)</text><text class="sb" x="730" y="98" text-anchor="middle">acceleration</text>
+  <line class="fw" x1="222" y1="66" x2="336" y2="66"/><text class="fl" x="279" y="52" text-anchor="middle">slope · d/dt</text>
+  <line class="fw" x1="522" y1="66" x2="636" y2="66"/><text class="fl" x="579" y="52" text-anchor="middle">slope · d/dt</text>
+  <line class="bw" x1="336" y1="98" x2="222" y2="98"/><text class="bl" x="279" y="128" text-anchor="middle">area (Module 3)</text>
+  <line class="bw" x1="636" y1="98" x2="522" y2="98"/><text class="bl" x="579" y="128" text-anchor="middle">area (Module 3)</text>
+</svg>
+<figcaption>The kinematic chain — the signature picture of this module. Rightward, information flows by taking slopes: differentiate <var>x</var> to get <var>v</var>, differentiate <var>v</var> to get <var>a</var>. The dashed leftward road — rebuilding <var>v</var> from <var>a</var>, and <var>x</var> from <var>v</var>, by accumulating areas — is exactly the inverse problem, and it is the whole of Module 3.</figcaption>
+</figure>
+
+<h4>Reading all three graphs of one motion — the consolidated dictionary</h4>
+<table>
+<tr><th>Question about the motion</th><th>On x–t, read…</th><th>On v–t, read…</th><th>On a–t, read…</th></tr>
+<tr><td>Where is it?</td><td><b>height</b> of the curve</td><td>— (not directly visible)</td><td>—</td></tr>
+<tr><td>How fast, which way?</td><td><b>slope</b> of the tangent</td><td><b>height</b> (sign included)</td><td>—</td></tr>
+<tr><td>Speeding up or slowing?</td><td>slope's magnitude growing/shrinking</td><td>height moving away from / toward the axis</td><td>sign of <var>a</var> against sign of <var>v</var></td></tr>
+<tr><td>What is the acceleration?</td><td><b>curvature</b> (∪ up, ∩ down)</td><td><b>slope</b></td><td><b>height</b></td></tr>
+<tr><td>Momentarily at rest?</td><td>horizontal tangent</td><td>curve crosses the axis</td><td>— (says nothing!)</td></tr>
+<tr><td>Reverses direction?</td><td>peak or valley</td><td>axis crossing <em>with sign change</em></td><td>—</td></tr>
+</table>
+<p>The same physical fact lives one derivative "lower" on each successive graph — height on <var>v</var>–<var>t</var> is slope on <var>x</var>–<var>t</var>; height on <var>a</var>–<var>t</var> is slope on <var>v</var>–<var>t</var> and curvature on <var>x</var>–<var>t</var>. Internalize the ladder and any one graph lets you sketch the other two — a skill Module 3 will drill to fluency.</p>
+
+<figure>
+<svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" font-family="Avenir Next,Segoe UI,sans-serif" font-size="12.5">
+  <style>.ax4{stroke:#1b2532;stroke-width:1.6}.pb{fill:none;stroke:#1b2532;stroke-width:2.6}.tg4{stroke:#b3372e;stroke-width:2;stroke-dasharray:7 5}.lb4{fill:#5a6673}.em4{fill:#1b2532;font-weight:600}</style>
+  <line class="ax4" x1="60" y1="280" x2="535" y2="280"/><line class="ax4" x1="60" y1="280" x2="60" y2="30"/>
+  <path class="pb" d="M60,280 Q250,-160 440,280"/>
+  <line class="tg4" x1="175" y1="60" x2="325" y2="60"/>
+  <circle cx="250" cy="60" r="4.5" fill="#b3372e"/>
+  <text class="lb4" x="528" y="298">t</text><text class="lb4" x="34" y="40">y</text>
+  <text class="em4" x="250" y="40" text-anchor="middle">apex: slope = 0 (v = 0)</text>
+  <text class="lb4" x="356" y="96">…but the bend — the ∩ curvature —</text>
+  <text class="lb4" x="356" y="112">is the same here as everywhere:</text>
+  <text class="em4" x="356" y="130">a = −g, uninterrupted</text>
+  <text class="lb4" x="102" y="200">rising: slope +, shrinking</text>
+  <text class="lb4" x="330" y="238">falling: slope −, growing</text>
+</svg>
+<figcaption>The thrown ball's <var>y</var>–<var>t</var> graph (a parabola, to scale). The dashed tangent at the apex is horizontal — velocity zero — while the curvature that carries the acceleration is identical at every point of the arc. One picture, both layers, misconception dead.</figcaption>
+</figure>
+
+<h4>Vector bookkeeping — extended one rung</h4>
+<p>Module 1 classified position and displacement as 1-D vectors (sign = direction) and distance as a scalar. The new entries: <b>velocity — vector</b> (its sign is the direction of motion, this instant); <b>speed — scalar</b> (= |<var>v</var>|, by the II.4 theorem); <b>acceleration — vector</b> (its sign is the direction velocity is being <em>pushed</em>, which the II.6 quadrants showed is independent of the direction of motion). Standing discipline, unchanged: declare the +direction in writing before the first equation; check every final sign against the physical picture; never substitute a magnitude where a component belongs. In Module 4, these same three quantities grow full two-dimensional arrows, and — fair warning — acceleration's arrow will turn out not even to lie along the path. The sign discipline you build here is the trellis that growth climbs.</p>
+
+<h2 id="p5"><span class="chip">V</span>Alternative Viewpoints</h2>
+
+<p><b>Viewpoint 1 — laws as evolution rules.</b> Rearrange perspective on II.7's Derivation C: "the acceleration is <var>a</var>" is an instruction — <em>from wherever you are, with whatever velocity you have, change your velocity at rate a</em> — and the motion is what results from obeying it forever. A rule prescribing rates plus a starting state generating the whole future: that is a <b>differential equation</b>, the native language of every fundamental law (Newton's, Maxwell's, Schrödinger's). What it reveals: physics laws are local instructions, not global formulas; the formulas are <em>consequences</em>. What it conceals: for most rules no tidy formula exists at all, and one solves numerically — which is viewpoint 2.</p>
+<p><b>Viewpoint 2 — the discrete world: how machines differentiate.</b> A sensor owns no limits, only samples. From samples <var>x</var>(<var>t</var>) at spacing <var>h</var>, two estimators of <var>v</var>(<var>t</var>):</p>
+<div class="eq">forward: <span class="fr"><span><var>x</var>(<var>t</var>+<var>h</var>) − <var>x</var>(<var>t</var>)</span><span><var>h</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; central: <span class="fr"><span><var>x</var>(<var>t</var>+<var>h</var>) − <var>x</var>(<var>t</var>−<var>h</var>)</span><span>2<var>h</var></span></span></div>
+<p>Test both on <var>x</var> = <var>t</var><sup>2</sup> at <var>t</var> = 3 with a <em>coarse</em> step <var>h</var> = 1: forward gives (16 − 9)/1 = 7 (error 1); central gives (16 − 4)/2 = <b>6, exactly</b>. Not luck: expand the central quotient symbolically — [(<var>t</var>+<var>h</var>)<sup>2</sup> − (<var>t</var>−<var>h</var>)<sup>2</sup>]/2<var>h</var> = 4<var>th</var>/2<var>h</var> = 2<var>t</var>, the error terms cancel <em>by symmetry</em>: the forward window's overshoot (curve bending up ahead) is exactly repaid by the backward window's undershoot. Straddling the instant symmetrically buys an order of accuracy for free — which is why lab software, phone sensors, and every physics simulation you will ever write use central differences. What this viewpoint reveals: the derivative is the <em>idealization</em>; the strobe is the reality; and symmetry improves even arithmetic. What it conceals: the clean theorems (no-change, mirror pairing) that only the continuous idealization supports.</p>
+<p><b>Viewpoint 3 — time reversal as an analytical instrument.</b> Run any motion's film backwards: every Δ<var>t</var> flips sign, so <var>v</var> = <var>dx</var>/<var>dt</var> flips sign — but <var>a</var>, a rate <em>of a rate</em>, flips twice and comes back unchanged. Consequence: any motion with velocity-independent acceleration, run backwards, is again a legal motion under the same law — that is the true engine behind II.8's palindrome theorems, now stated frame-free. And its contrapositive is a detector: whenever a real trajectory is visibly time-asymmetric (a shuttlecock's steep descent), some velocity-dependent influence (drag) is present. Symmetry arguments deliver conclusions without computation; their cost is that they never deliver the <em>numbers</em> — for those, back to the laws.</p>
+
+<h2 id="p6"><span class="chip">VI</span>Assumptions, Boundaries, and Failure Modes</h2>
+<table>
+<tr><th>Assumption in force</th><th>Where it fails</th><th>What replaces it</th></tr>
+<tr><td><var>x</var>(<var>t</var>) smooth — velocity defined at every instant</td><td>idealized impacts and bounces: kinked graphs, one instant of undefined <var>v</var>, "infinite" <var>a</var></td><td>the impulse approximation, handled honestly via momentum (Volume 3)</td></tr>
+<tr><td>acceleration constant (the five laws)</td><td>any varying force: engines throttling, springs, drag — the <var>x</var> = <var>t</var><sup>3</sup> counterexample of II.7</td><td>piecewise constant-a modelling now; full integration (Module 3); force laws (Volume 2)</td></tr>
+<tr><td><var>g</var> uniform over the trajectory</td><td>heights no longer ≪ Earth's radius: <var>g</var> falls off with distance (≈ 9.0 m/s² already at 300 km altitude)</td><td>Newtonian gravitation and orbits (Volume 4)</td></tr>
+<tr><td>air resistance negligible</td><td>light/fast/fluffy bodies: drag grows with speed until it balances gravity — acceleration dies away, velocity saturates at <b>terminal velocity</b> (raindrops land at ~9 m/s, not the ~700 m/s free fall from 2.5 km would predict). The <var>v</var>–<var>t</var> curve bends flat instead of climbing forever — a diagnosable signature.</td><td>velocity-dependent drag models (Volume 2, with the differential-equation tools of Volume 0)</td></tr>
+<tr><td>classical spacetime: one universal clock, no speed ceiling</td><td>speeds approaching light: <var>v</var> = <var>u</var> + <var>at</var> would exceed <var>c</var> — nature declines</td><td>relativistic kinematics (Volume 9)</td></tr>
+</table>
+
+<h2 id="p7"><span class="chip">VII</span>Misconceptions and Diagnostic Contrasts</h2>
+<p>The two deadliest — "negative <var>a</var> means slowing" and "<var>a</var> = 0 at the apex" — were dismantled at their source (II.6, II.8). Three more, protocol format:</p>
+
+<div class="box miscon"><span class="tag">Misconception · "(u+v)/2 always works"</span>
+<p><b>Tempting intuition:</b> average velocity is just the average of the starting and ending velocities.</p>
+<p><b>Hidden assumption:</b> that velocity changed <em>uniformly</em> — a straight <var>v</var>–<var>t</var> line.</p>
+<p><b>Why it fails:</b> the mirror-pairing proof (II.7, Derivation B) required straightness. Counterexample: <var>x</var> = <var>t</var><sup>3</sup> over [0, 2]: endpoint velocities 0 and 12 average to 6, but true <var>v̄</var> = Δ<var>x</var>/Δ<var>t</var> = 8/2 = 4. The curve spends most of the interval slow; the naive mean ignores time-weighting — Module 1's harmonic-mean lesson in new clothes.</p>
+<p><b>More accurate model:</b> (<var>u</var>+<var>v</var>)/2 is a <em>theorem about constant a</em>, not a definition of average velocity. The definition is, forever, Δ<var>x</var>/Δ<var>t</var>.</p>
+<p><b>Why it matters:</b> examiners bait it with variable-<var>a</var> graph problems; and the correct special case is genuinely useful, so you must carry both the tool and its license.</p></div>
+
+<div class="box miscon"><span class="tag">Misconception · "dx/dt is a fraction — cancel the d's, split them freely"</span>
+<p><b>Tempting intuition:</b> it is written as a fraction; fractions split.</p>
+<p><b>Hidden assumption:</b> that <var>dx</var> and <var>dt</var> are numbers with independent existence.</p>
+<p><b>Why it fails:</b> they are the two halves of a single limit symbol; "cancelling" them proves anything, including falsehoods, because 0/0 lurks beneath.</p>
+<p><b>More accurate model:</b> treat <var>dx</var>/<var>dt</var> as one atomic operator applied to <var>x</var>. Fraction-like manipulations (separating <var>dx</var> = <var>v</var> <var>dt</var>) become legitimate in Module 3, where each such move is backed by a theorem about limits — the notation is <em>designed</em> so that legal moves look natural; your job until then is knowing which moves are backed.</p>
+<p><b>Why it matters:</b> premature fraction-surgery is the single largest source of silent calculus errors in Olympiad scripts — wrong by a sign or a factor, undetectably, deep inside a long solution.</p></div>
+
+<div class="box miscon"><span class="tag">Misconception · "constant speed ⟹ zero acceleration" (true here, false soon — flagged honestly)</span>
+<p><b>Tempting intuition:</b> speed not changing ⟹ nothing about the motion is changing.</p>
+<p><b>Hidden assumption:</b> that velocity has only a size. In one dimension, that is almost true — and indeed <em>in 1-D the claim is a theorem</em>: constant |<var>v</var>| with continuous <var>v</var> forces <var>v</var> itself constant (to flip sign it would have to pass through 0, violating |<var>v</var>| = const), hence <var>a</var> = 0.</p>
+<p><b>Why it will fail:</b> in two dimensions velocity is an arrow, and an arrow can <em>turn</em> at constant length. A car rounding a bend at a steady 60 km/h is accelerating — its velocity's direction changes — and something must push it sideways (you feel that push). Module 7 quantifies it (<var>v</var><sup>2</sup>/<var>r</var>, toward the center).</p>
+<p><b>More accurate model:</b> acceleration is the rate of change of the velocity <em>vector</em> — magnitude or direction, either counts.</p>
+<p><b>Why it matters:</b> flagged now so the 1-D theorem never fossilizes into a general "law" that Module 7 must painfully break.</p></div>
+
+<div class="box derive"><span class="tag">Bonus · Galileo's thought experiment — why "heavier falls faster" refutes itself</span>
+<p>Suppose heavier bodies fell faster. Tie a light stone to a heavy one with a string and drop the pair. The light stone, "falling slower," should drag on the heavy one — so the tied pair falls <em>slower</em> than the heavy stone alone. But the pair is also a single object <em>heavier</em> than the heavy stone — so it should fall <em>faster</em>. One assumption, two contradictory predictions: the assumption is dead, by pure logic, before any experiment. The only escape is that fall rate is independent of mass — exactly what the vacuum experiments confirm. Keep this argument: deriving physics from a contradiction is an Olympiad-grade weapon, and this is its most famous deployment.</p></div>
+
+<p><b>Diagnostic contrasts — say each difference aloud in one sentence, no formulas:</b> average vs instantaneous velocity (chord vs tangent); velocity vs acceleration (how fast position changes vs how fast velocity changes); <var>v</var> = 0 vs <var>a</var> = 0 (momentarily at rest vs velocity frozen); slowing down vs negative acceleration (opposed signs vs one sign alone); Δ vs <var>d</var> (finite change vs change inside a limit); curvature vs slope (bend vs steepness).</p>
+
+<h2 id="p8"><span class="chip">VIII</span>Connections and Advanced Extensions</h2>
+<p><b>Backward:</b> every structure here is a Module 1 structure pushed through a limit — chord → tangent, average → instantaneous, Δ → <var>d</var>; and uniform motion survives as the local approximation of everything.</p>
+<p><b>Forward, the load-bearing list:</b> Module 3 inverts the chain (areas rebuild motion; the dashed arrows of the Part IV figure). Module 4 upgrades <var>v</var> and <var>a</var> to full arrows; Modules 6–7 live on the constant-a laws and their breakdown. Volume 2: Newton's second law hands <var>a</var> its <em>cause</em>, and every free-body diagram terminates in the kinematics built here. Volume 3: Law 4 × ½<var>m</var> becomes the work–energy theorem. Volume 5: oscillations demand <var>d</var>(sin)/<var>dt</var> — the toolkit's next planned expansion. Volume 0 will retrofit full rigor (ε-δ, MVT) under floors that will already hold your weight.</p>
+<p><b>Sideways, real systems:</b> your phone contains an actual accelerometer — a microscopic sprung mass whose deflection reads <var>a</var> directly; navigation systems then run Module 3's inverse problem (accumulate <var>a</var> → <var>v</var> → <var>x</var>), and the drift of that double accumulation is why GPS must keep correcting it. Vehicle comfort engineering budgets jerk, not just acceleration. Crash safety is expressed in <var>g</var>-multiples of deceleration magnitude — a language you can now audit for sign-sloppiness.</p>
+<p><b>Upward:</b> the pair (<var>x</var>, <var>v</var>) as "the state of the system" is the doorway to phase space, the standard stage of advanced mechanics; the first-order expansion behind the power rule matures into Taylor series and perturbation theory — the daily bread of APhO/IPhO Volume 10 work.</p>
+
+<h2 id="p9"><span class="chip">IX</span>Olympiad Insight</h2>
+<div class="box oly"><span class="tag">What the expert sees</span>
+<p><b>The missing-variable selector.</b> Each constant-a law omits exactly one quantity: Law 1 (<var>v</var> = <var>u</var> + <var>at</var>) never mentions <var>s</var>; Law 2 (<var>s</var> = <var>ut</var> + ½<var>at</var><sup>2</sup>) never mentions <var>v</var>; Law 3 (<var>s</var> = (<var>u</var>+<var>v</var>)<var>t</var>/2) never mentions <var>a</var>; Law 4 (<var>v</var><sup>2</sup> = <var>u</var><sup>2</sup> + 2<var>as</var>) never mentions <var>t</var>. The expert's first move on any constant-a problem: identify the quantity that is <em>neither given nor asked</em>, and reach for the law that omits it. One decision replaces four attempts.</p>
+<p><b>Scaling reflexes (from rest):</b> <var>s</var> ∝ <var>t</var><sup>2</sup>, <var>v</var> ∝ <var>t</var>, <var>v</var> ∝ √<var>s</var>, fall time ∝ √(<var>h</var>/<var>g</var>), impact speed ∝ √(<var>gh</var>). Half of all "what if the height doubles / gravity is one-sixth" questions are answered by these proportionalities in one line, before — or instead of — any computation. Block F, part (d) trains it.</p>
+<p><b>Root interpretation as a scored skill.</b> Quadratics in <var>t</var> return two roots; INPhO-style grading rewards <em>stating why</em> a root is accepted or rejected ("<var>t</var> = 2 − √2 s &lt; 1 s contradicts 'the last second' existing") — and APhO problems sometimes make the "rejected" root the physical answer (the virtual-history reading, Block F part (a)). Never delete a root silently.</p>
+<p><b>How the tiers use this module.</b> NSEP: sign-pair MCQs, apex traps, the <var>s</var><sub><var>n</var></sub> unit trap, graph-layer confusion — speed and definitional precision. JEE Advanced: piecewise motions, chase-and-catch, quadratic double-visits, multi-layer graph reading; kinematics as the final step of problems from other chapters. INPhO: derive-don't-cite; the sentence "assuming constant acceleration because…" earns method marks; clean root rejection earns more. APhO/IPhO: constant-a as a <em>local</em> model inside larger problems (linearize near an instant), symmetry arguments replacing computation, dimensional/limiting-case verification as visible solution culture.</p>
+<p><b>Safe shortcuts (licensed by their derivations):</b> flight symmetry (S1/S2); the AP fingerprint <var>s</var><sub><var>n</var>+1</sub> − <var>s</var><sub><var>n</var></sub> = <var>a</var>(Δ<var>t</var>)<sup>2</sup>; the missing-variable selector; (<var>u</var>+<var>v</var>)/2 <em>under declared constant a</em>. <b>Destructive shortcuts:</b> any of the five laws under undeclared variable <var>a</var>; (<var>u</var>+<var>v</var>)/2 on curved <var>v</var>–<var>t</var>; plugging <var>g</var> with a sign that contradicts your declared axis; treating <var>s</var> as distance when reversals occurred.</p>
+<p><b>The deepest habit:</b> the expert does not ask "which formula fits these numbers" but "what is the <var>v</var>–<var>t</var> picture of this motion" — and then reads slopes, areas, and symmetries off the picture. The five laws are that picture's arithmetic; the picture is primary.</p></div>
+
+<div class="duo">Part X · Training Blocks — concept locks to Olympiad build-up</div>
+
+<h2 id="p10"><span class="chip">X</span>Training Blocks</h2>
+
+<h3>Block A — Concept Locks <span class="small">(attempt cold before reading each answer)</span></h3>
+
+<div class="problem"><span class="ptag">A1</span>
+<p>Can an object have zero velocity and nonzero acceleration at the same instant? Zero acceleration and nonzero velocity? Give a physical example of each.</p>
+<div class="sol"><span class="stag">Answer</span>
+<p>Both are possible, and both matter. <b>v = 0, a ≠ 0:</b> the ball at its apex — velocity momentarily zero, acceleration −<var>g</var> throughout; equivalently, any turning point of any motion. <b>a = 0, v ≠ 0:</b> uniform motion — a cruising train. The two quantities answer different questions (value vs trend) and constrain each other at an instant not at all.</p></div></div>
+
+<div class="problem"><span class="ptag">A2</span>
+<p>In one-dimensional motion with continuous velocity, can the <em>speed</em> be constant while the <em>velocity</em> changes?</p>
+<div class="sol"><span class="stag">Answer</span>
+<p>No — and proving it is the point. Constant speed means <var>v</var> = +<var>c</var> or −<var>c</var> at every instant. To switch between them, the continuous function <var>v</var>(<var>t</var>) must pass through every intermediate value, including 0 — but |0| ≠ <var>c</var>, contradicting constant speed. So <var>v</var> never switches: velocity is constant, <var>a</var> = 0. <b>File the honesty flag from Part VII:</b> the proof leans on velocity being a signed <em>number</em>; in two dimensions an arrow can turn at constant length, and this comfortable theorem dies (Module 7).</p></div></div>
+
+<div class="problem"><span class="ptag">A3</span>
+<p>At some instant a particle has <var>x</var> &gt; 0, <var>v</var> &lt; 0, <var>a</var> &gt; 0. Describe, in one sentence each: where it is, what it is doing, and what is happening to what it is doing.</p>
+<div class="sol"><span class="stag">Answer</span>
+<p>It sits on the positive side of the origin; it is moving toward the origin (−direction); and it is <em>slowing</em>, because <var>v</var>·<var>a</var> &lt; 0 — the acceleration opposes the motion. (Whether it will stop before reaching the origin depends on magnitudes, not signs — a fact Law 4 can settle. Note what the exercise trains: three independent signs, three independent facts, zero interference.)</p></div></div>
+
+<div class="problem"><span class="ptag">A4</span>
+<p>Two cars' <var>x</var>–<var>t</var> graphs cross at instant <var>t</var><sub>1</sub>. At <var>t</var><sub>1</sub>, do the cars share position? Velocity? Now suppose instead the graphs <em>touch tangentially</em> at <var>t</var><sub>1</sub> — what changes?</p>
+<div class="sol"><span class="stag">Answer</span>
+<p>Crossing: same <b>height</b> ⟹ same position (they meet); slopes generally differ ⟹ different velocities — one is overtaking. Tangency: same height <em>and</em> same slope ⟹ same position and same velocity at that instant — a "grazing" encounter, the geometric signature of just-barely-catching (the limiting case in pursuit problems, used in D4). Curvatures may still differ: same place, same velocity, different accelerations — the two-cars puzzle of Part I, drawn.</p></div></div>
+
+<div class="problem"><span class="ptag">A5</span>
+<p>A particle moves with constant acceleration <var>a</var> &gt; 0 and initial velocity <var>u</var> &lt; 0. Describe the entire future of the motion, unprompted.</p>
+<div class="sol"><span class="stag">Answer</span>
+<p>Phase 1: <var>v</var> &lt; 0 with <var>a</var> &gt; 0 — opposed signs, slowing while moving in the −direction. At <var>t</var> = −<var>u</var>/<var>a</var> (positive, since <var>u</var> &lt; 0): momentary rest, acceleration intact. Phase 2: <var>v</var> &gt; 0 with <var>a</var> &gt; 0 — aligned, speeding up in the +direction forever. Net picture: the particle penetrates some maximum distance −<var>u</var><sup>2</sup>/2<var>a</var> into the −direction (Law 4 with <var>v</var> = 0), turns, and returns through its start at speed |<var>u</var>| (S2's logic). One constant acceleration, a complete round-trip story told by signs alone.</p></div></div>
+
+<h3>Block B — Derivation and Reconstruction</h3>
+
+<div class="problem"><span class="ptag">B1</span>
+<p>Derive <var>d</var>(<var>t</var><sup>4</sup>)/<var>dt</var> from the raw limit, using the counting argument — no citation of the power rule.</p>
+<div class="sol"><span class="stag">Reconstruction</span>
+<p>(<var>t</var>+Δ<var>t</var>)<sup>4</sup>: four brackets. All-<var>t</var> pick: <var>t</var><sup>4</sup>. Exactly one Δ<var>t</var>: 4 choices of donor bracket ⟹ 4<var>t</var><sup>3</sup>Δ<var>t</var>. Everything else carries (Δ<var>t</var>)<sup>2</sup>. Subtract <var>t</var><sup>4</sup>, divide by Δ<var>t</var>, send Δ<var>t</var> → 0: survivors 4<var>t</var><sup>3</sup>. (If your reconstruction did not <em>count</em> — if the 4 appeared by pattern-matching — redo it: the counting is the understanding.)</p></div></div>
+
+<div class="problem"><span class="ptag">B2</span>
+<p>Rebuild the (<var>u</var>+<var>v</var>)/2 average-velocity theorem by the mirror-pairing argument, and state exactly where the argument uses constancy of <var>a</var>.</p>
+<div class="sol"><span class="stag">Reconstruction</span>
+<p>Pair instants <var>t</var>′ and <var>t</var>−<var>t</var>′; sum of paired velocities = [<var>u</var>+<var>at</var>′] + [<var>u</var>+<var>a</var>(<var>t</var>−<var>t</var>′)] = <var>u</var> + <var>v</var>, independent of <var>t</var>′ — <em>because v(t) is linear in t, i.e., because a is constant</em>; that substitution is the exact point of use. Every pair averaging to the same number forces the time-average to that number; displacement = average × duration.</p></div></div>
+
+<div class="problem"><span class="ptag">B3</span>
+<p>Derive <var>v</var><sup>2</sup> = <var>u</var><sup>2</sup> + 2<var>as</var> twice: (i) by eliminating <var>t</var>; (ii) directly from the <var>v</var>–<var>t</var> trapezoid, without ever writing <var>t</var> = (<var>v</var>−<var>u</var>)/<var>a</var> as a separate step.</p>
+<div class="sol"><span class="stag">Reconstruction</span>
+<p>(i) II.7 verbatim: <var>s</var> = ½(<var>u</var>+<var>v</var>)<var>t</var> with <var>t</var> = (<var>v</var>−<var>u</var>)/<var>a</var> gives <var>s</var> = (<var>v</var><sup>2</sup>−<var>u</var><sup>2</sup>)/2<var>a</var>. (ii) The trapezoid's area = (mean height)(base) = ½(<var>u</var>+<var>v</var>) · (<var>v</var>−<var>u</var>)/<var>a</var> read as one geometric statement: base expressed via slope, base = rise/slope. Same algebra, but the second route shows the law as a pure property of the straight line — height-squared difference = 2 × slope × area. Two faces, one truth; owning both is the point.</p></div></div>
+
+<div class="problem"><span class="ptag">B4</span>
+<p>Derive the <var>n</var>-th-second law <var>s</var><sub><var>n</var></sub> = <var>u</var> + ½<var>a</var>(2<var>n</var>−1) and then write its dimensionally honest form. Under what input units does the shorthand silently lie?</p>
+<div class="sol"><span class="stag">Reconstruction</span>
+<p><var>s</var><sub><var>n</var></sub> = <var>s</var>(<var>n</var>) − <var>s</var>(<var>n</var>−1); expand both with Law 2; the difference of squares <var>n</var><sup>2</sup> − (<var>n</var>−1)<sup>2</sup> = 2<var>n</var>−1 delivers the form. Honest version: <var>s</var><sub><var>n</var></sub> = <var>u</var>·(1 s) + ½<var>a</var>(2<var>n</var>−1)·(1 s²). The shorthand lies whenever <var>u</var> or <var>a</var> arrive in non-SI units (km/h is the classic ambush) — the hidden (1 s) factors only equal 1 in seconds-based units.</p></div></div>
+
+<h3>Block C — Standard Application <span class="small">(fully worked to the Solution Standard)</span></h3>
+
+<div class="problem"><span class="ptag">C1 · direct, with the consistency web</span>
+<p>A car starts from rest and accelerates uniformly at 2 m/s² for 5 s. Find its final velocity and displacement, and cross-check by an independent law.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">Model &amp; frame.</span> Particle; +x along motion, origin and clock at the start; constant <var>a</var> stated by the problem ("uniformly"). <span class="lbl">Knowns.</span> <var>u</var> = 0, <var>a</var> = +2 m/s², <var>t</var> = 5 s. <span class="lbl">Selection.</span> <var>v</var> unknown wanted: Law 1 (omits <var>s</var>). <var>s</var> unknown wanted: Law 2 (omits <var>v</var>).</p>
+<p><span class="lbl">Execution.</span> <var>v</var> = 0 + 2(5) = <b>10 m/s</b>. <var>s</var> = 0 + ½(2)(25) = <b>25 m</b>.</p>
+<p><span class="lbl">Verification (independent law).</span> Law 4, which used neither result's route: <var>v</var><sup>2</sup> = 0 + 2(2)(25) = 100 ⟹ <var>v</var> = 10 ✓. Law 3 as a second check: <var>s</var> = ½(0+10)(5) = 25 ✓. Dimensions and plausibility: 10 m/s = 36 km/h after 5 s of brisk but ordinary acceleration ✓.</p>
+<p><span class="lbl">Interpretation.</span> The displacement (25 m) is exactly half of the coasting-at-final-speed value (50 m) — from rest, the triangle is the whole area, and a triangle is half its rectangle. That "half" generalizes: from rest, distance always lags the naive final-speed estimate by exactly ×½.</p></div></div>
+
+<div class="problem"><span class="ptag">C2 · free fall run through both sign conventions</span>
+<p>A ball is thrown vertically upward at 20 m/s (take <var>g</var> = 10 m/s²). Find the time to the apex, the maximum height, the total flight time, and the return velocity — first with up-positive, then with down-positive, and confirm the physics is identical.</p>
+<div class="sol"><span class="stag">Solution</span>
+<table>
+<tr><th></th><th>Convention 1: up = +</th><th>Convention 2: down = +</th></tr>
+<tr><td>inputs</td><td><var>u</var> = +20, <var>a</var> = −10</td><td><var>u</var> = −20, <var>a</var> = +10</td></tr>
+<tr><td>apex (<var>v</var> = 0)</td><td>0 = 20 − 10<var>t</var> ⟹ <var>t</var> = 2 s</td><td>0 = −20 + 10<var>t</var> ⟹ <var>t</var> = 2 s</td></tr>
+<tr><td>max height</td><td><var>s</var> = 20(2) − 5(4) = +20 m</td><td><var>s</var> = −20(2) + 5(4) = −20 m</td></tr>
+<tr><td>flight (<var>s</var> = 0)</td><td><var>t</var>(20 − 5<var>t</var>) = 0 ⟹ <var>T</var> = 4 s</td><td><var>t</var>(−20 + 5<var>t</var>) = 0 ⟹ <var>T</var> = 4 s</td></tr>
+<tr><td>return velocity</td><td>20 − 10(4) = −20 (downward)</td><td>−20 + 10(4) = +20 (downward)</td></tr>
+</table>
+<p><span class="lbl">Verification.</span> Convention 2's "−20 m" reads: 20 m in the negative-of-down direction — 20 m up ✓. Both return velocities point down ✓. Symmetry checks: <var>T</var> = 2<var>t</var><sub>up</sub> ✓; return speed = launch speed ✓; H = <var>u</var><sup>2</sup>/2<var>g</var> = 400/20 = 20 ✓.</p>
+<p><span class="lbl">Interpretation.</span> Numbers changed sign; physics did not — the live demonstration of Module 1's invariance principle. The convention is scaffolding; conclusions that depend on it were never conclusions.</p>
+<p><span class="lbl">Error analysis.</span> The classic wreck is hybrid conventions: <var>u</var> = +20 with <var>a</var> = +10 "because g is 10." That computes a ball accelerating upward forever. Prevention is mechanical: one written line — "up = +, so a = −g = −10" — before any equation.</p></div></div>
+
+<div class="problem"><span class="ptag">C3 · pursuit: constant velocity vs constant acceleration</span>
+<p>A speeder passes a stationary police car at a steady 30 m/s. At that instant the police car starts from rest with constant acceleration 3 m/s². Find (a) when and where the police catch the speeder, (b) the maximum lead the speeder attains and when, (c) the police car's speed at the catch — and explain why that speed is <em>exactly double</em> the speeder's, always.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">Frame.</span> +x along the road, origin and <var>t</var> = 0 at the passing event. Position functions: <var>x</var><sub>S</sub> = 30<var>t</var>; <var>x</var><sub>P</sub> = ½(3)<var>t</var><sup>2</sup> = 1.5<var>t</var><sup>2</sup>.</p>
+<p><span class="lbl">(a) Catch = meeting (Module 1's move).</span> 30<var>t</var> = 1.5<var>t</var><sup>2</sup> ⟹ <var>t</var>(1.5<var>t</var> − 30) = 0 ⟹ <var>t</var> = 0 (the passing itself — the equation reports the meeting we already knew, a good sign) or <b><var>t</var> = 20 s</b>, at <var>x</var> = 30(20) = <b>600 m</b>. Check via the police: 1.5(400) = 600 ✓.</p>
+<p><span class="lbl">(b) Maximum lead.</span> The gap <var>G</var>(<var>t</var>) = 30<var>t</var> − 1.5<var>t</var><sup>2</sup> grows while the speeder is faster and shrinks once the police are faster — so it peaks at the instant of <em>equal velocities</em>: 3<var>t</var> = 30 ⟹ <var>t</var> = 10 s, <var>G</var> = 300 − 150 = <b>150 m</b>. Confirm with the derivative: <var>dG</var>/<var>dt</var> = 30 − 3<var>t</var> = 0 at <var>t</var> = 10 ✓ — the calculus and the physical argument are the same argument, which is the lesson.</p>
+<p><span class="lbl">(c) Catch speed.</span> <var>v</var><sub>P</sub>(20) = 3(20) = <b>60 m/s = 2 × 30</b>. Why always double, from rest: catching means equal displacements, ½<var>at</var><sup>2</sup> = <var>u</var><sub>S</sub><var>t</var> ⟹ <var>at</var> = 2<var>u</var><sub>S</sub> — and <var>at</var> <em>is</em> the pursuer's velocity. Equivalently by averages: to cover the same ground in the same time from rest, the pursuer's <em>average</em> (0 + <var>v</var>)/2 must equal the target's constant <var>u</var><sub>S</sub>. A tiny theorem, worth carrying.</p>
+<p><span class="lbl">Verification.</span> Dimensions ✓; limiting sense: smaller <var>a</var> ⟹ later catch (<var>t</var> = 2<var>u</var><sub>S</sub>/<var>a</var>) ✓; 60 m/s (216 km/h) says real pursuits end by radio, not by this model — reading a model's answer back onto reality is part of the solution.</p></div></div>
+
+<div class="problem"><span class="ptag">C4 · two bodies, one gravity — the g-cancellation</span>
+<p>Ball A is dropped from the top of a 100 m tower at the instant ball B is thrown straight up from its base at 25 m/s (<var>g</var> = 10 m/s²). When and where do they meet, and is the meeting valid (both still in flight)?</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">Frame.</span> Up = +, origin at the ground, <var>t</var> = 0 at release. <var>y</var><sub>A</sub> = 100 − 5<var>t</var><sup>2</sup>; <var>y</var><sub>B</sub> = 25<var>t</var> − 5<var>t</var><sup>2</sup>.</p>
+<p><span class="lbl">Meeting.</span> 100 − 5<var>t</var><sup>2</sup> = 25<var>t</var> − 5<var>t</var><sup>2</sup>. The quadratic terms <em>cancel identically</em>: 100 = 25<var>t</var> ⟹ <b><var>t</var> = 4 s</b>, at <var>y</var> = 100 − 80 = <b>20 m</b>.</p>
+<p><span class="lbl">Why the cancellation is physics, not luck.</span> Gravity edits both trajectories by the identical term −½<var>gt</var><sup>2</sup> (same <var>g</var> for all bodies — the empirical pillar of II.8), so the <em>separation</em> <var>y</var><sub>A</sub> − <var>y</var><sub>B</sub> = 100 − 25<var>t</var> evolves as if gravity did not exist: the gap closes at a constant 25 m/s. Seen from ball A, ball B approaches uniformly. This is the doorway to Module 5 (relative motion), opened one crack: <em>common accelerations vanish from relative descriptions</em>.</p>
+<p><span class="lbl">Validity audit — required, not optional.</span> A lands when <var>y</var><sub>A</sub> = 0: <var>t</var> = √20 ≈ 4.47 s &gt; 4 ✓. B: apex at 2.5 s, back to ground at 5 s &gt; 4 ✓ (at <var>t</var> = 4, <var>v</var><sub>B</sub> = 25 − 40 = −15 m/s — B is met on its way <em>down</em>). Meeting valid.</p>
+<p><span class="lbl">Verification.</span> Same height by both formulas: <var>y</var><sub>B</sub>(4) = 100 − 80 = 20 ✓. Limiting case: throw speed ↓ toward 100/<var>t</var><sub>fall</sub> ≈ 22.4 m/s and the "meeting" slides to the ground itself — consistent with the closing-speed picture (slower closing, later meeting, lower altitude).</p></div></div>
+
+<div class="problem"><span class="ptag">C5 · the last-second problem — root rejection as physics</span>
+<p>A stone falls from rest and covers half of its total height in the final second of its fall (<var>g</var> = 10 m/s²). Find the total time of fall and the height.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">Setup.</span> Down = +, from rest: <var>h</var> = 5<var>T</var><sup>2</sup>. Distance in the last second = <var>h</var> − 5(<var>T</var>−1)<sup>2</sup>. Condition: <var>h</var> − 5(<var>T</var>−1)<sup>2</sup> = <var>h</var>/2, i.e. 5(<var>T</var>−1)<sup>2</sup> = ½·5<var>T</var><sup>2</sup>.</p>
+<p><span class="lbl">Execution.</span> 2(<var>T</var>−1)<sup>2</sup> = <var>T</var><sup>2</sup> ⟹ <var>T</var><sup>2</sup> − 4<var>T</var> + 2 = 0 ⟹ <var>T</var> = 2 ± √2.</p>
+<p><span class="lbl">Root adjudication — the heart of the problem.</span> <var>T</var> = 2 − √2 ≈ 0.59 s is a genuine root of the algebra but not of the physics: a fall shorter than 1 s has no "final second," so the modelling equation was never valid there. State this; do not silently discard. Accept <b><var>T</var> = 2 + √2 ≈ 3.41 s</b>, whence <b><var>h</var> = 5(2+√2)<sup>2</sup> = 30 + 20√2 ≈ 58.3 m</b>.</p>
+<p><span class="lbl">Verification.</span> Distance in last second: <var>h</var> − 5(1+√2)<sup>2</sup> = (30+20√2) − (15+10√2) = 15 + 10√2 = <var>h</var>/2 ✓. Plausibility: ~58 m ≈ an 18-storey building; 3.4 s of fall ✓.</p>
+<p><span class="lbl">Error analysis.</span> Two standard wrecks: taking "half the height in the last second" to mean the last second equals half the <em>time</em> (it does not — later seconds cover more ground, the odd-number rule); and accepting 2 − √2 because "it is positive." Positivity is not validity; the constraint <var>T</var> ≥ 1 s came from the problem's own words.</p></div></div>
+
+<h3>Block D — Transfer Problems <span class="small">(the governing idea is not announced)</span></h3>
+
+<div class="problem"><span class="ptag">D1 · measure your own reaction time — a real experiment</span>
+<p>A friend holds a 30 cm ruler vertically; you position your fingers at the 0 cm mark without touching. The friend releases without warning; you catch it at the 20 cm mark. What is your reaction time? Then perform the experiment tonight and report honestly.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p>The ruler free-falls from rest through <var>d</var> = 0.20 m during your reaction interval: <var>d</var> = ½<var>gt</var><sup>2</sup> ⟹ <var>t</var> = √(2<var>d</var>/<var>g</var>) = √(0.04) = <b>0.2 s</b> — a typical human value. The ruler is a clock: distance stores time via the square-root law, so the scale readings 5, 11.25, 20, 31.25 cm mark 0.10, 0.15, 0.20, 0.25 s. Note the compression: equal time-ticks crowd together near the top and spread lower down — you are <em>seeing</em> <var>s</var> ∝ <var>t</var><sup>2</sup>. This module's single-source text can derive that law; only your own hand can feel 0.2 s. Do the experiment.</p></div></div>
+
+<div class="problem"><span class="ptag">D2 · why doubling speed quadruples the braking distance</span>
+<p>A car's brakes provide a fixed maximum deceleration magnitude <var>a</var>. Show that the braking distance grows as the <em>square</em> of the speed, and explain to a non-physicist why 60 km/h is four times as dangerous as 30 km/h in required stopping room — not twice.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p>Time is neither given nor wanted ⟹ Law 4 (the missing-variable selector at work): 0 = <var>v</var><sup>2</sup> − 2<var>as</var> ⟹ <var>s</var> = <var>v</var><sup>2</sup>/2<var>a</var> ∝ <var>v</var><sup>2</sup>. Double <var>v</var>: quadruple <var>s</var>. The non-physicist explanation, two compounding factors: at double speed you must shed <em>twice</em> the velocity, and during every moment of shedding you are travelling <em>twice</em> as fast — twice the velocity to lose × twice the ground per second of losing = four times the ground. (Real stopping adds reaction distance <var>v t</var><sub>reaction</sub>, linear in <var>v</var>, on top — total <var>v t</var><sub>r</sub> + <var>v</var><sup>2</sup>/2<var>a</var>. Road-safety charts are this formula, printed.)</p></div></div>
+
+<div class="problem"><span class="ptag">D3 · model selection: the sprinter</span>
+<p>A sprinter accelerates uniformly at 2.5 m/s² up to a top speed of 10 m/s, then holds that speed. Model her 100 m race time. Which single modelling decision is doing the most work?</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><b>Phase 1</b> (constant <var>a</var>): reach 10 m/s in <var>t</var><sub>1</sub> = 10/2.5 = 4 s, covering <var>s</var><sub>1</sub> = ½(2.5)(16) = 20 m. <b>Phase 2</b> (uniform): remaining 80 m at 10 m/s takes 8 s. Total: <b>12.0 s</b> — a fit club athlete, sensible. The load-bearing decision is the <em>piecewise</em> structure: no single constant-a model spans a race (a runner cannot accelerate at 2.5 m/s² throughout — she would finish at 22 m/s, beyond human). Splitting reality at the point where one idealization hands over to another is the first genuinely Olympiad-flavoured modelling skill; every phase gets its own law, joined by matching <var>v</var> and <var>x</var> at the seam.</p></div></div>
+
+<div class="problem"><span class="ptag">D4 · bounding before computing: the two trains</span>
+<p>Two trains approach each other on one track at 20 m/s and 30 m/s. When 625 m apart, both drivers brake, each with deceleration magnitude 1 m/s². (a) Do they collide? (b) What common braking magnitude would <em>just</em> avoid collision?</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">(a) Bound, don't simulate.</span> Each train, braking to rest, needs <var>s</var> = <var>v</var><sup>2</sup>/2<var>a</var>: train 1 needs 400/2 = 200 m; train 2 needs 900/2 = 450 m. Combined ground consumed <em>even in the best case</em> (both fully stopping): 650 m &gt; 625 m available ⟹ <b>they collide</b> — no timeline computation needed. This is C-grade arithmetic wrapped around an A-grade move: comparing total demand against total supply settles the binary question before any dynamics.</p>
+<p><span class="lbl">(b) The just-avoid condition.</span> Grazing safety = combined stopping demand equals the gap: (400 + 900)/2<var>a</var> = 625 ⟹ <var>a</var> = 1300/1250 = <b>1.04 m/s²</b>. Verification: at 1.04, demands are 192.3 + 432.7 = 625.0 ✓ — they halt nose-to-nose. Interpretation: the margin between disaster and safety is 4% of braking power; railway signalling exists because this margin is intolerable.</p></div></div>
+
+<div class="problem"><span class="ptag">D5 · the fingerprint test</span>
+<p>A particle's position (from the origin, at rest at <var>t</var> = 0… or is it?) is observed to <em>double every second</em>: <var>x</var> = 1, 2, 4, 8, 16 m at <var>t</var> = 0, 1, 2, 3, 4 s. Could its acceleration be constant?</p>
+<div class="sol"><span class="stag">Solution</span>
+<p>Apply Galileo's diagnostic (II.8): successive-second displacements are 1, 2, 4, 8 m — a <em>geometric</em> progression, ratio 2. Constant acceleration demands an <em>arithmetic</em> progression with common difference <var>a</var>·(1 s²): differences of the displacements are 1, 2, 4 — not constant. <b>Verdict: not constant acceleration</b>, and no choice of <var>u</var>, <var>a</var> can be tortured into fitting (three conditions already over-determine the two parameters and contradict). Deeper: doubling is exponential growth, whose rate is proportional to the current value — a new <em>kind</em> of law, the one governing radioactive decay and charging capacitors, awaiting the exponential function (built at its point of need, Volumes 7 and 9). Recognizing "this is outside my current model class" is itself the skill.</p></div></div>
+
+<h3>Block E — Synthesis with Module 1</h3>
+
+<div class="problem"><span class="ptag">E1 · the jogger's ghost — when must average = instantaneous?</span>
+<p>Module 1's jogger: +3 m/s for 100 s, rest for 50 s, −2 m/s for 50 s; average velocity +1 m/s. Is there any instant at which her <em>instantaneous</em> velocity equals +1 m/s? What does the answer teach about idealizations?</p>
+<div class="sol"><span class="stag">Solution</span>
+<p>Her instantaneous velocity only ever takes the values {+3, 0, −2} — never +1. <b>No such instant exists.</b> Yet intuition (and a deep theorem — the Mean Value Theorem, Volume 0) insists a smooth traveller must at some moment move at exactly her average pace. The escape: her motion is <em>not smooth</em> — the piecewise model has kinks, instants of undefined velocity where the speed "jumps" from 3 to 0 to −2 without visiting intermediate values. A real jogger decelerates through +1 m/s during some fraction of a second; the idealization amputated those fractions and, with them, the theorem's guarantee. Price tags on idealizations (II.2's kink discussion) are real, and this is one being paid. When Volume 0 delivers the MVT, you will already know exactly which hypothesis (smoothness) it cannot live without.</p></div></div>
+
+<div class="problem"><span class="ptag">E2 · the traffic-light chase</span>
+<p>At the instant a light turns green, a car starts from rest with <var>a</var> = 2 m/s², just as a truck rolls past through the intersection at a steady 10 m/s. Find when and where the car catches the truck, the truck's maximum lead, and the car's speed at the catch — then predict the last answer <em>before</em> computing, from C3's theorem.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p>Prediction first: from-rest pursuit ⟹ catch speed = 2 × target speed = <b>20 m/s</b>. Now the ledger: <var>x</var><sub>car</sub> = <var>t</var><sup>2</sup>, <var>x</var><sub>truck</sub> = 10<var>t</var>; equal at <var>t</var> = 10 s, <var>x</var> = <b>100 m</b>. Maximum lead at equal speeds: 2<var>t</var> = 10 ⟹ <var>t</var> = 5 s, lead = 50 − 25 = <b>25 m</b>. Catch speed 2(10) = 20 m/s — prediction confirmed. Note the structure is C3's with different numbers: <em>recognizing a problem as an old problem in costume is the entire economy of expertise</em>, and it is trained, not innate.</p></div></div>
+
+<div class="problem"><span class="ptag">E3 · full autopsy of a polynomial motion</span>
+<p>A particle moves with <var>x</var>(<var>t</var>) = <var>t</var><sup>3</sup> − 6<var>t</var><sup>2</sup> + 9<var>t</var> (SI). Over [0, 4 s], find every instant of momentary rest, classify each (true reversal or not), and compute displacement and total distance. This deliberately fuses Module 1's distance/displacement split with this module's calculus.</p>
+<div class="sol"><span class="stag">Solution</span>
+<p><span class="lbl">Differentiate.</span> <var>v</var> = 3<var>t</var><sup>2</sup> − 12<var>t</var> + 9 = 3(<var>t</var>−1)(<var>t</var>−3): rest at <var>t</var> = 1 and <var>t</var> = 3. Sign chart of <var>v</var>: + on (0,1), − on (1,3), + on (3,4) — both are true reversals (sign change). Cross-check with <var>a</var> = 6<var>t</var> − 12: <var>a</var>(1) = −6 ≠ 0 and <var>a</var>(3) = +6 ≠ 0 — genuine turning points, not flat pauses.</p>
+<p><span class="lbl">Waypoints.</span> <var>x</var>(0) = 0; <var>x</var>(1) = 1 − 6 + 9 = 4; <var>x</var>(3) = 27 − 54 + 27 = 0; <var>x</var>(4) = 64 − 96 + 36 = 4.</p>
+<p><span class="lbl">Totals.</span> Displacement = <var>x</var>(4) − <var>x</var>(0) = <b>+4 m</b>. Distance = |0→4| + |4→0| + |0→4| = 4 + 4 + 4 = <b>12 m</b> — computable <em>only</em> by splitting at the reversals; integrating good intentions over the whole interval at once is exactly the error Module 1's master inequality warns of (12 ≥ |4| ✓, strict because reversals exist ✓).</p>
+<p><span class="lbl">Interpretation.</span> Out to 4 m, all the way back to the start, out to 4 m again — a there-and-back-and-there journey encoded in one cubic. The sign chart of <var>v</var> <em>is</em> the itinerary; everything else is evaluation.</p></div></div>
+
+<h3>Block F — Olympiad Build-Up <span class="small">(original problem · target level: JEE Advanced / INPhO-entry — honest label: full INPhO also demands Modules 3–6 material)</span></h3>
+
+<div class="problem"><span class="ptag">F1 · The balloon and the stone</span>
+<p>A hot-air balloon rises with constant velocity 5 m/s. At the moment it is 60 m above the ground, a stone is released (not thrown) from it. Take <var>g</var> = 10 m/s², air resistance negligible.</p>
+<p>(a) Find when the stone hits the ground — and give the physical meaning of the quadratic's <em>other</em> root.<br>
+(b) Find the stone's maximum height and the total distance it travels.<br>
+(c) Find the impact speed by two independent routes.<br>
+(d) The same release happens on the Moon (<var>g</var>/6 ≈ 1.67 m/s²) from a hovering (stationary) balloon at the same 60 m. Without solving any new quadratic, determine how fall time and impact speed scale, then evaluate.<br>
+(e) Write the examination-compressed solution.</p>
+<div class="sol"><span class="stag">Full solution</span>
+<p><span class="lbl">Interpretation &amp; the embedded trap.</span> "Released" is not "dropped from rest relative to the ground": at the instant of release the stone <em>shares the balloon's velocity</em> — initial velocity +5 m/s upward. (Why released objects inherit their carrier's velocity is a dynamics fact — inertia, Volume 2; kinematics takes the initial condition as given, but the exam counts on you forgetting it.) After release, only gravity acts: free fall with <var>u</var> = +5.</p>
+<p><span class="lbl">Frame.</span> Up = +, origin at the ground, <var>t</var> = 0 at release. <var>y</var>(<var>t</var>) = 60 + 5<var>t</var> − 5<var>t</var><sup>2</sup>; <var>v</var>(<var>t</var>) = 5 − 10<var>t</var>.</p>
+<p><span class="lbl">(a)</span> Ground: 60 + 5<var>t</var> − 5<var>t</var><sup>2</sup> = 0 ⟹ <var>t</var><sup>2</sup> − <var>t</var> − 12 = 0 ⟹ (<var>t</var> − 4)(<var>t</var> + 3) = 0 ⟹ <b><var>t</var> = 4 s</b>. The root <var>t</var> = −3 s is the <em>virtual history</em>: the parabola we solved describes an eternal free-fall motion, of which the stone's actual flight is only the <var>t</var> ≥ 0 part. Had that eternal motion always been running, it would have left the ground 3 s <em>before</em> release, rising — and indeed, launched upward from the ground at <var>v</var>(−3) = 5 + 30 = 35 m/s, a projectile reaches exactly 60 m with exactly +5 m/s three seconds later (check: 35(3) − 5(9) = 105 − 45 = 60 ✓). The rejected root is a consistency oracle, not garbage — and APhO problems have been built entirely around such extrapolated-past readings.</p>
+<p><span class="lbl">(b)</span> Apex where <var>v</var> = 0: <var>t</var> = 0.5 s, rising a further ½<var>u</var><sup>2</sup>/<var>g</var>… directly: rise = <var>u</var><sup>2</sup>/2<var>g</var> = 25/20 = 1.25 m ⟹ <b>maximum height 61.25 m</b>. Distance ≠ |displacement| because the path reverses (Module 1 discipline): up 1.25 m, then down 61.25 m ⟹ <b>total distance = 62.5 m</b>, versus |Δ<var>y</var>| = 60 m ✓ (strict inequality, one reversal).</p>
+<p><span class="lbl">(c) Impact speed, twice.</span> <em>Route 1 (Law 1):</em> <var>v</var>(4) = 5 − 40 = −35 ⟹ speed <b>35 m/s</b>. <em>Route 2 (Law 4, time-free):</em> <var>v</var><sup>2</sup> = 5<sup>2</sup> + 2(−10)(−60) = 25 + 1200 = 1225 ⟹ 35 m/s ✓. Independent routes agree — the consistency web closing. (Notice also: 35 m/s is exactly <var>v</var>(−3) with sign flipped — S2's equal-speeds-at-equal-heights, stretched across the virtual history. Everything in this problem is one parabola wearing four disguises.)</p>
+<p><span class="lbl">(d) Scaling, not solving.</span> With a <em>hovering</em> balloon, <var>u</var> = 0, and only two quantities govern: <var>h</var> and <var>g</var>. From rest: <var>t</var> = √(2<var>h</var>/<var>g</var>) and <var>v</var><sub>impact</sub> = √(2<var>gh</var>). Send <var>g</var> → <var>g</var>/6 at fixed <var>h</var>: <b>fall time scales by √6 ≈ 2.45×</b> and <b>impact speed by 1/√6 ≈ 0.41×</b>. Earth reference values: √12 ≈ 3.46 s and √1200 ≈ 34.6 m/s; Moon: <var>t</var> ≈ 8.5 s, <var>v</var> ≈ 14.1 m/s. (Direct check on the Moon: √(2·60/1.667) = √72 ≈ 8.49 s ✓.) One line of proportionality replaced a full re-solve — this reflex, generalized, is Volume 10's dimensional-analysis machinery.</p>
+<p><span class="lbl">(e) Exam compression — the mark-earning skeleton (≈ 6–8 min).</span> (1) "Stone inherits balloon velocity: <var>u</var> = +5 m/s up; thereafter free fall, constant <var>a</var> = −<var>g</var>." [assumption + model marks] (2) Quadratic, factored; <var>t</var> = 4 s; one clause rejecting −3 s <em>with reason</em>. (3) Apex +1.25 m ⟹ 61.25 m; distance 62.5 m (state the reversal). (4) Impact 35 m/s via Law 4 [fewer steps than Law 1 — but citing both, two lines, buys verification credit cheaply]. Partial-credit note: the inherited-velocity sentence alone typically rescues the majority of method marks even if arithmetic later slips; <em>lead with the physics</em>.</p></div></div>
+
+<p><b>Block G — Independent Mastery Set:</b> Part XV below, unsolved, organized by purpose, with checkpoints and a hint ladder.</p>
+
+<div class="duo">Parts XI–XV · Diagnosis, synthesis, gate, retention, independent mastery</div>
+
+<h2 id="p11"><span class="chip">XI</span>Error-Diagnosis Loop</h2>
+<table>
+<tr><th>#</th><th>Error class</th><th>Observable symptom</th><th>Likely root cause</th><th>Diagnostic question</th><th>Correction drill</th><th>Transfer check · review</th></tr>
+<tr><td>1</td><td>Sign convention</td><td>free-fall answers wrong by sign, or a ball that "accelerates upward forever"</td><td>+direction never written; <var>g</var> plugged with a mood-dependent sign</td><td>"Where, in ink, is your declared axis — and what is <var>a</var> in it?"</td><td>redo C2 in <em>both</em> conventions until the table reproduces itself</td><td>XV #4 · 1 day, 1 week</td></tr>
+<tr><td>2</td><td>Conceptual</td><td>claims <var>a</var> = 0 at the apex / at any turning point</td><td>value–trend conflation: "not moving ⟹ nothing changing"</td><td>"If <var>a</var> were 0 there, what would the ball do next — and do balls do that?"</td><td>re-argue the hover contradiction; annotate the II.8 <var>v</var>–<var>t</var> figure from memory</td><td>XV #2 · 1 week</td></tr>
+<tr><td>3</td><td>Conceptual</td><td>"negative acceleration" used to mean "slowing"</td><td>reading <var>a</var>'s sign alone, not against <var>v</var>'s</td><td>"Which sign pair are you in — aligned or opposed?"</td><td>rebuild the four-quadrant figure blind; narrate A5 aloud</td><td>XV #2 · 1 week</td></tr>
+<tr><td>4</td><td>Model selection</td><td>a five-laws answer for a motion whose <var>a</var> visibly varies</td><td>formula reached before the constant-a license was checked</td><td>"Is the <var>v</var>–<var>t</var> graph of this motion a straight line? Prove it or split it."</td><td>re-run the <var>x</var> = <var>t</var><sup>3</sup> counterexample; then D3's piecewise repair</td><td>XV #3, #9 · 1 week</td></tr>
+<tr><td>5</td><td>Mathematical</td><td>quadratic solved, one root silently deleted — or the wrong one kept</td><td>roots treated as algebra debris rather than physical claims</td><td>"What real or virtual event does <em>each</em> root describe?"</td><td>C5 and F1(a) reconstructed; write one sentence per root, always</td><td>XV #8 · 1 week</td></tr>
+<tr><td>6</td><td>Interpretation</td><td>distance and |displacement| interchanged when motion reverses</td><td>reversals not located before totalling</td><td>"Where does <var>v</var> change sign in this interval?"</td><td>E3's sign-chart method on XV #9</td><td>XV #4, #9 · 1 week</td></tr>
+<tr><td>7</td><td>Units</td><td><var>s</var><sub><var>n</var></sub> or the five laws fed km/h; absurd magnitudes unnoticed</td><td>hidden (1 s) factors of Law 5 unknown; no plausibility reflex</td><td>"What are the SI values — and does the answer survive a sanity glance?"</td><td>B4's honest form rewritten; convert-first habit for three problems</td><td>any XV numeric · 1 day</td></tr>
+<tr><td>8</td><td>Diagrammatic</td><td>reads position questions off <var>v</var>–<var>t</var> height, or velocity off <var>x</var>–<var>t</var> height</td><td>graph-layer confusion: value / slope / bend unseparated</td><td>"Which layer — height, steepness, or curvature — does this question live on?"</td><td>fill the Part IV dictionary table from memory; annotate one motion on all three graphs</td><td>Module 3 opener · 1 week</td></tr>
+</table>
+<p>As in Module 1: every logged error names a broken link in the dependency chart. Drill the link, not the problem; then retest something <em>downstream</em> of it.</p>
+
+<h2 id="p12"><span class="chip">XII</span>Module Synthesis</h2>
+<p><b>The module in one causal chain.</b> The need for velocity-at-an-instant collides with 0/0 → the zoom principle (smooth motion is locally uniform) resolves it physically → the limit makes the resolution exact → the derivative is that limit, industrialized by the toolkit → applied once it yields <var>v</var> (tangent slope), twice, <var>a</var> (curvature) → the sign pair (<var>v</var>, <var>a</var>) classifies all speeding/slowing → the single assumption "<var>a</var> constant" straightens the <var>v</var>–<var>t</var> line, whose geometry — slope, trapezoid, mirror symmetry — <em>is</em> the five laws → free fall instantiates them in nature, palindromic because constant acceleration cannot tell time's arrow.</p>
+<p><b>Comparison audit (answer without formulas):</b> Why is the tangent the limit of chords and not an independent idea? Why does instantaneous speed equal |<var>v</var>| when the average versions differ? Why must ½<var>at</var><sup>2</sup> carry exactly ½? Why do the five laws refuse to work for varying <var>a</var> — name the exact step of each derivation that breaks. Why does a ball's flight film run legally in reverse while a shuttlecock's does not?</p>
+<p><b>The cliffhanger, stated precisely.</b> This module travels the chain one way: given <var>x</var>(<var>t</var>), slopes deliver <var>v</var> and <var>a</var>. But nature usually hands you the <em>other</em> end — an accelerometer's <var>a</var>(<var>t</var>), a graph of <var>v</var> — and asks for the motion. For constant <var>a</var> we cheated the return journey with one trapezoid. For the general case: what exactly is "the area under a curve," why does accumulating slivers invert differentiation, and what guarantees the answer is unique? That inverse road — integration, and the art of reading entire motions off graphs — is Module 3.</p>
+
+<h2 id="p13"><span class="chip">XIII</span>Mastery Gate</h2>
+<p>Demonstrate, closed-book, on two separate days:</p>
+<ol>
+<li>Explain, formula-free: the speedometer paradox and its zoom resolution; chord vs tangent; value/slope/bend; the sign-pair law; why free fall is a palindrome.</li>
+<li>Rebuild from scratch: the limit computation for <var>x</var> = <var>t</var><sup>2</sup>; the power rule by counting; all five constant-a laws, each by at least one route, Law 2 by all three; the <var>s</var><sub><var>n</var></sub> dimensional resolution; theorems S1 and S2.</li>
+<li>Draw and annotate from memory: the chord-to-tangent figure; the trapezoid decomposition; the four sign quadrants; the thrown ball's <var>v</var>–<var>t</var> and <var>y</var>–<var>t</var> graphs with areas and the apex marked.</li>
+<li>State the assumption table of Part VI — content, not wording — with each failure mode and its replacing theory.</li>
+<li>Solve fresh instances of C1–C5 types unaided, each with one independent cross-check.</li>
+<li>Solve two unseen D-type transfers without being told which concept applies.</li>
+<li>Produce a full descriptive solution to XV's starred problem: declared frame, stated assumptions, adjudicated roots, verification paragraph.</li>
+<li>Diagnose a planted wrong solution (e.g., an apex-<var>a</var>=0 claim, or Law 1 applied to <var>x</var> = <var>t</var><sup>3</sup>): name the <em>earliest</em> wrong step and the misconception underneath it.</li>
+</ol>
+<table>
+<tr><th>Level</th><th>Criteria</th></tr>
+<tr><td>Not Yet Stable</td><td>any failure in items 1–3</td></tr>
+<tr><td>Foundation Stable</td><td>items 1–5 clean; direct problems reliable with cross-checks</td></tr>
+<tr><td>Transfer Capable</td><td>+ item 6: unfamiliar contexts penetrated unprompted</td></tr>
+<tr><td>Olympiad Ready</td><td>+ items 7–8: full F1-grade reasoning, root adjudication, scaling argument, clean written communication</td></tr>
+<tr><td>Generalisation Capable</td><td>can additionally <em>create</em> a valid F1 variant and predict its behavior — e.g., "stone released from a <em>descending</em> balloon: which answers change, which survive, and why does the virtual-history root move to the future?" — and answer correctly</td></tr>
+</table>
+<p class="small">Honesty clause of the single-source rule: this document can carry you to the gate, but only pen-on-paper solving, timed and unaided, carries you through it. Reading a solution and producing one are different muscles; the gate tests the second.</p>
+
+<h2 id="p14"><span class="chip">XIV</span>Retention Schedule</h2>
+<p><b>Immediate recall (today, ≤ 12 min, closed book).</b> Write: the limit definition in your own words; <var>v</var> and <var>a</var> definitions; the five laws with each one's omitted variable; the sign-pair law; <var>t</var><sub>up</sub>, <var>H</var>, <var>T</var>, return-<var>v</var> for a throw at speed <var>u</var>.</p>
+<p><b>One-day review.</b> A3, A5; B1 with <var>n</var> = 5; sketch the thrown ball's three graphs (<var>y</var>, <var>v</var>, <var>a</var> vs <var>t</var>) aligned one above another; one fresh C1-type with the cross-check.</p>
+<p><b>One-week review.</b> C5 re-derived cold, both roots adjudicated in writing; D4's bounding argument reconstructed verbally; E3's method on XV #9.</p>
+<p><b>One-month review (module unnamed, mixed with Module 1).</b> "A lift ascends at a steady 5 m/s. As it passes a technician standing at a hatch 60 m above the shaft floor, a bolt shakes loose from the lift's underside. The incident report claims the bolt 'fell for 3.46 s, since <var>t</var> = √(2<var>h</var>/<var>g</var>).' Audit the report: find the true fall time and impact speed, and identify the report's hidden false assumption." (Expected: the bolt inherits +5 m/s — the report assumed release from rest; true answers <var>t</var> = 4 s, 35 m/s: Block F in industrial disguise.)</p>
+<div class="box anchor"><span class="tag">Durable memory anchors — the module rebuilds from these five sentences</span>
+<p>1. Zoomed in far enough, every smooth motion is uniform; instantaneous velocity is the slope of that local straight line.</p>
+<p>2. A limit is a destination, not an arrival: cancel while Δ<var>t</var> ≠ 0, then let it vanish.</p>
+<p>3. Value, slope, bend — position, velocity, acceleration: one graph, three stacked layers.</p>
+<p>4. Signs decide together: <var>v</var> and <var>a</var> aligned means faster, opposed means slower; neither sign means anything alone.</p>
+<p>5. Constant acceleration is a straight <var>v</var>–<var>t</var> line, and the five laws are that line's slope, area, and mirror symmetry — void the moment the line bends.</p></div>
+
+<h2 id="p15"><span class="chip">XV</span>Independent Mastery Set <span class="small">(unsolved — checkpoints only; open a hint or checkpoint only after a genuine attempt)</span></h2>
+
+<h4>Concept verification</h4>
+<div class="problem"><span class="ptag">1</span><p><var>x</var>(<var>t</var>) = 4<var>t</var> − <var>t</var><sup>2</sup> (SI). Find every instant the particle is at the origin and every instant it is at rest; then narrate the full motion in two sentences, signs and all.</p>
+<details><summary>Checkpoints</summary><p>Origin at <var>t</var> = 0 and 4 s; rest at <var>t</var> = 2 s; the narration should contain one reversal and a constant <var>a</var> = −2 m/s² throughout — including at <var>t</var> = 2.</p></details></div>
+<div class="problem"><span class="ptag">2</span><p>True or false, one reasoned line each: (a) if <var>v</var> = 0 at an instant, <var>a</var> = 0 there; (b) an object with negative velocity can be speeding up; (c) if <var>a</var> is constant and nonzero, the <var>v</var>–<var>t</var> graph must be a non-horizontal straight line; (d) in 1-D, constant speed with continuous velocity forces constant velocity.</p>
+<details><summary>Checkpoint</summary><p>Exactly three are true.</p></details></div>
+
+<h4>Model selection</h4>
+<div class="problem"><span class="ptag">3</span><p>For which is the constant-acceleration model sound over the <em>whole</em> motion described, and for which only piecewise or not at all: (i) a steel ball's first metre of fall; (ii) a feather falling through air; (iii) a raindrop just above the ground after falling 1 km; (iv) a metro train's full run between stations? Defend each verdict in one sentence naming the violated assumption where there is one.</p>
+<details><summary>Checkpoint</summary><p>Sound wholesale for exactly one; one is salvageable piecewise; two fail on the same Part VI table row.</p></details></div>
+
+<h4>Mathematical execution</h4>
+<div class="problem"><span class="ptag">4</span><p><var>u</var> = +6 m/s, <var>a</var> = −2 m/s². For the first 5 s, find displacement <em>and</em> distance. (One of the two requires an extra step; know which before starting.)</p>
+<details><summary>Checkpoints</summary><p>Reversal inside the interval at <var>t</var> = 3 s; displacement +5 m; distance 13 m.</p></details></div>
+<div class="problem"><span class="ptag">5</span><p>With <var>u</var> = 5 m/s and <var>a</var> = 2 m/s², find the displacement during the 4th second — then confirm it by subtracting two Law-2 evaluations.</p>
+<details><summary>Checkpoint</summary><p>12 m, both routes.</p></details></div>
+<div class="problem"><span class="ptag">6</span><p>A body starts from rest under constant acceleration and covers 45 m during the 5th second. Find <var>a</var>, and cross-check with the odd-number rule.</p>
+<details><summary>Checkpoint</summary><p><var>a</var> = 10 m/s²; the odd-number check uses 9 as the 5th odd number.</p></details></div>
+
+<h4>Transfer</h4>
+<div class="problem"><span class="ptag">7</span><p>A flowerpot falls from rest off a ledge and is seen to pass a 2.0 m tall window in 0.20 s. How far above the <em>top</em> of the window is the ledge? (<var>g</var> = 10 m/s².)</p>
+<details><summary>Checkpoints</summary><p>Velocity at the window's top: 9 m/s; ledge height above window top: 4.05 m.</p></details></div>
+<div class="problem"><span class="ptag">8 ★</span><p>Stone 1 is dropped from a high cliff; stone 2 is dropped from the same point exactly 1 s later. (a) Show that once both are falling, their separation grows <em>linearly</em> in time, and find its growth rate. (b) Explain the linearity in one sentence using an idea from C4. (c) At what time after stone 1's release is the gap 25 m? (<var>g</var> = 10 m/s².)</p>
+<details><summary>Hint 1 · observation</summary><p>Write both positions from one clock: stone 1 falls for <var>t</var>, stone 2 for (<var>t</var> − 1), valid for <var>t</var> ≥ 1.</p></details>
+<details><summary>Hint 2 · representation</summary><p>Gap = 5<var>t</var><sup>2</sup> − 5(<var>t</var> − 1)<sup>2</sup>. Expand before concluding anything.</p></details>
+<details><summary>Hint 3 · governing principle</summary><p>The <var>t</var><sup>2</sup> terms cancel — the same cancellation as C4, and for the same physical reason.</p></details>
+<details><summary>Hint 4 · strategy</summary><p>In stone 1's frame, stone 2's acceleration is <var>g</var> − <var>g</var> = 0: relative motion is uniform, at whatever relative velocity existed when both were airborne. What was stone 1's speed at <var>t</var> = 1?</p></details>
+<details><summary>Hint 5 · key equation</summary><p>Gap = 5(2<var>t</var> − 1) = 10<var>t</var> − 5: rate 10 m/s = <var>g</var> × (1 s). Set equal to 25.</p></details>
+<details><summary>Checkpoint</summary><p>Growth rate 10 m/s; gap = 25 m at <var>t</var> = 3 s (from stone 1's release).</p></details></div>
+
+<h4>Synthesis</h4>
+<div class="problem"><span class="ptag">9</span><p><var>x</var>(<var>t</var>) = <var>t</var><sup>3</sup> − 9<var>t</var><sup>2</sup> + 24<var>t</var> (SI). Over [0, 5 s]: locate all reversals, then compute displacement and total distance, E3-style.</p>
+<details><summary>Checkpoints</summary><p>Reversals at <var>t</var> = 2 and 4 s; waypoints <var>x</var> = 0, 20, 16, 20; displacement 20 m; distance 28 m.</p></details></div>
+
+<h4>Endurance</h4>
+<div class="problem"><span class="ptag">10</span><p>A car: from rest, <var>a</var> = +2 m/s² for 10 s; then constant velocity for 20 s; then uniform braking to rest in a further 5 s. Build the piecewise <var>v</var>(<var>t</var>) and <var>x</var>(<var>t</var>), sketch all three graphs (<var>x</var>, <var>v</var>, <var>a</var>) aligned above one another, find total displacement and the whole-journey average velocity, and verify the displacement a second way using areas on your <var>v</var>–<var>t</var> sketch.</p>
+<details><summary>Checkpoints</summary><p>Cruise speed 20 m/s; braking <var>a</var> = −4 m/s²; phase displacements 100 + 400 + 50; total 550 m over 35 s; average velocity 110/7 ≈ 15.7 m/s; the <var>v</var>–<var>t</var> area is one trapezoid whose mean-width reading gives 550 in one line.</p></details></div>
+
+<h2 id="ledger"><span class="chip">→</span>Self-Validation and Continuity Ledger</h2>
+<p><b>Self-validation, executed against the protocol.</b> Prerequisites either carried from Module 1 or built here (limit, derivative, tangent, quadratic-root reading) ✓. Every new term defined before use ✓. Observation/idealization/law separated at <var>g</var>, at kinks, at the measurement table ✓. Every formula motivated, derived, interpreted, and bounded — Law 2 three ways; the five-law boundary shown failing live ✓. Sign discipline enforced; C2 run in both conventions ✓. Diagrams to scale where claimed; each explained in surrounding text ✓. Limiting cases tested (a → 0 degrading Law 2; w-scaling in F1(d); C4's throw-speed limit) ✓. Training progresses lock → reconstruction → standard → transfer → synthesis → Olympiad → independent ✓. Difficulty labels honest (F1: JEE-Advanced/INPhO-entry, not IPhO) ✓. All numeric answers independently cross-checked ✓. Error loop, gate, retention present ✓. Deliberate scope exclusions stated, not hidden: inverse reconstruction (Module 3), trig/exponential derivatives (at their points of need) ✓.</p>
+<div class="box note"><span class="tag">Continuity ledger → Volume 1, Part 3 (Module 3: Motion Graphs and Inverse Reconstruction)</span>
+<p><b>Carried forward, citable:</b> the limit and the toolkit; <var>v</var> = <var>dx</var>/<var>dt</var>, <var>a</var> = <var>dv</var>/<var>dt</var>; the value/slope/bend dictionary; the sign-pair law; the five constant-a laws with their licenses; free-fall symmetry; the sliver argument that displacement = signed area under <var>v</var>–<var>t</var> (used once, for a straight line); the quadratic-root adjudication skill; central differences as the practical derivative.</p>
+<p><b>The open wound Module 3 must heal:</b> the kinematic chain runs right (slopes) but its leftward, dashed road is unbuilt. Given an arbitrary curved <var>v</var>–<var>t</var> graph — or a bare <var>a</var>(<var>t</var>) plus initial conditions — what exactly is the accumulated area, why is accumulation the true inverse of the slope operation (the fundamental theorem, met physically before it is met formally), how do signed areas book-keep reversals, and how does one <em>read</em> an entire journey — meetings, overtakings, distances, averages — straight off graphs without solving anything? Module 3 industrializes all of it, and with it the last purely 1-D tool falls into place before Module 4 opens the second dimension.</p></div>
+
+<p class="small" style="margin-top:34px; text-align:center; color:#5a6673">Physics Master Knowledge Base · Volume 1, Part 2 complete · Modules 1–2 done, Module 3 next · self-contained, offline, no external dependencies</p>
+
+</div>
+</body>
+</html>

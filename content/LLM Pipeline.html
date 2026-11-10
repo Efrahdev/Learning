@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A first-principles, visual guide to the modern frontier AI model training pipeline.">
+<title>How a Frontier AI Model Comes Into Existence</title>
+<style>
+:root{
+ --bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--text:#edf4ff;--muted:#a9bad0;--line:#27405d;
+ --s1:#5aa7ff;--s2:#43d7b5;--s3:#ffd166;--s4:#ff8a65;--s5:#c18cff;--s6:#ff6f91;--good:#64e6a3;--warn:#ffc857;
+ --shadow:0 18px 50px rgba(0,0,0,.28);--radius:18px;--max:1240px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px}body{margin:0;background:radial-gradient(circle at 15% 0,#102b4c 0,transparent 34%),var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:#8dc7ff}button{font:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;z-index:999;background:#fff;color:#111;padding:10px;border-radius:8px}
+header{padding:76px 24px 42px;border-bottom:1px solid var(--line)}.hero{max-width:var(--max);margin:auto}.eyebrow{color:var(--s2);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem}.hero h1{font-size:clamp(2.35rem,6vw,5.7rem);line-height:.97;max-width:1050px;margin:.25em 0}.lead{font-size:clamp(1.05rem,2.1vw,1.35rem);color:var(--muted);max-width:800px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 15px;border-radius:999px;text-decoration:none;font-weight:750}.btn.primary{background:var(--s1);color:#06111f;border-color:transparent}
+.layout{max-width:var(--max);margin:auto;display:grid;grid-template-columns:265px minmax(0,1fr);gap:28px;padding:28px 24px 90px}.toc{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow:auto;background:rgba(13,27,45,.88);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:17px}.toc strong{display:block;margin-bottom:9px}.toc a{display:block;color:var(--muted);text-decoration:none;padding:7px 9px;border-left:2px solid transparent;font-size:.91rem}.toc a:hover,.toc a.active{color:var(--text);border-color:var(--s1);background:#13283f}.toc .meter{height:4px;background:#172c45;margin:0 0 13px;border-radius:9px;overflow:hidden}.toc .meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--s1),var(--s2))}
+main{min-width:0}section{margin:0 0 72px}.section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:18px}.num{flex:0 0 auto;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#17304d;color:var(--s1);font-weight:900}.section-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);line-height:1.12;margin:0}.section-head p{margin:.55rem 0 0;color:var(--muted);max-width:760px}
+.visual{background:linear-gradient(180deg,rgba(17,39,63,.94),rgba(10,25,42,.94));border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:20px 0}.visual-title{font-weight:850;margin-bottom:13px}.caption{color:var(--muted);font-size:.92rem;margin-top:12px}
+.pipeline{display:grid;grid-template-columns:repeat(6,minmax(115px,1fr));gap:9px;align-items:stretch}.stage{position:relative;border:1px solid color-mix(in srgb,var(--c) 55%,var(--line));background:color-mix(in srgb,var(--c) 11%,var(--panel));border-radius:14px;padding:14px;min-height:128px}.stage b{display:block;color:var(--c);margin-bottom:5px}.stage small{color:var(--muted)}.stage:not(:last-child):after{content:"›";position:absolute;right:-9px;top:45%;z-index:2;font-size:25px;color:#8fa7c1}.s1{--c:var(--s1)}.s2{--c:var(--s2)}.s3{--c:var(--s3)}.s4{--c:var(--s4)}.s5{--c:var(--s5)}.s6{--c:var(--s6)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px}.card h3{margin:0 0 7px;font-size:1.05rem}.card p,.card li{color:var(--muted)}.card ul{margin:.4rem 0 0;padding-left:1.15rem}.kicker{display:inline-block;color:#07111f;background:var(--c,var(--s1));font-size:.72rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-bottom:9px}
+.flow{display:flex;gap:8px;align-items:stretch;overflow:auto;padding-bottom:5px}.node{min-width:145px;flex:1;padding:14px;border-radius:13px;border:1px solid var(--line);background:#0b1a2c}.arrow{display:grid;place-items:center;color:var(--s1);font-size:25px}.node b{display:block}.node span{color:var(--muted);font-size:.88rem}
+.zoom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.zoom-card{padding:17px;border-radius:15px;background:#0b1b2d;border:1px solid var(--line)}.zoom-card h3{margin:0;color:var(--c)}.zoom-card strong{display:block;margin-top:9px}.zoom-card p{color:var(--muted);margin:.25rem 0}
+.io{display:grid;grid-template-columns:1fr auto 1.2fr auto 1fr;gap:10px;align-items:center}.io .box{background:#0b1a2c;border:1px solid var(--line);padding:15px;border-radius:13px}.io .box b{display:block;color:var(--s2)}
+.layercake{display:flex;flex-direction:column-reverse;gap:8px;max-width:760px;margin:auto}.layer{padding:13px 16px;border-radius:11px;border:1px solid var(--line);background:#10233a}.layer:nth-child(1){margin-inline:0}.layer:nth-child(2){margin-inline:4%}.layer:nth-child(3){margin-inline:8%}.layer:nth-child(4){margin-inline:12%}.layer:nth-child(5){margin-inline:16%}.layer:nth-child(6){margin-inline:20%}.layer b{color:var(--c)}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.compare>div{padding:17px;border-radius:15px;border:1px solid var(--line);background:#0b1a2c}.compare h3{margin-top:0}.bad h3{color:var(--warn)}.good h3{color:var(--good)}
+.mini-map{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:14px 0}.mini-map a{height:9px;border-radius:10px;background:#1a324c}.mini-map a.here{background:var(--c,var(--s1));box-shadow:0 0 0 4px color-mix(in srgb,var(--c,var(--s1)) 20%,transparent)}
+.details{border:1px solid var(--line);border-radius:15px;background:#0c1c2e;margin:12px 0;overflow:hidden}.details summary{cursor:pointer;padding:15px 17px;font-weight:850;list-style:none}.details summary::-webkit-details-marker{display:none}.details summary:after{content:"+";float:right;color:var(--s1);font-size:1.3rem}.details[open] summary:after{content:"−"}.details-content{padding:0 17px 17px;color:var(--muted)}
+.lock{border-left:4px solid var(--c,var(--s2));background:color-mix(in srgb,var(--c,var(--s2)) 9%,var(--panel));padding:15px 17px;border-radius:0 13px 13px 0;margin-top:18px}.lock b{color:var(--c,var(--s2))}.legend{display:flex;gap:10px;flex-wrap:wrap}.legend span{padding:5px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.83rem}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:5px}
+.math{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;padding:14px;border-radius:12px;background:#06101d;border:1px solid #203852;color:#cfe5ff;overflow:auto}.callout{padding:15px;border:1px dashed #526d8b;border-radius:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:32px 24px;color:var(--muted)}footer>div{max-width:var(--max);margin:auto}.sources li{margin:8px 0}.sources a{overflow-wrap:anywhere}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.toc{position:relative;top:0;max-height:none}.toc nav{columns:2}.pipeline{grid-template-columns:repeat(3,1fr)}.stage:nth-child(3):after{display:none}.cards{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){header{padding:52px 17px 30px}.layout{padding:18px 14px 70px}.toc nav{columns:1}.pipeline,.cards,.zoom,.compare{grid-template-columns:1fr}.stage:after{display:none}.flow{flex-direction:column}.arrow{transform:rotate(90deg)}.io{grid-template-columns:1fr}.io>.arrow{transform:rotate(90deg)}.mini-map{grid-template-columns:repeat(5,1fr)}.section-head{gap:11px}.num{width:39px;height:39px}.visual{padding:14px}.layer{margin-inline:0!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+@media print{body{background:white;color:#111}.toc,.hero-actions{display:none}.layout{display:block}.visual,.card,.details{box-shadow:none;background:white;color:#111}.caption,.card p,.card li,.details-content,.lead{color:#333}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+ <div class="hero">
+  <div class="eyebrow">First-principles visual field guide</div>
+  <h1>How a Frontier AI Model Comes Into Existence</h1>
+  <p class="lead">A navigable mental model from raw experience to Transformer, pre-training, post-training, reasoning, tools, safety, serving, and the next training cycle.</p>
+  <div class="hero-actions"><a class="btn primary" href="#movie">See the whole movie</a><a class="btn" href="#zoom">Use the three-level lens</a><a class="btn" href="#reconstruct">Reconstruct it from scratch</a></div>
+ </div>
+</header>
+<div class="layout">
+<aside class="toc" aria-label="Table of contents"><strong>Your position</strong><div class="meter" aria-hidden="true"><span id="progress"></span></div><nav id="tocnav">
+<a href="#movie">1. The complete mental movie</a><a href="#necessities">2. Why the order is inevitable</a><a href="#zoom">3. Three levels of zoom</a><a href="#data">4. Experience engineering</a><a href="#representation">5. Representation</a><a href="#transformer">6. Transformer substrate</a><a href="#pretraining">7. Pre-training</a><a href="#posttraining">8. Post-training</a><a href="#reasoning">9. Reasoning and RL</a><a href="#agents">10. Tools and agents</a><a href="#safety">11. Safety and evaluation</a><a href="#production">12. Production system</a><a href="#flywheel">13. Improvement flywheel</a><a href="#reconstruct">14. Reconstruction test</a>
+</nav></aside>
+<main id="main">
+<section id="movie">
+ <div class="section-head"><div class="num">01</div><div><h2>The complete mental movie</h2><p>Before mechanisms, see the entire transformation. A frontier model is a sequence of changing states, not a single training event.</p></div></div>
+ <div class="visual">
+  <div class="visual-title">One system, six irreversible transformations</div>
+  <div class="pipeline">
+   <div class="stage s1"><b>1. Experience</b><small>Human and machine-created text, code, images, audio, video, actions.</small></div>
+   <div class="stage s2"><b>2. Representation</b><small>Convert messy experience into numerical token sequences.</small></div>
+   <div class="stage s3"><b>3. Predictive substrate</b><small>Train a Transformer to compress regularities by prediction.</small></div>
+   <div class="stage s4"><b>4. Behaviour shaping</b><small>Teach instructions, preferences, reasoning, and safe conduct.</small></div>
+   <div class="stage s5"><b>5. Situated action</b><small>Connect the policy to tools, memory, environments, and feedback.</small></div>
+   <div class="stage s6"><b>6. Product loop</b><small>Serve, monitor, discover failures, and manufacture the next curriculum.</small></div>
+  </div>
+  <p class="caption">The model begins as adjustable numbers. It ends as one component inside a governed runtime system.</p>
+ </div>
+ <div class="cards">
+  <article class="card"><span class="kicker s1">Fundamental problem</span><h3>How can past experience alter future behaviour?</h3><p>Gradient-based learning changes parameters so future predictions and actions become more successful.</p></article>
+  <article class="card"><span class="kicker s3">Central split</span><h3>Knowledge is not behaviour</h3><p>Pre-training creates broad possibilities. Post-training selects which possibilities appear when a user asks for help.</p></article>
+  <article class="card"><span class="kicker s5">Product reality</span><h3>The model is not the assistant</h3><p>The assistant also includes prompts, tools, retrieval, memory, permissions, safety controls, routing, and serving infrastructure.</p></article>
+ </div>
+ <div class="lock"><b>LOCK:</b> The pipeline repeatedly converts experience into representation, representation into capability, capability into behaviour, and behaviour into new experience.</div>
+</section>
+
+<section id="necessities">
+ <div class="section-head"><div class="num">02</div><div><h2>Why the order is inevitable</h2><p>Each stage exists because the output of the previous stage is useful but insufficient.</p></div></div>
+ <div class="visual"><div class="visual-title">The necessity chain</div><div class="flow">
+  <div class="node"><b>Raw world</b><span>Rich but too messy for numerical optimisation</span></div><div class="arrow">→</div>
+  <div class="node"><b>Tokens</b><span>Computable but contain no learned intelligence</span></div><div class="arrow">→</div>
+  <div class="node"><b>Base model</b><span>Knowledgeable but follows the data distribution, not user intent</span></div><div class="arrow">→</div>
+  <div class="node"><b>Assistant policy</b><span>Helpful but may not search, verify, or act reliably</span></div><div class="arrow">→</div>
+  <div class="node"><b>Agentic system</b><span>Capable but consequential, requiring safety and governance</span></div>
+ </div></div>
+ <div class="compare"><div class="bad"><h3>If stages are skipped</h3><ul><li>No curation: duplicated noise gets disproportionate influence.</li><li>No pre-training: post-training must teach language and knowledge from tiny datasets.</li><li>No SFT: the model continues documents instead of reliably assisting.</li><li>No feedback optimisation: it imitates examples but does not systematically prefer better outcomes.</li><li>No production layer: excellent weights remain slow, insecure, and unusable at scale.</li></ul></div><div class="good"><h3>What order preserves</h3><ul><li>Broad foundation before specialisation.</li><li>Cheap general learning before expensive expert supervision.</li><li>Safe simulation before consequential action.</li><li>Evaluation before release.</li><li>Observed failure before the next training cycle.</li></ul></div></div>
+ <div class="lock" style="--c:var(--s3)"><b>LOCK:</b> The sequence is forced by dependency: later stages can shape, test, or deploy capabilities only after earlier stages have created them.</div>
+</section>
+
+<section id="zoom">
+ <div class="section-head"><div class="num">03</div><div><h2>The three-level lens</h2><p>Use this lens at every stage so you never confuse the organisation’s pipeline with the model’s internal computation.</p></div></div>
+ <div class="visual"><div class="zoom">
+  <div class="zoom-card" style="--c:var(--s1)"><h3>Bird’s-eye</h3><strong>Question</strong><p>What state is the system in, and what must the next stage receive?</p><strong>Unit</strong><p>Datasets, checkpoints, policies, products.</p></div>
+  <div class="zoom-card" style="--c:var(--s2)"><h3>Architecture</h3><strong>Question</strong><p>Which modules transform information, and how are they connected?</p><strong>Unit</strong><p>Tokenizers, Transformers, reward models, tools.</p></div>
+  <div class="zoom-card" style="--c:var(--s3)"><h3>Mechanism</h3><strong>Question</strong><p>What local numerical operation changes the result?</p><strong>Unit</strong><p>Vectors, probabilities, losses, gradients, parameter updates.</p></div>
+ </div></div>
+ <details class="details" open><summary>One example across all three levels: pre-training</summary><div class="details-content"><b>Bird’s-eye:</b> transform a random network into a broad base model. <b>Architecture:</b> send token batches through repeated Transformer blocks. <b>Mechanism:</b> compare predicted token probabilities with the actual token, then move parameters in the direction that reduces surprise.</div></details>
+ <div class="lock" style="--c:var(--s1)"><b>LOCK:</b> Never ask only “what does this component do?” Ask what system state it transforms, which modules perform the transformation, and which numbers actually change.</div>
+</section>
+
+<section id="data">
+ <div class="section-head"><div class="num">04</div><div><h2>Experience engineering</h2><p><b>Position:</b> beginning of the pipeline. <b>Receives:</b> raw human and machine artefacts. <b>Produces:</b> a deliberate learning curriculum.</p></div></div>
+ <div class="mini-map" style="--c:var(--s1)"><a class="here"></a><a></a><a></a><a></a><a></a></div>
+ <div class="visual"><div class="visual-title">Input → transformation → output</div><div class="io"><div class="box"><b>Input</b>Web, books, code, papers, images, audio, tools, licensed data</div><div class="arrow">→</div><div class="box"><b>Transform</b>Deduplicate, filter, score quality, remove leaks, balance sources, schedule mixtures</div><div class="arrow">→</div><div class="box"><b>Output</b>Training examples with sampling weights and metadata</div></div></div>
+ <div class="cards">
+  <article class="card"><h3>Executive intuition</h3><p>This is not “collect everything.” It is designing the childhood of the model. Frequency becomes influence.</p></article>
+  <article class="card"><h3>Why simpler fails</h3><p>Raw internet frequency measures abundance, not truth, educational value, safety, or the capability goals of the lab.</p></article>
+  <article class="card"><h3>Engineering reality</h3><p>Data pipelines track provenance, licensing, language, quality scores, duplication clusters, contamination, and mixture weights.</p></article>
+ </div>
+ <details class="details"><summary>Misconception: more tokens always produce a better model</summary><div class="details-content">Additional tokens help only when their learning value exceeds their opportunity cost. Repeated spam can teach less than a smaller collection of diverse, high-quality demonstrations. Quality also changes the compute-optimal balance between model size and token count.</div></details>
+ <div class="lock" style="--c:var(--s1)"><b>LOCK:</b> Data curation decides which patterns get how many chances to alter the network.</div>
+</section>
+
+<section id="representation">
+ <div class="section-head"><div class="num">05</div><div><h2>Representation: turn experience into computable symbols</h2><p><b>Position:</b> between curated experience and the neural network. <b>Produces:</b> sequences of identifiers and vectors the Transformer can process.</p></div></div>
+ <div class="visual"><div class="flow"><div class="node"><b>“Transformers learn”</b><span>Human-readable string</span></div><div class="arrow">→</div><div class="node"><b>[“Trans”, “form”, “ers”, “ learn”]</b><span>Reusable token pieces</span></div><div class="arrow">→</div><div class="node"><b>[814, 392, 71, 5421]</b><span>Discrete IDs</span></div><div class="arrow">→</div><div class="node"><b>Vectors</b><span>Learned coordinates carrying usable features</span></div></div></div>
+ <div class="cards"><article class="card"><h3>Why not whole words?</h3><p>Vocabulary explodes and unseen words become impossible.</p></article><article class="card"><h3>Why not characters?</h3><p>Sequences become long, raising computation and making useful concepts harder to assemble.</p></article><article class="card"><h3>Multimodal extension</h3><p>Images become patches, audio becomes frames or codes, and actions become structured tokens. Different senses meet in compatible vector spaces.</p></article></div>
+ <details class="details"><summary>Mathematical intuition</summary><div class="details-content"><div class="math">token_id → embedding lookup → vector x ∈ R^d
+
+The ID itself has no geometry. Training learns the vector so useful relationships become computationally accessible.</div></div></details>
+ <div class="lock" style="--c:var(--s2)"><b>LOCK:</b> Representation creates the numerical alphabet on which all later learning operates.</div>
+</section>
+
+<section id="transformer">
+ <div class="section-head"><div class="num">06</div><div><h2>The Transformer: a programmable relationship machine</h2><p><b>Position:</b> the computational substrate. <b>Receives:</b> token vectors. <b>Produces:</b> context-enriched vectors and next-token probabilities.</p></div></div>
+ <div class="visual"><div class="visual-title">Layered architecture</div><div class="layercake">
+  <div class="layer" style="--c:var(--s1)"><b>Token + position embeddings</b> encode what is present and where.</div>
+  <div class="layer" style="--c:var(--s2)"><b>Attention</b> routes relevant information between positions.</div>
+  <div class="layer" style="--c:var(--s3)"><b>Feed-forward network</b> transforms features independently at each position.</div>
+  <div class="layer" style="--c:var(--s4)"><b>Residual paths + normalisation</b> preserve information and stabilise deep computation.</div>
+  <div class="layer" style="--c:var(--s5)"><b>Repeat many times</b> so simple relations compose into abstractions and procedures.</div>
+  <div class="layer" style="--c:var(--s6)"><b>Output projection</b> converts the final state into probabilities over the next token.</div>
+ </div></div>
+ <div class="compare"><div><h3>Physical analogy</h3><p>Each token enters a conference room. Attention lets it ask: “Who here contains information relevant to my current problem?” It gathers selected messages, then locally transforms the result.</p></div><div><h3>Retire the analogy</h3><p>The real mechanism is weighted vector mixing. Queries and keys determine routing weights; values carry the information being routed.</p></div></div>
+ <details class="details" open><summary>Internal mechanism: attention in one compact view</summary><div class="details-content"><div class="math">Q = XWq     K = XWk     V = XWv
+scores = QKᵀ / √d
+weights = softmax(scores)
+output = weights · V</div><p>Training does not hand-code which words relate. It learns the projection matrices that make useful routing emerge.</p></div></details>
+ <details class="details"><summary>Misconception: attention is a database lookup</summary><div class="details-content">Attention retrieves and combines representations inside the current context. It does not inherently guarantee factual recall, persistence, or source grounding. External retrieval exists because parameter memory and context attention have different strengths.</div></details>
+ <div class="lock" style="--c:var(--s3)"><b>LOCK:</b> A Transformer repeatedly routes information across positions and transforms it until the next useful action becomes predictable.</div>
+</section>
+
+<section id="pretraining">
+ <div class="section-head"><div class="num">07</div><div><h2>Pre-training: convert prediction errors into general capability</h2><p><b>Position:</b> after architecture and data. <b>Produces:</b> a base model containing broad latent knowledge and skills.</p></div></div>
+ <div class="visual"><div class="visual-title">The learning loop, repeated at enormous scale</div><div class="flow"><div class="node"><b>Context</b><span>“Water freezes at”</span></div><div class="arrow">→</div><div class="node"><b>Prediction</b><span>Probabilities over every token</span></div><div class="arrow">→</div><div class="node"><b>Loss</b><span>How surprised was the model by the real token?</span></div><div class="arrow">→</div><div class="node"><b>Gradient</b><span>Which parameter changes reduce that surprise?</span></div><div class="arrow">→</div><div class="node"><b>Update</b><span>A tiny behavioural change</span></div></div></div>
+ <div class="cards"><article class="card"><h3>Why prediction creates intelligence</h3><p>To predict diverse human artefacts, the model benefits from reconstructing the latent causes behind them: grammar, intent, concepts, code behaviour, and world regularities.</p></article><article class="card"><h3>What enters</h3><p>Token batches, random or partial parameters, optimiser state, training schedule, and distributed compute.</p></article><article class="card"><h3>What exits</h3><p>A checkpoint that can continue patterns and display broad competence, but is not yet a dependable assistant.</p></article></div>
+ <details class="details"><summary>Mathematical intuition: loss and gradient descent</summary><div class="details-content"><div class="math">loss = −log P(correct next token | context)
+parameters ← parameters − learning_rate × gradient(loss)</div><p>One update is almost meaningless. Capability emerges from the accumulated direction of vast numbers of small corrections.</p></div></details>
+ <details class="details"><summary>Practical engineering: why checkpoints and scaling laws exist</summary><div class="details-content">A frontier run spans large accelerator clusters and may encounter hardware faults, numerical instability, corrupt batches, or bad data mixtures. Checkpoints preserve recoverable state. Smaller experiments and scaling laws estimate how to allocate compute among parameters, tokens, and training duration before committing to the largest run.</div></details>
+ <div class="lock" style="--c:var(--s3)"><b>LOCK:</b> Pre-training is repeated error correction that compresses the statistical structure needed to predict human-created sequences.</div>
+</section>
+
+<section id="posttraining">
+ <div class="section-head"><div class="num">08</div><div><h2>Post-training: select the model you want from the model you have</h2><p><b>Position:</b> after broad capability. <b>Receives:</b> a base checkpoint plus high-quality demonstrations and judgements. <b>Produces:</b> an assistant policy.</p></div></div>
+ <div class="visual"><div class="pipeline" style="grid-template-columns:repeat(4,1fr)"><div class="stage s1"><b>Base model</b><small>Can do many things, but does not know which role to adopt.</small></div><div class="stage s2"><b>SFT</b><small>Imitate excellent prompt-response demonstrations.</small></div><div class="stage s4"><b>Preferences</b><small>Learn which acceptable response is better.</small></div><div class="stage s5"><b>Policy</b><small>Helpful, steerable, formatted, safer assistant behaviour.</small></div></div></div>
+ <div class="compare"><div class="bad"><h3>Before</h3><p>“Continue text in ways similar to the pre-training distribution.”</p></div><div class="good"><h3>After</h3><p>“Given a user goal and policy context, choose an appropriate response style and action.”</p></div></div>
+ <div class="cards"><article class="card"><h3>SFT teaches examples</h3><p>It moves the model toward demonstrated trajectories. It is excellent for formats, roles, tool syntax, and baseline conduct.</p></article><article class="card"><h3>Preferences teach ranking</h3><p>For open-ended tasks, there is no unique correct sentence. Pairwise comparisons teach relative quality, relevance, and restraint.</p></article><article class="card"><h3>Why simpler fails</h3><p>Pre-training learns what humans wrote, including arguments, mistakes, and toxic material. It does not identify which author or objective should govern a product assistant.</p></article></div>
+ <details class="details"><summary>Misconception: post-training merely adds a polite personality</summary><div class="details-content">It also determines instruction adherence, refusal boundaries, uncertainty expression, tool-call conventions, reasoning habits, response length, and whether latent skills are reliably activated.</div></details>
+ <div class="lock" style="--c:var(--s4)"><b>LOCK:</b> Post-training does not mainly add knowledge; it teaches the model which of its many available behaviours should control the next action.</div>
+</section>
+
+<section id="reasoning">
+ <div class="section-head"><div class="num">09</div><div><h2>Reasoning and reinforcement learning: optimise trajectories, not appearances</h2><p><b>Position:</b> after a usable assistant exists. <b>Receives:</b> problems, candidate trajectories, and rewards. <b>Produces:</b> better search, verification, and strategy.</p></div></div>
+ <div class="visual"><div class="visual-title">Imitation versus consequence</div><div class="compare"><div><h3>SFT: copy this route</h3><div class="flow"><div class="node"><b>Human solution</b><span>Desired token sequence</span></div><div class="arrow">→</div><div class="node"><b>Imitation</b><span>Increase its probability</span></div></div></div><div><h3>RL: reach this destination</h3><div class="flow"><div class="node"><b>Several attempts</b><span>Explore different routes</span></div><div class="arrow">→</div><div class="node"><b>Verifier</b><span>Reward what works</span></div></div></div></div></div>
+ <div class="visual"><div class="flow"><div class="node"><b>Problem</b><span>Math, code, science, tool task</span></div><div class="arrow">→</div><div class="node"><b>Rollouts</b><span>Multiple reasoning/action trajectories</span></div><div class="arrow">→</div><div class="node"><b>Reward</b><span>Tests, final answer, judge, environment</span></div><div class="arrow">→</div><div class="node"><b>Policy update</b><span>Successful decisions become likelier</span></div><div class="arrow">→</div><div class="node"><b>Harder curriculum</b><span>Repeat at a higher frontier</span></div></div></div>
+ <div class="cards"><article class="card"><h3>Outcome rewards</h3><p>Judge the final destination. Cheap and objective when answers, tests, or game scores are verifiable, but sparse.</p></article><article class="card"><h3>Process rewards</h3><p>Judge intermediate steps. Better credit assignment, but expensive and vulnerable to rewarding reasoning that merely looks good.</p></article><article class="card"><h3>Test-time compute</h3><p>The trained policy can spend more time sampling, checking, searching, or using tools. Training improves the searcher; inference budget enlarges the search.</p></article></div>
+ <details class="details" open><summary>The deepest intuition: RL requires a trustworthy scoreboard</summary><div class="details-content">Optimisation will exploit whatever the scoreboard actually measures. Therefore, the frontier advantage is often not a clever optimiser alone. It is the ability to generate hard tasks, run many attempts, verify outcomes, detect reward hacking, and convert those results into a curriculum.</div></details>
+ <details class="details"><summary>Misconception: reasoning is just producing a longer chain of thought</summary><div class="details-content">Length is only expenditure, not quality. Useful reasoning requires allocation, decomposition, checking, error recovery, and stopping. More tokens can also amplify a wrong premise.</div></details>
+ <div class="lock" style="--c:var(--s5)"><b>LOCK:</b> Reasoning RL strengthens strategies that survive verification, while test-time compute gives those strategies room to search.</div>
+</section>
+
+<section id="agents">
+ <div class="section-head"><div class="num">10</div><div><h2>Tools and agents: close the loop with the external world</h2><p><b>Position:</b> after language and reasoning competence. <b>Produces:</b> a controller that can observe, act, recover, and finish.</p></div></div>
+ <div class="visual"><div class="visual-title">The agent control loop</div><div class="flow"><div class="node"><b>Goal</b><span>What outcome is wanted?</span></div><div class="arrow">→</div><div class="node"><b>Plan</b><span>What is the next useful subgoal?</span></div><div class="arrow">→</div><div class="node"><b>Act</b><span>Search, run code, call API, edit file</span></div><div class="arrow">→</div><div class="node"><b>Observe</b><span>What changed? What failed?</span></div><div class="arrow">↻</div><div class="node"><b>Stop</b><span>Goal met, blocked, or permission required</span></div></div></div>
+ <div class="cards"><article class="card"><h3>Why tools exist</h3><p>Weights are finite and static. Tools provide current facts, exact computation, durable memory, and real actions.</p></article><article class="card"><h3>Why agent training exists</h3><p>Knowing a tool’s syntax does not teach when to call it, how to recover from failure, or how to preserve user intent across many steps.</p></article><article class="card"><h3>Why long horizons are hard</h3><p>Each action changes the next state. Small per-step error rates compound, and delayed outcomes make blame difficult to assign.</p></article></div>
+ <details class="details"><summary>Dependency graph: what an agent really depends on</summary><div class="details-content">Agent reliability depends jointly on base-model understanding, post-trained judgement, planning, tool schemas, environment quality, permissions, context management, memory, verification, and termination rules. Adding a browser button to a model does not create an autonomous worker.</div></details>
+ <div class="lock" style="--c:var(--s5)"><b>LOCK:</b> An agent is a policy inside a feedback loop where each action alters the evidence available for the next decision.</div>
+</section>
+
+<section id="safety">
+ <div class="section-head"><div class="num">11</div><div><h2>Safety and evaluation: discover where capability claims fail</h2><p><b>Position:</b> throughout the pipeline, intensified before deployment. <b>Produces:</b> evidence, mitigations, and release constraints.</p></div></div>
+ <div class="visual"><div class="layercake">
+  <div class="layer" style="--c:var(--s1)"><b>Data controls</b> provenance, privacy, harmful-content handling, decontamination.</div>
+  <div class="layer" style="--c:var(--s2)"><b>Behaviour shaping</b> policy examples, constitutions, preference data, safer reasoning.</div>
+  <div class="layer" style="--c:var(--s3)"><b>Capability evaluations</b> correctness, robustness, calibration, multilingual and domain coverage.</div>
+  <div class="layer" style="--c:var(--s4)"><b>Adversarial evaluation</b> jailbreaks, prompt injection, exfiltration, misuse, deception.</div>
+  <div class="layer" style="--c:var(--s5)"><b>Runtime controls</b> tool permissions, screening, monitoring, rate limits, human approval.</div>
+ </div></div>
+ <div class="compare"><div><h3>Benchmark question</h3><p>Can the model solve a clean, bounded task?</p></div><div><h3>Deployment question</h3><p>Will the entire system behave acceptably across ambiguity, attacks, distribution shift, and irreversible actions?</p></div></div>
+ <details class="details"><summary>Misconception: safety is a refusal filter added at the end</summary><div class="details-content">Safety failures can originate in data, objectives, reward models, tool permissions, interfaces, or monitoring. A final classifier cannot repair every upstream failure, particularly when an agent has already taken an action.</div></details>
+ <div class="lock" style="--c:var(--s6)"><b>LOCK:</b> Evaluation is an attempt to falsify readiness, and safety is the set of upstream and runtime controls that limit the consequences of being wrong.</div>
+</section>
+
+<section id="production">
+ <div class="section-head"><div class="num">12</div><div><h2>Production: turn weights into a dependable service</h2><p><b>Position:</b> after release criteria. <b>Receives:</b> checkpoints, prompts, tools, controls, and traffic. <b>Produces:</b> user-visible outcomes.</p></div></div>
+ <div class="visual"><div class="visual-title">The assistant is a stack</div><div class="layercake">
+  <div class="layer" style="--c:var(--s1)"><b>Accelerators + inference engine</b> execute the model efficiently.</div>
+  <div class="layer" style="--c:var(--s2)"><b>Model weights</b> provide the learned policy.</div>
+  <div class="layer" style="--c:var(--s3)"><b>Context assembly</b> system instructions, conversation, retrieval, memory.</div>
+  <div class="layer" style="--c:var(--s4)"><b>Orchestration</b> routing, tools, retries, caching, fallbacks.</div>
+  <div class="layer" style="--c:var(--s5)"><b>Governance</b> authentication, permissions, safety checks, monitoring.</div>
+  <div class="layer" style="--c:var(--s6)"><b>Product experience</b> interface, latency, citations, controls, user trust.</div>
+ </div></div>
+ <div class="cards"><article class="card"><h3>Quality</h3><p>Choose the right model and reasoning budget, retrieve relevant context, and format answers usefully.</p></article><article class="card"><h3>Economics</h3><p>Batch requests, cache reusable computation, quantise where acceptable, and route easy tasks to cheaper models.</p></article><article class="card"><h3>Reliability</h3><p>Handle overload, failures, malicious inputs, tool errors, and degraded dependencies without losing control.</p></article></div>
+ <div class="lock" style="--c:var(--s6)"><b>LOCK:</b> Production quality is the behaviour of the complete stack under real constraints, not the intelligence of an isolated checkpoint.</div>
+</section>
+
+<section id="flywheel">
+ <div class="section-head"><div class="num">13</div><div><h2>The improvement flywheel</h2><p>Deployment is not the end. It is the sensor that reveals the next frontier of failure.</p></div></div>
+ <div class="visual"><div class="flow"><div class="node"><b>Deploy</b><span>Expose the system to real task diversity</span></div><div class="arrow">→</div><div class="node"><b>Observe</b><span>Failures, corrections, success signals, attacks</span></div><div class="arrow">→</div><div class="node"><b>Convert</b><span>Turn cases into privacy-safe evaluations</span></div><div class="arrow">→</div><div class="node"><b>Teach</b><span>New data, rewards, environments, policies</span></div><div class="arrow">→</div><div class="node"><b>Re-evaluate</b><span>Prove the failure is fixed without regressions</span></div><div class="arrow">↻</div></div></div>
+ <div class="callout"><b>Critical discipline:</b> turn a failure into an evaluation before turning it into training data. Otherwise, you may change the model without knowing whether the underlying failure was truly repaired.</div>
+ <div class="lock"><b>LOCK:</b> The durable advantage is a learning organisation that converts real failures into better tests, better experience, and better policies faster than competitors.</div>
+</section>
+
+<section id="reconstruct">
+ <div class="section-head"><div class="num">14</div><div><h2>Reconstruct the pipeline from five necessities</h2><p>If you can regenerate the system from these constraints, you understand it rather than merely remembering terminology.</p></div></div>
+ <div class="visual"><div class="cards">
+  <article class="card"><span class="kicker s1">Necessity 1</span><h3>Experience</h3><p>A blank adjustable machine needs examples of the regularities it should acquire.</p></article>
+  <article class="card"><span class="kicker s2">Necessity 2</span><h3>Computability</h3><p>Experience must become numerical symbols processed by a scalable architecture.</p></article>
+  <article class="card"><span class="kicker s3">Necessity 3</span><h3>Error correction</h3><p>A loss signal must tell parameters how to change so predictions improve.</p></article>
+  <article class="card"><span class="kicker s4">Necessity 4</span><h3>Goal selection</h3><p>Broad prediction must be shaped into useful, preferred, and safe behaviour.</p></article>
+  <article class="card"><span class="kicker s5">Necessity 5</span><h3>Consequences</h3><p>Reasoning and agency require interaction, verification, permissions, and feedback.</p></article>
+  <article class="card"><span class="kicker s6">Necessity 6</span><h3>Recursion</h3><p>Real-world failures must generate the next curriculum and training cycle.</p></article>
+ </div></div>
+ <details class="details" open><summary>Self-test: can you answer these without terminology?</summary><div class="details-content"><ol><li>Why can a prediction objective create reusable capability?</li><li>Why is a knowledgeable base model not automatically an assistant?</li><li>Why does imitation stop short of strategy discovery?</li><li>Why is the verifier often more important than the RL algorithm?</li><li>Why is an agent a feedback loop rather than a model feature?</li><li>Why is the deployed assistant larger than its model weights?</li></ol></div></details>
+ <div class="lock" style="--c:var(--good)"><b>ULTIMATE LOCK:</b> A frontier assistant is a recursively improved policy: curated experience builds a predictive substrate, feedback selects and strengthens useful strategies, tools connect those strategies to consequences, and production failures become the next generation’s training signal.</div>
+</section>
+
+<section aria-labelledby="sources-title"><div class="section-head"><div class="num">S</div><div><h2 id="sources-title">Selected foundations and current evidence</h2><p>Primary and technical sources used to ground the concepts. The explanatory diagrams are original.</p></div></div>
+ <div class="visual sources"><ul>
+  <li><a href="https://arxiv.org/abs/1706.03762">Vaswani et al., Attention Is All You Need</a></li>
+  <li><a href="https://arxiv.org/abs/2203.15556">Hoffmann et al., Training Compute-Optimal Large Language Models</a></li>
+  <li><a href="https://arxiv.org/abs/2203.02155">Ouyang et al., InstructGPT and RLHF</a></li>
+  <li><a href="https://arxiv.org/abs/2305.18290">Rafailov et al., Direct Preference Optimization</a></li>
+  <li><a href="https://arxiv.org/abs/2305.20050">Lightman et al., Process versus outcome supervision</a></li>
+  <li><a href="https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback">Anthropic, Constitutional AI</a></li>
+  <li><a href="https://openai.com/index/learning-to-reason-with-llms/">OpenAI, Learning to Reason with LLMs</a></li>
+  <li><a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1 technical paper</a></li>
+  <li><a href="https://hai.stanford.edu/ai-index/2026-ai-index-report%C2%A0">Stanford HAI, 2026 AI Index</a></li>
+ </ul></div>
+</section>
+</main></div>
+<footer><div>Designed as a self-contained learning map. No external libraries, fonts, scripts, or network access are required for the page itself.</div></footer>
+<script>
+const links=[...document.querySelectorAll('#tocnav a')], sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean), progress=document.getElementById('progress');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-18% 0px -70% 0px'});sections.forEach(s=>obs.observe(s));
+addEventListener('scroll',()=>{const h=document.documentElement, v=h.scrollTop/(h.scrollHeight-h.clientHeight);progress.style.width=Math.max(0,Math.min(100,v*100))+'%';},{passive:true});
+</script>
+</body></html>

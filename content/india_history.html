@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Epic Story of India</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--bg4:#22222f;
+  --purple:#8b5cf6;--purple-dim:#5b3ab8;--purple-glow:rgba(139,92,246,.15);
+  --cyan:#22d3ee;--cyan-dim:#0e7490;--cyan-glow:rgba(34,211,238,.12);
+  --pink:#f472b6;--pink-dim:#be185d;--pink-glow:rgba(244,114,182,.12);
+  --peach:#fbbf24;--peach-dim:#b45309;
+  --text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;
+  --radius:12px;--transition:all .35s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(139,92,246,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(34,211,238,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--purple-dim);border-radius:3px}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;padding:2rem}
+.hero-particles{position:absolute;inset:0;overflow:hidden;z-index:0}
+.hero-particles span{position:absolute;width:2px;height:2px;background:var(--purple);border-radius:50%;animation:float linear infinite;opacity:0}
+@keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+.hero-content{position:relative;z-index:1}
+.hero-pre{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.4em;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem;opacity:0;animation:fadeUp .8s ease forwards .3s}
+.hero h1{font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:1;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 0%,var(--purple) 50%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;opacity:0;animation:fadeUp .8s ease forwards .5s}
+.hero-sub{font-family:'Crimson Pro',serif;font-size:1.3rem;color:var(--text-dim);font-style:italic;margin-bottom:2.5rem;opacity:0;animation:fadeUp .8s ease forwards .7s}
+.hero-cta{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 2rem;border:1px solid var(--purple);color:var(--purple);border-radius:50px;font-weight:600;cursor:pointer;transition:var(--transition);text-decoration:none;opacity:0;animation:fadeUp .8s ease forwards .9s}
+.hero-cta:hover{background:var(--purple);color:#fff;box-shadow:0 0 30px rgba(139,92,246,.3)}
+.hero-cta svg{transition:transform .3s}.hero-cta:hover svg{transform:translateY(3px)}
+.hero-scroll{position:absolute;bottom:2rem;opacity:0;animation:fadeUp .8s ease forwards 1.2s}
+.hero-scroll span{display:block;width:20px;height:32px;border:2px solid var(--text-muted);border-radius:10px;position:relative}
+.hero-scroll span::after{content:'';width:4px;height:8px;background:var(--text-muted);border-radius:2px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:scrollDot 1.5s ease infinite}
+@keyframes scrollDot{0%,100%{opacity:1;transform:translateX(-50%) translateY(0)}50%{opacity:.3;transform:translateX(-50%) translateY(8px)}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}from{opacity:0;transform:translateY(20px)}}
+
+/* ===== NAV ===== */
+.era-nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(139,92,246,.1);padding:.6rem 1rem;overflow-x:auto;display:flex;gap:.4rem;justify-content:center}
+.era-nav::-webkit-scrollbar{display:none}
+.era-btn{padding:.4rem .9rem;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.05em;white-space:nowrap;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text-muted);transition:var(--transition);font-family:'Outfit',sans-serif}
+.era-btn:hover,.era-btn.active{color:var(--purple);border-color:var(--purple-dim);background:var(--purple-glow)}
+
+/* ===== TIMELINE SPINE ===== */
+.timeline-container{max-width:900px;margin:0 auto;padding:2rem 1rem 4rem;position:relative}
+.timeline-spine{position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,transparent,var(--purple-dim) 5%,var(--purple-dim) 95%,transparent)}
+.timeline-progress{position:absolute;left:28px;top:0;width:2px;height:0;background:linear-gradient(to bottom,var(--cyan),var(--purple));transition:height .1s;z-index:1}
+
+/* ===== CHAPTER BLOCKS ===== */
+.chapter{margin-left:58px;margin-bottom:3rem;position:relative;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.chapter.visible{opacity:1;transform:translateY(0)}
+
+/* Node on spine */
+.chapter::before{content:'';position:absolute;left:-38px;top:12px;width:14px;height:14px;border-radius:50%;border:2px solid var(--purple-dim);background:var(--bg);transition:var(--transition);z-index:2}
+.chapter.visible::before{border-color:var(--purple);box-shadow:0 0 12px rgba(139,92,246,.4)}
+.chapter.expanded::before{background:var(--purple);border-color:var(--cyan)}
+
+/* Chapter header */
+.ch-header{cursor:pointer;user-select:none;padding:1rem 1.2rem;border-radius:var(--radius);background:var(--bg2);border:1px solid rgba(255,255,255,.04);transition:var(--transition);position:relative;overflow:hidden}
+.ch-header::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--purple-glow),transparent);opacity:0;transition:opacity .3s}
+.ch-header:hover::before,.chapter.expanded .ch-header::before{opacity:1}
+.ch-header:hover{border-color:rgba(139,92,246,.15)}
+.ch-era{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem}
+.ch-title{font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.ch-title .arrow{width:20px;height:20px;transition:transform .35s ease;flex-shrink:0;color:var(--text-muted)}
+.chapter.expanded .ch-title .arrow{transform:rotate(180deg);color:var(--purple)}
+.ch-tagline{font-family:'Crimson Pro',serif;font-style:italic;font-size:.9rem;color:var(--text-dim);margin-top:.3rem}
+
+/* Chapter body */
+.ch-body{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1),padding .4s ease;padding:0 1.2rem}
+.chapter.expanded .ch-body{max-height:20000px;padding:1.2rem}
+
+/* ===== CONTENT CARDS ===== */
+.section{margin-bottom:1.5rem}
+.section-title{font-size:1.05rem;font-weight:700;color:var(--cyan);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.section-title svg{width:16px;height:16px;flex-shrink:0}
+
+p.story{font-family:'Crimson Pro',serif;font-size:1.05rem;line-height:1.8;color:var(--text);margin-bottom:.8rem}
+p.story strong{color:#fff;font-weight:600}
+p.story em{color:var(--pink)}
+
+/* Callout boxes */
+.callout{border-radius:var(--radius);padding:.8rem 1rem;margin:.8rem 0;position:relative;overflow:hidden;border-left:3px solid}
+.callout::before{content:'';position:absolute;inset:0;opacity:.06;pointer-events:none}
+.callout-label{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:.3rem}
+.callout-text{font-size:.88rem;line-height:1.6}
+
+.callout.timeline{border-color:var(--purple);background:rgba(139,92,246,.08)}
+.callout.timeline .callout-label{color:var(--purple)}
+.callout.map{border-color:var(--cyan);background:rgba(34,211,238,.06)}
+.callout.map .callout-label{color:var(--cyan)}
+.callout.fact{border-color:var(--pink);background:rgba(244,114,182,.06)}
+.callout.fact .callout-label{color:var(--pink)}
+.callout.memory{border-color:var(--peach);background:rgba(251,191,36,.06)}
+.callout.memory .callout-label{color:var(--peach)}
+.callout.question{border-color:var(--purple);background:rgba(139,92,246,.05);font-style:italic}
+.callout.question .callout-label{color:var(--purple)}
+
+/* Global connection grid */
+.global-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:var(--radius);overflow:hidden;margin:.8rem 0}
+.global-cell{padding:.7rem .8rem;font-size:.8rem;line-height:1.5}
+.global-cell.india{background:rgba(139,92,246,.08)}
+.global-cell.world{background:rgba(34,211,238,.06)}
+.global-cell .cell-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:.2rem}
+.global-cell.india .cell-label{color:var(--purple)}
+.global-cell.world .cell-label{color:var(--cyan)}
+
+/* Reveal cards (progressive disclosure) */
+.reveal-card{background:var(--bg3);border:1px solid rgba(255,255,255,.04);border-radius:var(--radius);margin:.6rem 0;overflow:hidden;transition:var(--transition)}
+.reveal-header{padding:.6rem .8rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600;color:var(--text-dim);transition:var(--transition)}
+.reveal-header:hover{color:var(--text)}
+.reveal-header .r-icon{width:16px;height:16px;transition:transform .3s;color:var(--purple)}
+.reveal-card.open .reveal-header .r-icon{transform:rotate(90deg)}
+.reveal-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.reveal-card.open .reveal-body{max-height:5000px}
+.reveal-inner{padding:.4rem .8rem .8rem}
+.reveal-inner p{font-family:'Crimson Pro',serif;font-size:.95rem;line-height:1.7;margin-bottom:.5rem}
+.reveal-inner strong{color:#fff}
+
+/* Personality badges */
+.person-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:20px;font-size:.72rem;font-weight:600;border:1px solid rgba(139,92,246,.2);color:var(--purple);background:rgba(139,92,246,.06);margin:.1rem .2rem .1rem 0}
+
+/* ===== FOOTER ===== */
+.site-footer{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:.8rem;border-top:1px solid rgba(255,255,255,.04)}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px rgba(139,92,246,.2)}50%{box-shadow:0 0 20px rgba(139,92,246,.4)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Responsive */
+@media(max-width:700px){
+  .chapter{margin-left:42px}
+  .chapter::before{left:-28px}
+  .timeline-spine,.timeline-progress{left:20px}
+  .global-grid{grid-template-columns:1fr}
+  .hero h1{font-size:2.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-pre">5,000 Years · 8 Chapters · 1 Story</div>
+    <h1>The Epic Story<br>of India</h1>
+    <p class="hero-sub">From the first cities to a free nation — history as an adventure</p>
+    <a href="#timeline" class="hero-cta">
+      Begin the Journey
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </div>
+  <div class="hero-scroll"><span></span></div>
+</section>
+
+<!-- ===== ERA NAV ===== -->
+<nav class="era-nav" id="eraNav">
+  <button class="era-btn" data-target="ch1">3300 BCE</button>
+  <button class="era-btn" data-target="ch2">600 BCE</button>
+  <button class="era-btn" data-target="ch3">600 CE</button>
+  <button class="era-btn" data-target="ch4">1500s</button>
+  <button class="era-btn" data-target="ch5">1600s</button>
+  <button class="era-btn" data-target="ch6">1700s</button>
+  <button class="era-btn" data-target="ch7">1857</button>
+  <button class="era-btn" data-target="ch8">1947</button>
+</nav>
+
+<!-- ===== TIMELINE ===== -->
+<div class="timeline-container" id="timeline">
+  <div class="timeline-spine"></div>
+  <div class="timeline-progress" id="timelineProgress"></div>
+
+  <!-- ============ CH1: DAWN ============ -->
+  <article class="chapter" id="ch1">
+    <div class="ch-header" onclick="toggleChapter('ch1')">
+      <div class="ch-era">Chapter 1 · 3300–600 BCE</div>
+      <div class="ch-title">
+        Where It All Began
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">The first cities, the first ideas, and the birth of a civilisation</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">Over 5,000 years ago. No countries exist yet. On the banks of a mighty river in northwest India, humans are about to build one of the world's first great civilisations.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          The Indus Valley Civilisation (3300–1300 BCE)
+        </div>
+        <p class="story">While the Egyptians were building pyramids, people in India built something arguably more impressive: <strong>entire planned cities.</strong> The cities of <strong>Harappa</strong> and <strong>Mohenjo-daro</strong> had straight grid-pattern streets, two-storey brick houses, public baths, and — here's the jaw-dropping part — <strong>underground drainage systems.</strong> Most European cities didn't have proper sewers until 4,000 years later.</p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">Look at the top-left of India's diamond shape, along the Indus River (now mostly in Pakistan). That's where it all started. The civilisation stretched across a massive area — bigger than ancient Egypt and Mesopotamia combined.</div>
+        </div>
+
+        <p class="story">Around 1300 BCE, the Indus Valley civilisation faded. Nobody knows exactly why — possibly droughts, river shifts, or earthquakes. The people migrated east and south, deeper into the diamond, carrying their skills and knowledge with them.</p>
+
+        <div class="callout fact">
+          <div class="callout-label">🤯 Did You Know?</div>
+          <div class="callout-text">Mohenjo-daro had a "Great Bath" — a huge public pool with waterproofing technology so advanced that engineers today still study it. This was 2500 BCE — a thousand years before the Greek civilisation even began.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          The Vedic Age (1500–600 BCE)
+        </div>
+        <p class="story">As the Indus cities faded, a new culture emerged centred on the <strong>Vedas</strong> — the oldest sacred texts in Hinduism, composed in Sanskrit. This era gave India its foundational ideas: concepts of <strong>dharma</strong> (duty/righteousness), <strong>karma</strong> (actions have consequences), and the caste system that would shape Indian society for millennia.</p>
+        <p class="story">The centre of gravity shifted from the Indus to the <strong>Ganges plain</strong> — the fertile heartland across the upper-middle of the diamond. Kingdoms formed. Iron tools enabled forest-clearing and rice farming. By 600 BCE, sixteen major kingdoms (called <strong>Mahajanapadas</strong>) competed for dominance across northern India.</p>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">Indus Valley = India's first CITIES (west). Vedic Age = India's first IDEAS (moved east to the Ganges). Cities first, then philosophy.</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>3300–600 BCE: Indus Valley cities rise and fall. Vedas composed. Sixteen kingdoms emerge.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>3000 BCE: Egyptian pyramids. 1200 BCE: Trojan War. 776 BCE: First Olympics in Greece.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH2: EMPIRES & ENLIGHTENMENT ============ -->
+  <article class="chapter" id="ch2">
+    <div class="ch-header" onclick="toggleChapter('ch2')">
+      <div class="ch-era">Chapter 2 · 600 BCE–600 CE</div>
+      <div class="ch-title">
+        Empires &amp; Enlightenment
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">The Buddha, Ashoka's transformation, and the invention of zero</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">Around 500 BCE. Greece has Socrates, China has Confucius, and India is about to produce the Buddha and its first mega-empire.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Two Ideas That Changed the World
+        </div>
+        <p class="story"><strong>Siddhartha Gautama</strong> was a prince who had everything — palaces, servants, luxury. At 29, he sneaked outside and saw suffering for the first time: sickness, old age, death. He abandoned his throne, meditated under a tree, and became the <strong>Buddha</strong> ("the awakened one"). His teaching was radical: suffering exists, desire causes it, and there's a path to end it. No gods required. No caste distinctions. <strong>Buddhism</strong> spread across Asia and today has over 500 million followers.</p>
+        <p class="story">Around the same time, <strong>Mahavira</strong> founded <strong>Jainism</strong>, built on extreme non-violence (<em>ahimsa</em>) — Jain monks even sweep the ground before walking so they don't step on insects.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          The Maurya Empire: India's First Superpower (322–185 BCE)
+        </div>
+        <p class="story"><strong>Chandragupta Maurya</strong> unified almost the entire diamond under one ruler. His advisor <strong>Chanakya (Kautilya)</strong> wrote the <em>Arthashastra</em> — the world's first textbook on politics, economics, and espionage. Think of Chanakya as the original mastermind behind the throne.</p>
+        <p class="story">But the real star is Chandragupta's grandson, <strong>Ashoka.</strong> After a devastating war in Kalinga (eastern India) that killed over 100,000 people, Ashoka was so horrified by the bloodshed that he <strong>renounced violence entirely</strong> and converted to Buddhism. A warrior emperor becoming a peace advocate — one of history's most dramatic personal transformations. He carved his laws on stone pillars across India. The lion capital from one of these pillars is India's national emblem today.</p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">Under the Mauryas, almost the entire diamond is unified for the first time — from Afghanistan in the top-left to Bengal in the east, down to Karnataka in the south. Only the very tip (deep south Tamil lands) stayed independent.</div>
+        </div>
+
+        <div class="callout fact">
+          <div class="callout-label">🤯 Did You Know?</div>
+          <div class="callout-text">Ashoka's symbol — the wheel (Ashoka Chakra) — sits at the centre of India's flag TODAY. Every time you see the Indian flag, you're looking at a 2,300-year-old emperor's legacy.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+          The Golden Age: Gupta Empire (320–550 CE)
+        </div>
+        <p class="story">The <strong>Gupta Empire</strong> reunited the north and launched India's <strong>Golden Age</strong> — golden because of <em>ideas</em>, not just conquest.</p>
+        <p class="story"><strong>Aryabhata</strong> calculated that Earth rotates on its axis and orbits the sun — a thousand years before Copernicus. The <strong>decimal system and the concept of zero</strong> were developed here — the number system the entire world uses today. <strong>Kalidasa</strong> wrote plays so beautiful he's called India's Shakespeare (except he came first). Surgeons performed <strong>cataract operations and plastic surgery.</strong> The university at <strong>Nalanda</strong> attracted students from China, Korea, and Central Asia — an international campus 1,500 years before Oxford.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          The Great Southern Kingdoms
+        </div>
+        <p class="story">The <strong>Cholas, Cheras, and Pandyas</strong> ruled Tamil lands for centuries. The Chola navy dominated the Indian Ocean, reaching Indonesia, Malaysia, and Thailand. India was <em>never</em> just the north.</p>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">Mauryas = United India by FORCE (Chandragupta) then by PEACE (Ashoka). Guptas = United India by IDEAS (zero, astronomy, literature, surgery).</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>322 BCE–550 CE: Maurya and Gupta empires. Buddhism spreads. Zero invented. Nalanda thrives.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>323 BCE: Alexander dies. 27 BCE: Roman Empire begins. 476 CE: Roman Empire falls.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH3: MEDIEVAL ============ -->
+  <article class="chapter" id="ch3">
+    <div class="ch-header" onclick="toggleChapter('ch3')">
+      <div class="ch-era">Chapter 3 · 600–1500 CE</div>
+      <div class="ch-title">
+        Invasions, Sultans &amp; Kingdoms
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">The chess pieces that wouldn't play as a team</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">600–1500 CE. Europe is in its Dark Ages. India is rich, fractured, and about to face wave after wave of invasions from the northwest.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/></svg>
+          The Rajputs &amp; Regional Powerhouses
+        </div>
+        <p class="story">After the Guptas, India splintered. <strong>Rajput</strong> warrior clans ruled the north fiercely but fought each other constantly. In the south, <strong>Chalukyas, Pallavas, Rashtrakutas, and the Cholas</strong> built magnificent temple cities. India was like a board of powerful chess pieces — but nobody was playing as a team.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Islamic Invasions &amp; the Delhi Sultanate (1206–1526)
+        </div>
+        <p class="story"><strong>Mahmud of Ghazni</strong> raided India seventeen times starting in 1000 CE, smashing temples and hauling away staggering amounts of gold. He didn't stay — he came, looted, and left. A recurring nightmare. Then <strong>Muhammad Ghori</strong> came in 1192 and actually stayed. His general, <strong>Qutbuddin Aibak</strong>, established the <strong>Delhi Sultanate</strong> in 1206 — the first Muslim-ruled state covering much of north India.</p>
+        <p class="story">The Sultanate lasted 320 years across five dynasties. It survived Mongol invasions (Genghis Khan's armies reached India's border but were beaten back), built the Qutub Minar, and introduced domes and arches that fused with Indian traditions.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v1a3 3 0 006 0V7m0 0v1a3 3 0 006 0V7m0 0v1a3 3 0 006 0V7M3 7l1-3h16l1 3"/></svg>
+          Vijayanagara: The Southern Shield (1336–1646)
+        </div>
+        <p class="story">The <strong>Vijayanagara Empire</strong> rose in the south as a Hindu counterweight. Its capital (near modern Hampi) was one of the largest cities in the world — travellers described it as more magnificent than Rome. It held off northern invasions for over 300 years.</p>
+        <div class="callout fact">
+          <div class="callout-label">🤯 Did You Know?</div>
+          <div class="callout-text">When the Italian traveller Nicolò de' Conti visited Vijayanagara in 1420, he estimated the city had 90,000 fighting men. The ruins at Hampi today cover 26 square kilometres — larger than ancient Rome.</div>
+        </div>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">Medieval India = North ruled by Sultans (Delhi Sultanate), South held by Vijayanagara. Two power centres, two cultures, constantly clashing across the middle of the diamond.</div>
+      </div>
+
+      <div class="callout question">
+        <div class="callout-label">🤔 Think About It</div>
+        <div class="callout-text">India was one of the richest places on Earth, yet it kept getting invaded. Why? Hint: remember the chess pieces that wouldn't play as a team.</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1206–1526: Delhi Sultanate rules the north. Vijayanagara defends the south. Bhakti movement unites through devotional poetry.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>1215: Magna Carta. 1347: Black Death. 1453: Constantinople falls to Ottomans.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH4: MUGHALS (EXPANDED) ============ -->
+  <article class="chapter" id="ch4">
+    <div class="ch-header" onclick="toggleChapter('ch4')">
+      <div class="ch-era">Chapter 4 · 1500s–1700s</div>
+      <div class="ch-title">
+        The Mighty Mughals
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">Built, Perfected, Beautified, Broken — the rise and fall of a superpower</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">The 1500s — about 525 years ago. While Columbus has just reached America, a warrior prince named Babur is about to change India forever.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Babur: The Desperate Conqueror
+        </div>
+        <p class="story">Picture a boy who lost his kingdom at age 12. <strong>Babur</strong> was kicked out of his homeland in Central Asia (modern Uzbekistan) and wandered for years with a tiny band of followers. He looked south toward India and thought: <em>"If I can't have my old kingdom, I'll build a bigger one."</em></p>
+        <p class="story">In <strong>1526, at the Battle of Panipat</strong>, Babur charged in with just 12,000 soldiers against Sultan Ibrahim Lodi's 100,000-strong army and 1,000 war elephants. His secret weapon: <strong>cannons</strong> — the first time gunpowder artillery was used in an Indian battlefield. The elephants panicked at the thundering blasts, trampled their own soldiers, and Babur won. The Delhi Sultanate ended. The Mughal Empire was born.</p>
+        <p class="story">Babur's son <strong>Humayun</strong> lost the empire almost immediately — defeated by the Afghan warlord <strong>Sher Shah Suri</strong>, who drove him into 15 years of exile in Persia. Sher Shah was a brilliant ruler in his own right: he built the <strong>Grand Trunk Road</strong> (a highway stretching from Bengal to Peshawar that still exists today) and reformed the tax system. But Sher Shah died in 1545, and Humayun returned to reclaim his throne in 1555 — only to die a year later by falling down his library stairs.</p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">Babur entered from the top-left corner of the diamond, through the mountain passes of Afghanistan. His empire started in the north — around Delhi and Agra. Think of it as controlling just the top quarter of the diamond.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          Akbar the Great: The Empire Builder (1556–1605)
+        </div>
+        <p class="story"><strong>Akbar</strong> became emperor at age 13 and ruled for 49 years. He couldn't read, but was brilliant enough to unite an empire of Hindus, Muslims, Christians, Jains, and others. His genius had multiple layers:</p>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Religious Policy: Din-i-Ilahi & Sulh-i-Kul
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Akbar abolished the <strong>jizya</strong> (tax on non-Muslims), married Hindu Rajput princesses to build alliances, and created <strong>Din-i-Ilahi</strong> — a syncretic faith drawing from all religions. His philosophy of <strong>Sulh-i-Kul</strong> ("universal peace") meant every religion was equal in the eyes of the state. He held open debates between scholars of all faiths at his court in <strong>Fatehpur Sikri</strong>.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            The Mansabdari System
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Akbar invented the <strong>Mansabdari system</strong> — a military ranking and bureaucratic framework where officials were ranked by numbers (e.g., "commander of 5,000"). Rank came from merit, not birth or religion. Hindu Rajputs like <strong>Raja Man Singh</strong> and <strong>Raja Todar Mal</strong> held top positions. Todar Mal reformed the entire tax system, measuring every field in the empire to calculate fair revenue.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Military Expansion
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Akbar conquered Gujarat (1573), Bengal (1576), Kashmir (1586), and much of the Deccan. He defeated <strong>Rana Pratap</strong> of Mewar at the <strong>Battle of Haldighati (1576)</strong> — though Rana Pratap became a legendary symbol of Rajput resistance, never fully surrendering. Under Akbar, the empire covered about <strong>two-thirds of the diamond</strong>.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Jahangir &amp; Shah Jahan: Art and Architecture
+        </div>
+        <p class="story"><strong>Jahangir</strong> (ruled 1605–27) was obsessed with art and nature — his reign produced some of the finest miniature paintings in history. His wife <strong>Nur Jahan</strong> was the real power behind the throne: she issued coins in her own name, designed buildings, and effectively ran the empire.</p>
+        <p class="story"><strong>Shah Jahan</strong> (ruled 1628–58) took Mughal grandeur to its peak. The <strong>Taj Mahal</strong> (1632–53) took 20,000 workers and 22 years — built as a mausoleum for his wife Mumtaz Mahal who died in childbirth. He also built the <strong>Red Fort</strong> and <strong>Jama Masjid</strong> in Delhi, and the <strong>Peacock Throne</strong> — studded with so many gems that it was worth more than the Taj Mahal itself.</p>
+
+        <div class="callout fact">
+          <div class="callout-label">🤯 Did You Know?</div>
+          <div class="callout-text">At its peak, India produced about 25% of the entire world's wealth. For comparison, the USA today produces about 25%. The Mughals were THAT powerful. The Peacock Throne alone was valued at twice the cost of the Taj Mahal.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 010 12.73M5.64 5.64a9 9 0 000 12.73"/><circle cx="12" cy="12" r="2"/></svg>
+          Aurangzeb: The Unravelling (1658–1707)
+        </div>
+        <p class="story"><strong>Aurangzeb</strong> seized the throne by imprisoning his father Shah Jahan and killing his brothers in a war of succession. Unlike Akbar, he tried to impose religious orthodoxy. Hindu temples were destroyed. The <strong>jizya</strong> tax was reimposed. The empire that Akbar stitched together with respect, Aurangzeb tore apart with intolerance.</p>
+        <p class="story">He spent 25 years fighting the <strong>Marathas</strong> in the Deccan — led by the guerrilla genius <strong>Shivaji</strong>, who founded the <strong>Maratha Empire</strong> and became a legendary symbol of Hindu resistance. Shivaji pioneered <strong>naval warfare</strong> on India's western coast and built a network of hill forts that Aurangzeb could never fully conquer. The Maratha light cavalry used hit-and-run tactics that drained Mughal resources like a slow bleed.</p>
+        <p class="story">After Aurangzeb died in 1707, the empire crumbled. Local governors declared independence. The Marathas carved out their own kingdom across western and central India. The Sikhs rose under <strong>Banda Singh Bahadur</strong> in Punjab. The <strong>Nizam of Hyderabad</strong> broke away in the south. India went from one giant empire to a patchwork quilt of rival kingdoms — the exact vulnerability the Europeans would exploit.</p>
+
+        <div class="callout memory">
+          <div class="callout-label">🧠 Remember</div>
+          <div class="callout-text">Babur BUILT it, Akbar PERFECTED it, Shah Jahan BEAUTIFIED it, Aurangzeb BROKE it.</div>
+        </div>
+
+        <div class="callout question">
+          <div class="callout-label">🤔 Think About It</div>
+          <div class="callout-text">If Aurangzeb had followed Akbar's policy of religious tolerance, would the Mughal Empire have survived? Could the British have ever taken over a united Mughal India?</div>
+        </div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1500s–1700s: Mughal Empire at its peak, then shatters. Maratha and Sikh powers rise. India is the richest region on Earth.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>1500s: Columbus reaches America. 1600s: Shakespeare. 1687: Newton's Principia. 1700s: American Revolution.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH5: EUROPEANS (EXPANDED) ============ -->
+  <article class="chapter" id="ch5">
+    <div class="ch-header" onclick="toggleChapter('ch5')">
+      <div class="ch-era">Chapter 5 · 1600s–1700s</div>
+      <div class="ch-title">
+        The European Treasure Hunters
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">Traders to Raiders to Rulers — the playbook that stole a subcontinent</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">The 1600s. The Mughal Empire is still strong. But ships from Europe are appearing on India's coastline — and they smell money.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Why India? The Spice Economy
+        </div>
+        <p class="story">One word: <strong>spices.</strong> In 1600s Europe, pepper was literally worth its weight in gold. Nutmeg, cinnamon, cardamom — these weren't just flavourings, they were <em>luxury status symbols.</em> But India also exported <strong>textiles</strong> — Indian cotton and muslin were so fine that European cloth couldn't compete. The word "calico" comes from Calicut, India. The word "chintz" is Hindi.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          The Race: Four Powers
+        </div>
+        <p class="story"><strong>Portuguese</strong> arrived first (1498) — <strong>Vasco da Gama</strong> landed in Kerala. They seized Goa and controlled it until 1961. <strong>Dutch</strong> set up along the southeast. <strong>French</strong> established Pondicherry under <strong>Joseph François Dupleix</strong>, who pioneered the idea of using Indian soldiers (sepoys) and playing local rulers against each other. And the <strong>British</strong> started with a small trading post in Surat (1612).</p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">Europeans clung to the coastline like barnacles. Portuguese in the southwest (Goa), Dutch in the southeast, French on the east coast (Pondicherry), British on the west (Surat) and east (Calcutta). A ring around India's coast.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+          The East India Company: A Corporation With an Army
+        </div>
+        <p class="story">The <strong>British East India Company</strong> (founded 1600) was a private business with its own army, forts, and judges. Imagine if Amazon had soldiers and could declare war on countries. That's what the East India Company was. It answered to shareholders in London, not to any moral code.</p>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Robert Clive &amp; the Battle of Plassey (1757)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p><strong>Robert Clive</strong> was an ambitious clerk-turned-soldier. At the <strong>Battle of Plassey</strong>, he bribed <strong>Mir Jafar</strong>, the commander of Nawab Siraj-ud-Daulah's Bengal army, to betray his own ruler. It wasn't a real battle — it was a business deal sealed with treachery. Of the Nawab's 50,000 troops, most never fired a shot. Bengal fell, and its <strong>enormous treasury</strong> funded Britain's next conquests. Clive personally looted the equivalent of £2.5 million (billions in today's money) and became one of the richest men in England.</p>
+            <p>The <strong>Battle of Buxar (1764)</strong> was even more decisive — the Company defeated a combined army of the Mughal Emperor, the Nawab of Awadh, and the new Nawab of Bengal. This gave the British the <strong>Diwani</strong> — the right to collect tax revenue across Bengal, Bihar, and Orissa. The Company was now the tax collector for one of India's richest regions.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            The Carnatic Wars &amp; Fall of Tipu Sultan
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>In the south, the British and French fought three <strong>Carnatic Wars</strong> (1746–63) for dominance. The French lost. Then the British faced their fiercest opponent: <strong>Tipu Sultan</strong> of Mysore, the "Tiger of Mysore." Tipu used <strong>iron-cased rockets</strong> against British troops — technology so effective that the British later copied it. He fell at the <strong>Battle of Seringapatam (1799)</strong>, dying fighting on the ramparts of his own fort. His defeat eliminated the last major military threat to British expansion in the south.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">The British playbook: Traders → Raiders → Rulers. They came to sell, stayed to steal, and ended up ruling.</div>
+      </div>
+
+      <div class="callout fact">
+        <div class="callout-label">🤯 Did You Know?</div>
+        <div class="callout-text">Before British rule, India and China together made up about 50% of the world's economy. By the time the British left in 1947, India's share had dropped to less than 4%. That's not decline — that's extraction on an industrial scale.</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1757: Plassey. 1764: Buxar. 1799: Tipu Sultan falls. British extraction begins.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>1760s: Industrial Revolution begins — fuelled by wealth drained from colonies including India.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH6: BRITISH RAJ (EXPANDED) ============ -->
+  <article class="chapter" id="ch6">
+    <div class="ch-header" onclick="toggleChapter('ch6')">
+      <div class="ch-era">Chapter 6 · 1700s–1857</div>
+      <div class="ch-title">
+        The British Take Over
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">Three cunning tools, one great revolt, and the birth of the British Raj</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">The 1800s. Your great-great-great-grandparents' time. The British are no longer traders on the coast — they're swallowing India whole.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          The Three Cunning Tools
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            1. Doctrine of Lapse (Lord Dalhousie)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Invented by Governor-General <strong>Lord Dalhousie</strong> (served 1848–56). If an Indian king died without a <em>biological</em> son (adopted sons didn't count), the British simply absorbed his kingdom. Using this, Dalhousie swallowed <strong>Satara, Jhansi, Nagpur, Awadh</strong>, and several other states. It was legal theft on a grand scale. The dispossessed Rani of Jhansi, <strong>Lakshmibai</strong>, would later become one of the fiercest leaders of the 1857 revolt.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            2. Subsidiary Alliance (Lord Wellesley)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Designed by Governor-General <strong>Lord Wellesley</strong> (served 1798–1805). Indian rulers had to accept British troops stationed on their soil and <em>pay for them</em>. In exchange, the British "protected" them. If they couldn't pay, the British took territory. The ruler kept his title but lost all real power — a puppet king in his own palace. Hyderabad, Awadh, and many Maratha states fell to this trap.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            3. Raw Military Force
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>When diplomacy and trickery failed, the British simply fought. The <strong>Anglo-Maratha Wars</strong> (1775–1818) ended the Maratha confederacy — the last Indian power capable of challenging the British. The <strong>Anglo-Sikh Wars</strong> (1845–49) brought Punjab under British control. By the 1850s, the map was almost entirely red.</p>
+          </div></div>
+        </div>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">Watch the British territories spread like ink on wet paper. Starting from three coastal dots — Calcutta (east), Madras (southeast), Bombay (west) — the red zones creep inward, swallowing kingdom after kingdom, until almost the entire diamond is red by the 1850s.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          What British Rule Actually Felt Like
+        </div>
+        <p class="story">Imagine someone walks into your home, rearranges all the furniture, forces you to grow what <em>they</em> want in your garden, takes most of the harvest, and tells you to be grateful because they installed a new door.</p>
+        <p class="story">Indian farmers were forced to grow <strong>indigo and opium</strong> instead of food. When famines struck — and they struck regularly, killing millions — the British often continued exporting grain. Railways were built, but tracks ran from interior to ports, designed to carry raw materials <em>out</em>, not connect Indian cities.</p>
+        <p class="story"><strong>De-industrialisation</strong> was systematic. India's legendary textile industry was destroyed through tariffs and trade policies. British-made cloth flooded Indian markets while Indian weavers starved. Bengal's famous muslin weavers had their thumbs cut off to prevent them from weaving. The raw cotton was shipped to Manchester, turned into cloth, and sold back to Indians at a profit.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 010 12.73M5.64 5.64a9 9 0 000 12.73"/><circle cx="12" cy="12" r="2"/></svg>
+          1857: The Great Revolt
+        </div>
+        <p class="story">The spark: greased cartridges. Soldiers (<strong>sepoys</strong>) had to bite open cartridges rumoured to be coated in cow and pig fat — offensive to both Hindus and Muslims. But that was just the match. The gunpowder was decades of humiliation.</p>
+        <p class="story"><strong>Mangal Pandey</strong> fired the first shot at Barrackpore on 29 March 1857. Within weeks, the mutiny erupted across the Ganges plain. <strong>Delhi, Lucknow, Kanpur, and Jhansi</strong> became battlegrounds. The ageing Mughal emperor <strong>Bahadur Shah Zafar</strong> was declared the symbolic leader. <strong>Rani Lakshmibai of Jhansi</strong> fought on horseback — even British officers called her the bravest of the rebel leaders. <strong>Tantia Tope</strong> led guerrilla campaigns across central India. <strong>Begum Hazrat Mahal</strong> defended Lucknow.</p>
+        <p class="story">The revolt failed — it was disorganised, the south barely participated, and the British had the telegraph and Enfield rifles. The aftermath was savage: mass executions, villages burned, rebels tied to cannons and blown apart. The <strong>British Crown took direct control</strong> from the East India Company. India was now officially a colony. <strong>Bahadur Shah Zafar</strong>, the last Mughal, was exiled to Rangoon where he died, writing heartbroken poetry in a foreign land.</p>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">1857 = India's First War of Independence. It failed in battle but succeeded in spirit — it planted the seed that would grow into the freedom movement.</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1857: Great Revolt. British Crown takes direct control. The British Raj begins.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>1861: American Civil War. 1860s: Japan's Meiji Restoration.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH7: FREEDOM STRUGGLE (EXPANDED) ============ -->
+  <article class="chapter" id="ch7">
+    <div class="ch-header" onclick="toggleChapter('ch7')">
+      <div class="ch-era">Chapter 7 · 1857–1947</div>
+      <div class="ch-title">
+        The Freedom Struggle
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">90 years from first spark to freedom — and the heartbreak of Partition</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">The early 1900s. 90 years of struggle between 1857 and independence. Your great-grandparents may have lived through this.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Phase 1: Polite Requests (1885–1919)
+        </div>
+        <p class="story">The <strong>Indian National Congress</strong> (founded 1885) started as educated Indians writing petitions. The "Moderates" — <span class="person-badge">Dadabhai Naoroji</span> <span class="person-badge">Gopal Krishna Gokhale</span> — believed in working within the system. Then the "Extremists" — <span class="person-badge">Bal Gangadhar Tilak</span> <span class="person-badge">Bipin Chandra Pal</span> <span class="person-badge">Lala Lajpat Rai</span> — demanded <strong>Swaraj</strong> (self-rule), not just reforms. Tilak declared: <em>"Swaraj is my birthright, and I shall have it!"</em></p>
+        <p class="story">World War I changed everything. India sent <strong>1.3 million soldiers</strong> to fight for Britain. When the war ended, Indians expected reform. Instead: the <strong>Jallianwala Bagh massacre (13 April 1919)</strong>. Brigadier-General <strong>Reginald Dyer</strong> ordered soldiers to fire on a peaceful, unarmed crowd trapped in a walled garden in Amritsar. At least 379 dead (Indian estimates say over 1,000). 1,200+ wounded. Dyer blocked the only exit. He later said he wanted to produce a "moral effect." The British Parliament debated it — and a section of the British public called Dyer a hero. For India, it was the point of no return.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h0"/></svg>
+          Phase 2: Gandhi Changes the Game (1920s–1940s)
+        </div>
+        <p class="story"><strong>Mohandas Karamchand Gandhi</strong> introduced <strong>non-violent mass resistance</strong> (<em>satyagraha</em>). His logic: if a bully punches you and you don't hit back but also don't obey, the bully looks terrible in front of everyone. Multiply by 300 million people, and authority collapses.</p>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Non-Cooperation Movement (1920–22)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Indians stopped buying British goods, pulled children from British schools, quit government jobs, and returned British titles. The <strong>Khilafat Movement</strong> brought Hindus and Muslims together. The economy shuddered. But Gandhi called it off after the <strong>Chauri Chaura incident</strong> (1922) where a mob burned a police station, killing 22 officers — violence he couldn't accept.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            The Salt March / Civil Disobedience (1930)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p>Gandhi walked <strong>390 km from Sabarmati to Dandi</strong> over 24 days to make his own salt, defying British salt taxes. Salt — something every person needs. The world watched as the British arrested an old man for picking up salt. Over <strong>60,000 people were arrested</strong> across India in the movement that followed. At the Dharasana Salt Works, unarmed protesters walked into police batons row after row without flinching — American journalist <strong>Webb Miller</strong>'s account horrified the world.</p>
+          </div></div>
+        </div>
+
+        <div class="reveal-card" onclick="this.classList.toggle('open')">
+          <div class="reveal-header">
+            <svg class="r-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Quit India Movement (1942)
+          </div>
+          <div class="reveal-body"><div class="reveal-inner">
+            <p><em>"Do or die."</em> The most direct demand yet: leave our country. The British arrested almost every Congress leader overnight. But the movement had spread so deep that <strong>leaderless protests erupted everywhere</strong> — railway lines sabotaged, telegraph wires cut, parallel governments formed in parts of Satara, Ballia, and Midnapore. The British needed 57 battalions to suppress it.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          The Other Freedom Fighters
+        </div>
+        <p class="story">Gandhi wasn't alone, and not everyone agreed with non-violence.</p>
+        <p class="story"><span class="person-badge">Subhas Chandra Bose</span> escaped British India in disguise, allied with Japan, and built the <strong>Indian National Army (INA)</strong> to fight the British militarily. His rallying cry: <em>"Give me blood, and I shall give you freedom!"</em> The INA fought in Burma and northeast India. Though militarily unsuccessful, the <strong>INA trials</strong> at Red Fort (1945) radicalised the Indian military and made the British realise they could no longer trust Indian troops to suppress Indian people.</p>
+        <p class="story"><span class="person-badge">Bhagat Singh</span> chose revolutionary violence — he bombed the Central Legislative Assembly (to "make the deaf hear"), was arrested, and became a martyr at age 23. <span class="person-badge">Jawaharlal Nehru</span> was the political strategist who spent over 9 years in British jails and would become India's first PM. <span class="person-badge">Sardar Vallabhbhai Patel</span> would unite 560+ princely states into one India. <span class="person-badge">B.R. Ambedkar</span> fought for the rights of Dalits (formerly "untouchables") and drafted India's Constitution.</p>
+        <p class="story">And millions of unnamed warriors: farmers who boycotted, students who marched, women who hid freedom fighters, workers who went on strike. Freedom wasn't won by a handful of leaders. It was won by a <em>nation</em> that refused to stay enslaved.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          The Heartbreak: Partition (1947)
+        </div>
+        <p class="story">India won freedom on <strong>15 August 1947.</strong> But it came with a wound that hasn't fully healed. <strong>Muhammad Ali Jinnah</strong> and the <strong>Muslim League</strong> demanded a separate Muslim state, arguing Muslims would be a permanent minority in a Hindu-majority democracy. The British, exhausted after WWII and facing a collapsing empire, agreed. A British lawyer named <strong>Sir Cyril Radcliffe</strong> — who had never visited India — was given 5 weeks to draw the border.</p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">The top-left chunk (Punjab + Sindh + Balochistan) became West Pakistan. The far-right corner (Bengal) became East Pakistan. India kept everything between. Two wings of one country separated by 1,600 km of Indian territory.</div>
+        </div>
+
+        <p class="story">About <strong>15 million people were displaced.</strong> Up to <strong>2 million died</strong> in the violence that followed. Families torn apart. Communities that had lived together for centuries separated overnight. Trains arrived at their destinations carrying only corpses. It remains one of the largest mass migrations in human history.</p>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">1947 = Freedom + Partition. India's greatest triumph and greatest tragedy happened on the same day.</div>
+      </div>
+
+      <div class="callout fact">
+        <div class="callout-label">🤯 Did You Know?</div>
+        <div class="callout-text">India sent over 2.5 million soldiers to fight in WWII for the British — the largest volunteer army in history. Despite this, the Bengal Famine of 1943 killed ~3 million Indians, worsened by Churchill's wartime policies that diverted food supplies. When told of the famine, Churchill asked why Gandhi hadn't died yet.</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1947: Independence and Partition. Birth of India and Pakistan.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>1945: WWII ends. 1948: Israel created. Cold War begins.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ CH8: FREE BUT FIGHTING ============ -->
+  <article class="chapter" id="ch8">
+    <div class="ch-header" onclick="toggleChapter('ch8')">
+      <div class="ch-era">Chapter 8 · 1947–1971</div>
+      <div class="ch-title">
+        Free But Fighting
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ch-tagline">Four wars in 24 years — a baby bird facing storms</div>
+    </div>
+    <div class="ch-body">
+
+      <div class="callout timeline">
+        <div class="callout-label">⏰ Where Are We?</div>
+        <div class="callout-text">The 1950s–70s. India is free but fragile — like a baby bird that's just learned to fly, immediately facing storms.</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          1947–48: First War with Pakistan (Kashmir)
+        </div>
+        <p class="story">Kashmir — at the very top of the diamond — was a princely state ruled by a Hindu king, <strong>Maharaja Hari Singh</strong>, with a Muslim-majority population. When Pakistan-backed tribal fighters invaded, the king signed the <strong>Instrument of Accession</strong> (joining India). Indian troops pushed the invaders back, but not completely. A ceasefire line was drawn. Kashmir has remained divided and disputed ever since — the longest-running territorial conflict in modern history.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          1962: War with China
+        </div>
+        <p class="story">India and China disagreed over their Himalayan border. Nehru's "<strong>Forward Policy</strong>" — placing outposts in disputed territory — provoked China. In October 1962, China launched a massive surprise attack. India's military was unprepared and under-equipped. The defeat was swift and humiliating. China took <strong>Aksai Chin</strong> and declared a unilateral ceasefire. India learned a harsh lesson: idealism without military strength leaves you vulnerable.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 010 12.73M5.64 5.64a9 9 0 000 12.73"/><circle cx="12" cy="12" r="2"/></svg>
+          1965: Second War with Pakistan
+        </div>
+        <p class="story">Pakistan sent soldiers disguised as locals into Kashmir (<strong>Operation Gibraltar</strong>) to trigger an uprising. It failed. The war lasted 17 days, ended in a UN ceasefire (the <strong>Tashkent Agreement</strong>), and returned to the status quo. Neither side won decisively. India's PM <strong>Lal Bahadur Shastri</strong> died in Tashkent hours after signing the peace agreement — the circumstances remain debated.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          1971: Bangladesh Is Born
+        </div>
+        <p class="story">East Pakistan spoke Bengali, not Urdu. West Pakistan treated them as second-class citizens. When East Pakistan demanded independence under <strong>Sheikh Mujibur Rahman</strong>, West Pakistan launched <strong>Operation Searchlight</strong> — a brutal military crackdown. Millions of refugees flooded into India.</p>
+        <p class="story">Under PM <strong>Indira Gandhi</strong> and military commander <strong>Sam Manekshaw</strong>, India intervened. In just <strong>13 days</strong>, Indian forces defeated the Pakistani army in the east. <strong>93,000 Pakistani soldiers surrendered</strong> — the largest military surrender since WWII. East Pakistan became <strong>Bangladesh.</strong></p>
+
+        <div class="callout map">
+          <div class="callout-label">🗺️ Map Moment</div>
+          <div class="callout-text">After 1971: Pakistan is now only on the top-left. The top-right chunk is Bangladesh — an entirely new country. India sits in the middle, larger and more secure.</div>
+        </div>
+      </div>
+
+      <div class="callout memory">
+        <div class="callout-label">🧠 Remember</div>
+        <div class="callout-text">Three wars: '62 with China (north, lost), '65 with Pakistan (west, draw), '71 with Pakistan (east, decisive win → Bangladesh born).</div>
+      </div>
+
+      <div class="global-grid">
+        <div class="global-cell india"><div class="cell-label">In India</div>1947–71: 4 wars in 24 years while building a democracy of 500+ million people.</div>
+        <div class="global-cell world"><div class="cell-label">In The World</div>Cold War. Korean War. Vietnam War. Moon Landing (1969). Decolonisation sweeps Africa and Asia.</div>
+      </div>
+
+      <!-- THE BIG PICTURE -->
+      <div style="margin-top:2rem;padding:1.5rem;border-radius:var(--radius);background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(34,211,238,.1));border:1px solid rgba(139,92,246,.2);text-align:center">
+        <div style="font-weight:800;font-size:1.1rem;margin-bottom:.5rem;background:linear-gradient(90deg,var(--purple),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent">THE BIG PICTURE</div>
+        <p class="story" style="text-align:center;color:var(--text-dim)">In 5,000 years, India invented the number system the world runs on, built the first planned cities, created two world religions, survived centuries of invasion, was plundered by the richest empire in history, and fought its way to freedom. Every building you see, every border on the map, every festival your family celebrates — it all connects back to this story. History isn't dead people and old dates. It's the reason your world looks the way it does.</p>
+      </div>
+    </div>
+  </article>
+
+</div><!-- end timeline-container -->
+
+<footer class="site-footer">
+  <p>The Epic Story of India · An interactive learning journey · 3300 BCE – 1971 CE</p>
+</footer>
+
+<script>
+// Particle effect
+(function(){
+  const container=document.getElementById('particles');
+  for(let i=0;i<40;i++){
+    const span=document.createElement('span');
+    span.style.left=Math.random()*100+'%';
+    span.style.animationDuration=(8+Math.random()*12)+'s';
+    span.style.animationDelay=Math.random()*10+'s';
+    span.style.width=span.style.height=(1+Math.random()*2)+'px';
+    const colors=['#8b5cf6','#22d3ee','#f472b6','#fbbf24'];
+    span.style.background=colors[Math.floor(Math.random()*colors.length)];
+    container.appendChild(span);
+  }
+})();
+
+// Toggle chapters
+function toggleChapter(id){
+  const el=document.getElementById(id);
+  const wasExpanded=el.classList.contains('expanded');
+  // Close all
+  document.querySelectorAll('.chapter.expanded').forEach(c=>{
+    if(c.id!==id) c.classList.remove('expanded');
+  });
+  el.classList.toggle('expanded',!wasExpanded);
+  if(!wasExpanded){
+    setTimeout(()=>{
+      el.scrollIntoView({behavior:'smooth',block:'start'});
+    },100);
+  }
+}
+
+// Scroll observer for fade-in
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.chapter').forEach(c=>observer.observe(c));
+
+// Timeline progress
+function updateProgress(){
+  const container=document.getElementById('timeline');
+  const progress=document.getElementById('timelineProgress');
+  const rect=container.getBoundingClientRect();
+  const scrolled=Math.max(0,Math.min(1,(-rect.top)/(rect.height-window.innerHeight)));
+  progress.style.height=scrolled*100+'%';
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+
+// Era nav
+document.querySelectorAll('.era-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=btn.dataset.target;
+    const el=document.getElementById(id);
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+    // Expand it
+    setTimeout(()=>{
+      if(!el.classList.contains('expanded')) toggleChapter(id);
+    },400);
+  });
+});
+
+// Active era nav on scroll
+function updateActiveEra(){
+  const chapters=document.querySelectorAll('.chapter');
+  const btns=document.querySelectorAll('.era-btn');
+  let activeIdx=0;
+  chapters.forEach((ch,i)=>{
+    const rect=ch.getBoundingClientRect();
+    if(rect.top<window.innerHeight/2) activeIdx=i;
+  });
+  btns.forEach((b,i)=>{
+    b.classList.toggle('active',i===activeIdx);
+  });
+}
+window.addEventListener('scroll',updateActiveEra,{passive:true});
+</script>
+</body>
+</html>
