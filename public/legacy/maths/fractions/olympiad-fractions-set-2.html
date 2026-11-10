@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olympiad Fractions Master Problem Set</title>
+<style>
+  :root{
+    --bg:#f6f8fc; --card:#ffffff; --ink:#1e2632; --muted:#5b6575;
+    --head:#3a1d6e; --accent:#22409e; --line:#e4e9f2; --soft:#f0f3fa;
+    --found:#177a4d; --found-bg:#e7f6ee; --found-br:#bfe6d0;
+    --chall:#9a6206; --chall-bg:#fdf2df; --chall-br:#efd9ac;
+    --achv:#9a1750;  --achv-bg:#fbe7f0;  --achv-br:#efc0d4;
+    --focus:#f4f1fb;
+    --shadow:0 1px 2px rgba(30,38,50,.05), 0 6px 18px rgba(30,38,50,.06);
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); line-height:1.55; font-size:16.5px;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 20px 80px}
+
+  /* ---------- Header ---------- */
+  header.masthead{
+    background:linear-gradient(135deg,#2a1560 0%,#22409e 100%);
+    color:#fff; padding:54px 20px 46px; text-align:center;
+    border-bottom:5px solid #f0b23c;
+  }
+  header.masthead h1{
+    font-family:var(--serif); font-weight:700; letter-spacing:.3px;
+    font-size:2.35rem; margin:0 auto 10px; max-width:760px; line-height:1.15;
+  }
+  header.masthead .sub{ font-size:1.06rem; opacity:.92; margin:0 auto; max-width:640px }
+  header.masthead .eyebrow{
+    text-transform:uppercase; letter-spacing:3px; font-size:.72rem;
+    opacity:.8; margin-bottom:14px; font-weight:600;
+  }
+  .note{
+    max-width:920px; margin:22px auto 0; background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.28); border-radius:12px;
+    padding:14px 18px; font-size:.94rem; text-align:left;
+  }
+  .note b{color:#ffe6a8}
+
+  /* ---------- Table of contents ---------- */
+  .toc{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:26px 28px; margin:34px 0 10px;
+  }
+  .toc h2{
+    font-family:var(--serif); color:var(--head); margin:0 0 4px; font-size:1.5rem;
+  }
+  .toc p.k{color:var(--muted); margin:0 0 18px; font-size:.92rem}
+  .toc ol{
+    margin:0; padding:0; list-style:none;
+    display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; counter-reset:t;
+  }
+  .toc ol li{ counter-increment:t; border-bottom:1px dotted var(--line); padding:5px 0 }
+  .toc ol li a{
+    text-decoration:none; color:var(--ink); font-size:.94rem;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  .toc ol li a::before{
+    content:counter(t); color:var(--accent); font-weight:700; font-size:.82rem;
+    min-width:24px; text-align:right; font-variant-numeric:tabular-nums;
+  }
+  .toc ol li a:hover{color:var(--accent)}
+
+  /* ---------- Category sections ---------- */
+  section.cat{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:26px 28px 30px; margin:26px 0;
+    scroll-margin-top:14px;
+  }
+  .cat-head{ border-bottom:2px solid var(--soft); padding-bottom:12px; margin-bottom:6px }
+  .cat-num{
+    display:inline-block; background:var(--head); color:#fff; font-weight:700;
+    font-size:.78rem; padding:3px 10px; border-radius:20px; letter-spacing:.5px;
+  }
+  .cat-head h2{
+    font-family:var(--serif); color:var(--head); margin:10px 0 4px; font-size:1.55rem;
+  }
+  .skill{ color:var(--muted); font-size:.93rem; margin:0 }
+  .skill b{color:var(--accent)}
+
+  .band-label{
+    display:flex; align-items:center; gap:10px; margin:22px 0 4px;
+    font-size:.78rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted);
+  }
+  .band-label::after{content:""; flex:1; height:1px; background:var(--line)}
+
+  .badge{
+    display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.5px;
+    padding:3px 10px; border-radius:20px; text-transform:uppercase;
+  }
+  .b-found{ color:var(--found); background:var(--found-bg); border:1px solid var(--found-br) }
+  .b-chall{ color:var(--chall); background:var(--chall-bg); border:1px solid var(--chall-br) }
+  .b-achv{  color:var(--achv);  background:var(--achv-bg);  border:1px solid var(--achv-br) }
+
+  .q{
+    display:flex; gap:14px; padding:14px 16px; margin:10px 0; border-radius:12px;
+    background:var(--soft); border:1px solid var(--line);
+  }
+  .q.foundation{background:var(--found-bg); border-color:var(--found-br)}
+  .q.challenge{background:var(--chall-bg); border-color:var(--chall-br)}
+  .q.achiever{background:var(--achv-bg); border-color:var(--achv-br)}
+  .qn{
+    font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums;
+    min-width:44px; font-size:.95rem; padding-top:1px;
+  }
+  .q.achiever .qn{color:var(--achv)}
+  .q.challenge .qn{color:var(--chall)}
+  .q.foundation .qn{color:var(--found)}
+  .qb{flex:1}
+  .qb p{margin:0}
+  .fig{ margin:12px 0 2px; text-align:center }
+  .fig svg{ max-width:100%; height:auto; background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px }
+  .cap{ font-size:.82rem; color:var(--muted); margin-top:4px; font-style:italic }
+
+  .fr{white-space:nowrap; font-variant-numeric:tabular-nums}
+
+  /* ---------- Answer key ---------- */
+  section.answers{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); padding:26px 28px 30px; margin:40px 0;
+    page-break-before:always;
+  }
+  section.answers h2{ font-family:var(--serif); color:var(--head); font-size:1.7rem; margin:0 0 4px }
+  section.answers p.k{color:var(--muted); margin:0 0 18px; font-size:.92rem}
+  .ak-group{margin:16px 0}
+  .ak-group h3{
+    font-size:1.02rem; color:var(--accent); margin:16px 0 8px;
+    border-bottom:1px solid var(--line); padding-bottom:4px;
+  }
+  .ak{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:4px 26px;
+    list-style:none; margin:0; padding:0;
+  }
+  .ak li{
+    font-size:.92rem; padding:4px 0; border-bottom:1px dotted var(--line);
+    display:flex; gap:10px;
+  }
+  .ak li b{color:var(--achv); min-width:42px; font-variant-numeric:tabular-nums}
+
+  footer{ text-align:center; color:var(--muted); font-size:.85rem; margin-top:40px }
+
+  a.top{ font-size:.8rem; color:var(--accent); text-decoration:none; float:right; margin-top:-2px }
+  a.top:hover{text-decoration:underline}
+
+  @media (max-width:640px){
+    .toc ol{grid-template-columns:1fr}
+    .ak{grid-template-columns:1fr}
+    header.masthead h1{font-size:1.8rem}
+  }
+
+  /* ---------- Print ---------- */
+  @media print{
+    body{background:#fff; font-size:11.5pt}
+    .wrap{max-width:100%; padding:0}
+    header.masthead{background:#2a1560 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    section.cat, .toc, section.answers, .q, .badge, header.masthead{
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    section.cat{ break-inside:auto; box-shadow:none; page-break-before:always }
+    .toc{page-break-after:always}
+    .q{break-inside:avoid}
+    .fig{break-inside:avoid}
+    a.top{display:none}
+    a{color:var(--ink); text-decoration:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow">Olympiad Training &middot; Grades of Difficulty</div>
+  <h1>Olympiad Fractions Master Problem Set</h1>
+  <p class="sub">Graded non-MCQ problems with full worked answers</p>
+  <div class="note">
+    <b>To the student:</b> Show all working. Diagrams are part of the question wherever shown &mdash;
+    read them carefully. Simplify final fraction answers to lowest terms unless the question tells you
+    otherwise. Work through <b>Foundation &rarr; Challenge &rarr; Achiever</b>; the Achiever problems are
+    the ones worth returning to.
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc" id="top">
+  <h2>Table of Contents</h2>
+  <p class="k">40 categories &middot; three difficulty bands each &middot; questions numbered Q1&ndash;Q240 &middot; answer key at the end.</p>
+  <ol>
+    <li><a href="#c1">Part&ndash;Whole</a></li>
+    <li><a href="#c2">Fraction of a Fraction</a></li>
+    <li><a href="#c3">Reverse Fraction (Working Backwards)</a></li>
+    <li><a href="#c4">Missing Whole</a></li>
+    <li><a href="#c5">Repeated Fraction Operations</a></li>
+    <li><a href="#c6">Successive Gain / Loss</a></li>
+    <li><a href="#c7">Mixture and Dilution</a></li>
+    <li><a href="#c8">Comparing Fractions</a></li>
+    <li><a href="#c9">Ordering Fractions</a></li>
+    <li><a href="#c10">Equal Sharing</a></li>
+    <li><a href="#c11">Remaining Fraction Problems</a></li>
+    <li><a href="#c12">Complement Fractions</a></li>
+    <li><a href="#c13">Fractions on the Number Line</a></li>
+    <li><a href="#c14">Distance with Fractions</a></li>
+    <li><a href="#c15">Area with Fractional Dimensions</a></li>
+    <li><a href="#c16">Volume / Capacity with Fractions</a></li>
+    <li><a href="#c17">Fraction Patterns</a></li>
+    <li><a href="#c18">Hidden Fraction</a></li>
+    <li><a href="#c19">Equivalent Fractions</a></li>
+    <li><a href="#c20">Common Denominator Reasoning</a></li>
+    <li><a href="#c21">Unit Fractions</a></li>
+    <li><a href="#c22">Fraction Puzzles</a></li>
+    <li><a href="#c23">Balance Scale Problems</a></li>
+    <li><a href="#c24">Age Problems</a></li>
+    <li><a href="#c25">Recipe Scaling</a></li>
+    <li><a href="#c26">Population Problems</a></li>
+    <li><a href="#c27">Tanks and Pipes</a></li>
+    <li><a href="#c28">Shaded Geometry</a></li>
+    <li><a href="#c29">Grid Colouring</a></li>
+    <li><a href="#c30">Tree Diagram Problems</a></li>
+    <li><a href="#c31">Dice and Card Problems</a></li>
+    <li><a href="#c32">Fraction Inequalities</a></li>
+    <li><a href="#c33">Estimation and Benchmarking</a></li>
+    <li><a href="#c34">Strategy Choice / Mental Methods</a></li>
+    <li><a href="#c35">Multiple Representations</a></li>
+    <li><a href="#c36">Fraction Equations in Word Problems</a></li>
+    <li><a href="#c37">Distribution Chain Problems</a></li>
+    <li><a href="#c38">Circular Sharing Problems</a></li>
+    <li><a href="#c39">Survey / Data Interpretation</a></li>
+    <li><a href="#c40">Optimisation Problems</a></li>
+  </ol>
+</nav>
+
+<!-- ============ 1. PART–WHOLE ============ -->
+<section class="cat" id="c1">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 1</span>
+    <h2>Part&ndash;Whole</h2>
+    <p class="skill"><b>Skill focus:</b> reading a fraction as a part of a fixed whole, and recovering the whole from a stated part.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q1</div><div class="qb"><p>A chocolate bar is split into 12 equal squares. Priya eats 5 squares and her brother eats 3. What fraction of the bar is left? Simplify your answer.</p></div></div>
+  <div class="q foundation"><div class="qn">Q2</div><div class="qb"><p>In a class of 28 students, <span class="fr">3/7</span> wear glasses. How many students do <b>not</b> wear glasses?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q3</div><div class="qb"><p>A ribbon is cut into equal pieces. Seven of those pieces together make up <span class="fr">7/10</span> of the ribbon. How many equal pieces make the whole ribbon, and what fraction is one piece?</p></div></div>
+  <div class="q challenge"><div class="qn">Q4</div><div class="qb"><p>In a bag of marbles, <span class="fr">1/4</span> are red, <span class="fr">1/3</span> are blue, and the remaining 20 are green. How many marbles are in the bag?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q5</div><div class="qb"><p>A wall is painted in three sessions. In the first, <span class="fr">1/3</span> of the wall is painted; in the second, <span class="fr">1/4</span> of the whole wall is painted; in the third, the painter finishes the remaining 25&nbsp;m&sup2;. Find the total area of the wall.</p></div></div>
+  <div class="q achiever"><div class="qn">Q6</div><div class="qb"><p>A pile of coins is shared so that the first person gets <span class="fr">1/2</span> of the total, the second gets <span class="fr">1/3</span> of the total, and the third gets the rest. If the third person&rsquo;s share is 8 coins fewer than the first person&rsquo;s, how many coins are there in total?</p></div></div>
+</section>
+
+<!-- ============ 2. FRACTION OF A FRACTION ============ -->
+<section class="cat" id="c2">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 2</span>
+    <h2>Fraction of a Fraction</h2>
+    <p class="skill"><b>Skill focus:</b> chaining multiplications of fractions and tracking a shrinking quantity.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q7</div><div class="qb"><p>Find <span class="fr">2/3</span> of <span class="fr">3/4</span>. Give your answer in lowest terms.</p></div></div>
+  <div class="q foundation"><div class="qn">Q8</div><div class="qb"><p>A jug is <span class="fr">3/4</span> full of juice. Of that juice, <span class="fr">2/5</span> is orange juice. What fraction of the whole jug is orange juice?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q9</div><div class="qb"><p>In a garden, <span class="fr">5/8</span> of the plot is lawn. Of the lawn, <span class="fr">2/5</span> lies in shade. Of the shaded lawn, <span class="fr">3/4</span> is damp. What fraction of the whole garden is damp, shaded lawn?</p></div></div>
+  <div class="q challenge"><div class="qn">Q10</div><div class="qb"><p>Half of a cake is left. A guest takes <span class="fr">2/3</span> of what is left; then a child takes <span class="fr">1/4</span> of what now remains. What fraction of the whole cake is left at the end?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q11</div><div class="qb"><p>A tank of water is emptied in stages. Each stage removes <span class="fr">1/3</span> of the water currently in the tank. After three stages, what fraction of the original water remains?</p></div></div>
+  <div class="q achiever"><div class="qn">Q12</div><div class="qb"><p>Of a group of people, <span class="fr">3/5</span> are adults. Of the adults, <span class="fr">5/6</span> hold a driving licence. Of those with a licence, <span class="fr">4/9</span> drove to the event. If 40 licensed adults drove, how many people are in the group?</p></div></div>
+</section>
+
+<!-- ============ 3. REVERSE FRACTION ============ -->
+<section class="cat" id="c3">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 3</span>
+    <h2>Reverse Fraction (Working Backwards)</h2>
+    <p class="skill"><b>Skill focus:</b> undoing a sequence of fractional removals to recover the starting amount.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q13</div><div class="qb"><p>After spending <span class="fr">2/5</span> of her money, Aisha has &#8377;36 left. How much did she start with?</p></div></div>
+  <div class="q foundation"><div class="qn">Q14</div><div class="qb"><p>A number increased by <span class="fr">1/4</span> of itself gives 45. Find the number.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q15</div><div class="qb"><p>A farmer sells <span class="fr">1/2</span> of his apples, then <span class="fr">1/3</span> of the remainder, and is left with 40 apples. How many did he start with?</p></div></div>
+  <div class="q challenge"><div class="qn">Q16</div><div class="qb"><p>A boy gives <span class="fr">1/3</span> of his stickers to A, then <span class="fr">1/4</span> of the remainder to B, and keeps the last 18. How many stickers did he have at the start?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q17</div><div class="qb"><p>A jar of sweets is eaten over three days. Day 1: <span class="fr">1/4</span> of the jar is eaten. Day 2: <span class="fr">1/3</span> of the remainder is eaten. Day 3: <span class="fr">1/2</span> of what is now left is eaten, leaving 15 sweets. How many sweets were in the jar at the start?</p></div></div>
+  <div class="q achiever"><div class="qn">Q18</div><div class="qb"><p>A traveller spends <span class="fr">1/3</span> of his money plus &#8377;10 more on the first day. On the next day he spends <span class="fr">1/2</span> of what remains plus &#8377;5 more, leaving &#8377;15. How much money did he start with?</p></div></div>
+</section>
+
+<!-- ============ 4. MISSING WHOLE ============ -->
+<section class="cat" id="c4">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 4</span>
+    <h2>Missing Whole</h2>
+    <p class="skill"><b>Skill focus:</b> reconstructing a whole from a part, including equalities between two different wholes.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q19</div><div class="qb"><p><span class="fr">3/8</span> of a number is 21. Find the number.</p></div></div>
+  <div class="q foundation"><div class="qn">Q20</div><div class="qb"><p>If <span class="fr">5/6</span> of a rope is 45&nbsp;m long, how long is the whole rope?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q21</div><div class="qb"><p><span class="fr">2/7</span> of a herd of cows equals <span class="fr">3/5</span> of a herd of goats. If there are 30 goats, how many cows are there?</p></div></div>
+  <div class="q challenge"><div class="qn">Q22</div><div class="qb"><p>A crate is <span class="fr">5/9</span> full and holds 40 oranges at that level. How many more oranges are needed to fill it completely?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q23</div><div class="qb"><p>In a school, <span class="fr">3/5</span> of students study Maths and <span class="fr">1/2</span> study Science; <span class="fr">3/10</span> study both. If 72 students study at least one of these two subjects, how many students are in the school?</p></div></div>
+  <div class="q achiever"><div class="qn">Q24</div><div class="qb"><p>When <span class="fr">1/6</span> of a number is added to <span class="fr">1/4</span> of the same number, the result is 15. Find the number.</p></div></div>
+</section>
+
+<!-- ============ 5. REPEATED FRACTION OPERATIONS ============ -->
+<section class="cat" id="c5">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 5</span>
+    <h2>Repeated Fraction Operations</h2>
+    <p class="skill"><b>Skill focus:</b> composing repeated multiplicative steps and reading the combined effect.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q25</div><div class="qb"><p>Start with 64. Halve it, then take <span class="fr">3/4</span> of the result. What number do you get?</p></div></div>
+  <div class="q foundation"><div class="qn">Q26</div><div class="qb"><p>A ball rebounds to <span class="fr">2/3</span> of its drop height on each bounce. Dropped from 27&nbsp;m, how high does it rise after the second bounce?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q27</div><div class="qb"><p>A number is multiplied by <span class="fr">2/3</span>, then that result by <span class="fr">3/5</span>, then that by <span class="fr">5/4</span>. If the final answer is 30, find the original number.</p></div></div>
+  <div class="q challenge"><div class="qn">Q28</div><div class="qb"><p>Each hour a candle loses <span class="fr">1/5</span> of its current length. If it starts at 100&nbsp;mm, what is its length after 2 hours?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q29</div><div class="qb"><p>A colony of bacteria multiplies by <span class="fr">3/2</span> (grows by half of itself) every day. It starts at 32 units. After how many whole days does it first exceed 100 units?</p></div></div>
+  <div class="q achiever"><div class="qn">Q30</div><div class="qb"><p>A sum of money changes over three years: year 1 it increases by <span class="fr">1/4</span>; year 2 it decreases by <span class="fr">1/5</span>; year 3 it increases by <span class="fr">1/2</span>. If the final amount is &#8377;450, find the starting amount.</p></div></div>
+</section>
+
+<!-- ============ 6. SUCCESSIVE GAIN / LOSS ============ -->
+<section class="cat" id="c6">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 6</span>
+    <h2>Successive Gain / Loss</h2>
+    <p class="skill"><b>Skill focus:</b> why a rise then a fall by the same-looking fraction does not return to the start.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q31</div><div class="qb"><p>A price of &#8377;200 is increased by <span class="fr">1/4</span>, then the new price is decreased by <span class="fr">1/5</span>. What is the final price?</p></div></div>
+  <div class="q foundation"><div class="qn">Q32</div><div class="qb"><p>A tank loses <span class="fr">1/3</span> of its water, then loses <span class="fr">1/2</span> of what remains. What fraction of the original water is left?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q33</div><div class="qb"><p>A shopkeeper raises a price by <span class="fr">1/5</span>, then lowers the new price by <span class="fr">1/6</span>. Compared with the original price, is the final price higher, lower, or equal? Justify with fractions.</p></div></div>
+  <div class="q challenge"><div class="qn">Q34</div><div class="qb"><p>A salary rises by <span class="fr">1/10</span> one year and falls by <span class="fr">1/10</span> the next. Compared with the start, by what fraction has it changed, and in which direction?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q35</div><div class="qb"><p>A population increases by <span class="fr">1/8</span> in one year and then decreases by <span class="fr">1/6</span> the next year, ending at 12,000. What was the population at the start?</p></div></div>
+  <div class="q achiever"><div class="qn">Q36</div><div class="qb"><p>Two successive discounts of <span class="fr">1/4</span> and then <span class="fr">1/5</span> are applied to a price. A single discount of what fraction would have the same effect?</p></div></div>
+</section>
+
+<!-- ============ 7. MIXTURE AND DILUTION ============ -->
+<section class="cat" id="c7">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 7</span>
+    <h2>Mixture and Dilution</h2>
+    <p class="skill"><b>Skill focus:</b> tracking one component as amounts are added or evaporated (fractional language only).</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q37</div><div class="qb"><p>A 12-litre mixture is <span class="fr">1/3</span> syrup and the rest water. How many litres are syrup?</p></div></div>
+  <div class="q foundation"><div class="qn">Q38</div><div class="qb"><p>A 30-litre solution is <span class="fr">2/5</span> acid. How much acid and how much water does it contain?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q39</div><div class="qb"><p>A 20-litre mixture is <span class="fr">3/5</span> juice. If 5 litres of pure juice are added, what fraction of the new mixture is juice?</p></div></div>
+  <div class="q challenge"><div class="qn">Q40</div><div class="qb"><p>A 24-litre mixture is <span class="fr">1/4</span> milk. How much water must be added so that milk becomes <span class="fr">1/6</span> of the new mixture?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q41</div><div class="qb"><p>A jar holds 18 litres of solution that is <span class="fr">5/6</span> water and the rest salt. How many litres of water must evaporate so that the mixture becomes <span class="fr">3/4</span> water?</p></div></div>
+  <div class="q achiever"><div class="qn">Q42</div><div class="qb"><p>Container A holds 9 litres that is <span class="fr">1/3</span> alcohol; container B holds 8 litres that is <span class="fr">3/4</span> alcohol. Both are poured together. What fraction of the combined mixture is alcohol?</p></div></div>
+</section>
+
+<!-- ============ 8. COMPARING FRACTIONS ============ -->
+<section class="cat" id="c8">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 8</span>
+    <h2>Comparing Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> cross-multiplication and complement-to-one reasoning instead of decimals.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q43</div><div class="qb"><p>Which is larger, <span class="fr">3/5</span> or <span class="fr">5/8</span>? Justify without using decimals.</p></div></div>
+  <div class="q foundation"><div class="qn">Q44</div><div class="qb"><p>Which is larger, <span class="fr">7/9</span> or <span class="fr">8/11</span>?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q45</div><div class="qb"><p>Of <span class="fr">4/7</span> and <span class="fr">5/9</span>: which is the larger fraction, and which one is closer to <span class="fr">1/2</span>?</p></div></div>
+  <div class="q challenge"><div class="qn">Q46</div><div class="qb"><p>Using complements to 1, decide which is bigger: <span class="fr">11/13</span> or <span class="fr">13/15</span>.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q47</div><div class="qb"><p>Show which is larger, <span class="fr">100/101</span> or <span class="fr">101/102</span>, explaining your method using how far each is from 1.</p></div></div>
+  <div class="q achiever"><div class="qn">Q48</div><div class="qb"><p>Which is the largest among <span class="fr">5/6</span>, <span class="fr">6/7</span> and <span class="fr">7/8</span>? Explain using complements to 1.</p></div></div>
+</section>
+
+<!-- ============ 9. ORDERING FRACTIONS ============ -->
+<section class="cat" id="c9">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 9</span>
+    <h2>Ordering Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> placing several fractions in order using a shared denominator or benchmark reasoning.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q49</div><div class="qb"><p>Order from smallest to largest: <span class="fr">1/2</span>, <span class="fr">2/3</span>, <span class="fr">3/4</span>.</p></div></div>
+  <div class="q foundation"><div class="qn">Q50</div><div class="qb"><p>Order from smallest to largest: <span class="fr">3/8</span>, <span class="fr">1/2</span>, <span class="fr">5/12</span>.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q51</div><div class="qb"><p>Order from largest to smallest: <span class="fr">5/7</span>, <span class="fr">7/10</span>, <span class="fr">9/14</span>.</p></div></div>
+  <div class="q challenge"><div class="qn">Q52</div><div class="qb"><p>Arrange in increasing order: <span class="fr">2/3</span>, <span class="fr">5/8</span>, <span class="fr">3/5</span>, <span class="fr">7/12</span>.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q53</div><div class="qb"><p>Arrange in increasing order, avoiding a full common denominator: <span class="fr">4/9</span>, <span class="fr">5/11</span>, <span class="fr">6/13</span>, <span class="fr">3/7</span>. (Hint: each consecutive pair differs by a single cross-product.)</p></div></div>
+  <div class="q achiever"><div class="qn">Q54</div><div class="qb"><p>Place in increasing order: <span class="fr">7/15</span>, <span class="fr">8/17</span>, <span class="fr">9/19</span>, <span class="fr">1/2</span>.</p></div></div>
+</section>
+
+<!-- ============ 10. EQUAL SHARING ============ -->
+<section class="cat" id="c10">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 10</span>
+    <h2>Equal Sharing</h2>
+    <p class="skill"><b>Skill focus:</b> interpreting a share as a fraction, and reversing to find the number of sharers.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q55</div><div class="qb"><p>Three identical pizzas are shared equally among 4 children. How much pizza does each child get?</p></div></div>
+  <div class="q foundation"><div class="qn">Q56</div><div class="qb"><p>Five identical chocolate bars are shared equally among 8 friends. How much does each friend get?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q57</div><div class="qb"><p>Seven sandwiches are shared equally among 12 people. Rohan says each person gets &ldquo;half a sandwich and a little more&rdquo;. Write each person&rsquo;s exact share and express the &ldquo;little more&rdquo; as a fraction.</p></div></div>
+  <div class="q challenge"><div class="qn">Q58</div><div class="qb"><p>Four cakes are shared equally so that each child receives exactly <span class="fr">2/9</span> of a cake. How many children share the cakes?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q59</div><div class="qb"><p>Three friends share a bag of nuts. The first takes <span class="fr">2/5</span> of the bag, the second takes <span class="fr">1/2</span> of the remainder, and the third takes the rest. If the third friend gets 8 fewer nuts than the first, how many nuts were in the bag?</p></div></div>
+  <div class="q achiever"><div class="qn">Q60</div><div class="qb"><p>A prize of &#8377;680 is shared among three people so that the second gets <span class="fr">3/4</span> of the first person&rsquo;s share, and the third gets <span class="fr">1/2</span> of the second person&rsquo;s share. Find each person&rsquo;s share.</p></div></div>
+</section>
+
+<!-- ============ 11. REMAINING FRACTION PROBLEMS ============ -->
+<section class="cat" id="c11">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 11</span>
+    <h2>Remaining Fraction Problems</h2>
+    <p class="skill"><b>Skill focus:</b> distinguishing &ldquo;fraction of the whole&rdquo; from &ldquo;fraction of what remains&rdquo;.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q61</div><div class="qb"><p>After using <span class="fr">3/7</span> of a roll of tape, what fraction of the roll remains?</p></div></div>
+  <div class="q foundation"><div class="qn">Q62</div><div class="qb"><p>A book has 200 pages. Raj reads <span class="fr">2/5</span> of it. How many pages are still unread?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q63</div><div class="qb"><p>A tank is <span class="fr">5/8</span> full. Water equal to <span class="fr">1/4</span> of the tank&rsquo;s capacity is drained. What fraction of the tank is now filled?</p></div></div>
+  <div class="q challenge"><div class="qn">Q64</div><div class="qb"><p>Meena spent <span class="fr">1/3</span> of her savings on books and <span class="fr">2/5</span> on clothes. What fraction remains, and if that remainder is &#8377;80, how much did she save?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q65</div><div class="qb"><p>A worker completes <span class="fr">1/4</span> of a job on Monday and <span class="fr">2/5</span> of the whole job on Tuesday. On Wednesday she finishes exactly half of what still remains. What fraction of the job is left after Wednesday?</p></div></div>
+  <div class="q achiever"><div class="qn">Q66</div><div class="qb"><p>A cyclist has ridden <span class="fr">3/8</span> of a route. If he rides 21&nbsp;km more, he will have covered <span class="fr">2/3</span> of the route. How long is the route?</p></div></div>
+</section>
+
+<!-- ============ 12. COMPLEMENT FRACTIONS ============ -->
+<section class="cat" id="c12">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 12</span>
+    <h2>Complement Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> using &ldquo;the rest&rdquo; = 1 minus the named parts to find an unknown share.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q67</div><div class="qb"><p>What must be added to <span class="fr">3/8</span> to make a whole (1)?</p></div></div>
+  <div class="q foundation"><div class="qn">Q68</div><div class="qb"><p>A glass is <span class="fr">2/9</span> empty. What fraction of the glass is full?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q69</div><div class="qb"><p>Two fractions add up to 1. One of them is <span class="fr">3/4</span> of the other. Find both fractions.</p></div></div>
+  <div class="q challenge"><div class="qn">Q70</div><div class="qb"><p>In a survey, <span class="fr">1/3</span> chose tea, <span class="fr">1/4</span> chose coffee, and the rest chose neither. What fraction chose neither?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q71</div><div class="qb"><p>Of a field, <span class="fr">2/5</span> is planted with wheat and <span class="fr">1/6</span> with corn; the remaining 26 hectares lie fallow. Find the total area of the field.</p></div></div>
+  <div class="q achiever"><div class="qn">Q72</div><div class="qb"><p>A pie is shared. Person A takes some of it, B takes <span class="fr">1/4</span> of the whole pie, C takes <span class="fr">1/3</span> of the whole pie, and <span class="fr">1/6</span> of the pie is left over. What fraction did A take?</p></div></div>
+</section>
+
+<!-- ============ 13. FRACTIONS ON THE NUMBER LINE ============ -->
+<section class="cat" id="c13">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 13</span>
+    <h2>Fractions on the Number Line</h2>
+    <p class="skill"><b>Skill focus:</b> locating fractions between marks and computing points a given fraction of the way along.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q73</div><div class="qb"><p>The number line below runs from 0 to 1 in 8 equal parts. What fraction is marked by the point&nbsp;P?</p>
+    <div class="fig">
+      <svg viewBox="0 0 520 90" role="img" aria-label="Number line 0 to 1 in 8 equal steps with point P at the fifth tick">
+        <title>Number line from 0 to 1 divided into eight equal parts, P at the 5th tick</title>
+        <line x1="30" y1="55" x2="490" y2="55" stroke="#22409e" stroke-width="2.5"/>
+        <g stroke="#22409e" stroke-width="2">
+          <line x1="30" y1="45" x2="30" y2="65"/><line x1="87.5" y1="47" x2="87.5" y2="63"/>
+          <line x1="145" y1="47" x2="145" y2="63"/><line x1="202.5" y1="47" x2="202.5" y2="63"/>
+          <line x1="260" y1="47" x2="260" y2="63"/><line x1="317.5" y1="45" x2="317.5" y2="65"/>
+          <line x1="375" y1="47" x2="375" y2="63"/><line x1="432.5" y1="47" x2="432.5" y2="63"/>
+          <line x1="490" y1="45" x2="490" y2="65"/>
+        </g>
+        <circle cx="317.5" cy="55" r="6" fill="#9a1750"/>
+        <text x="30" y="82" font-size="13" text-anchor="middle" fill="#1e2632">0</text>
+        <text x="490" y="82" font-size="13" text-anchor="middle" fill="#1e2632">1</text>
+        <text x="317.5" y="34" font-size="14" text-anchor="middle" fill="#9a1750" font-weight="700">P</text>
+      </svg>
+      <div class="cap">P sits on the 5th tick counting from 0.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q74</div><div class="qb"><p>A point sits exactly halfway between <span class="fr">1/4</span> and <span class="fr">3/4</span> on the number line. What fraction is it?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q75</div><div class="qb"><p>What fraction lies exactly one-third of the way from <span class="fr">1/2</span> to 1 on the number line?</p></div></div>
+  <div class="q challenge"><div class="qn">Q76</div><div class="qb"><p>The stretch of the line between <span class="fr">2/3</span> and 1 is split into 4 equal parts. What fraction is the third tick, counting from <span class="fr">2/3</span>?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q77</div><div class="qb"><p>A number line from 0 to 2 is divided into 12 equal parts. A frog starts at 0, jumps to the 7th tick, then jumps forward another 5 ticks. Where does it land? Give the position as a fraction in lowest terms.</p></div></div>
+  <div class="q achiever"><div class="qn">Q78</div><div class="qb"><p>Points P and Q on a number line are at <span class="fr">5/6</span> and <span class="fr">7/4</span>. What fraction is exactly midway between them?</p></div></div>
+</section>
+
+<!-- ============ 14. DISTANCE WITH FRACTIONS ============ -->
+<section class="cat" id="c14">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 14</span>
+    <h2>Distance with Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> combining fractional legs of a journey and recovering the total distance.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q79</div><div class="qb"><p>A journey is <span class="fr">3/4</span>&nbsp;km. Priya has walked <span class="fr">1/2</span>&nbsp;km. How much further must she walk?</p></div></div>
+  <div class="q foundation"><div class="qn">Q80</div><div class="qb"><p>A car covers <span class="fr">2/5</span> of a 150&nbsp;km trip. How far has it travelled?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q81</div><div class="qb"><p>On a trip, a bus covers <span class="fr">1/3</span> of the distance before lunch and <span class="fr">2/5</span> after lunch. If 40&nbsp;km still remain, how long is the whole trip?</p></div></div>
+  <div class="q challenge"><div class="qn">Q82</div><div class="qb"><p>A runner completes <span class="fr">5/8</span> of a race, then runs <span class="fr">1/4</span> of the whole race more. What fraction of the race is left?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q83</div><div class="qb"><p>A road joins two towns. A cyclist rides <span class="fr">2/9</span> of the way, rests, then rides a further <span class="fr">5/12</span> of the whole way, and is now 26&nbsp;km from the far town. Find the distance between the towns.</p></div></div>
+  <div class="q achiever"><div class="qn">Q84</div><div class="qb"><p>A hiking route has three legs. The first is <span class="fr">3/10</span> of the total distance, the second is <span class="fr">1/4</span> of the total, and the third leg is 9&nbsp;km. Find the total distance and the length of each leg.</p></div></div>
+</section>
+
+<!-- ============ 15. AREA WITH FRACTIONAL DIMENSIONS ============ -->
+<section class="cat" id="c15">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 15</span>
+    <h2>Area with Fractional Dimensions</h2>
+    <p class="skill"><b>Skill focus:</b> multiplying and dividing fractional lengths, including cut-away pieces.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q85</div><div class="qb"><p>A rectangle measures <span class="fr">3/4</span>&nbsp;m by <span class="fr">2/3</span>&nbsp;m. Find its area.</p></div></div>
+  <div class="q foundation"><div class="qn">Q86</div><div class="qb"><p>A square has side <span class="fr">5/6</span>&nbsp;cm. Find its area.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q87</div><div class="qb"><p>A rectangular garden is <span class="fr">7/2</span>&nbsp;m long and <span class="fr">4/3</span>&nbsp;m wide. Find its area.</p></div></div>
+  <div class="q challenge"><div class="qn">Q88</div><div class="qb"><p>A rectangle has area <span class="fr">5/6</span>&nbsp;m&sup2; and width <span class="fr">5/9</span>&nbsp;m. Find its length.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q89</div><div class="qb"><p>A rectangular sheet measures <span class="fr">3/4</span>&nbsp;m by <span class="fr">2/5</span>&nbsp;m. A strip of width <span class="fr">1/10</span>&nbsp;m is cut off along the whole length of the longer side. Find the area of the piece that remains.</p></div></div>
+  <div class="q achiever"><div class="qn">Q90</div><div class="qb"><p>A square of side <span class="fr">6/7</span>&nbsp;m has a smaller square of side <span class="fr">2/7</span>&nbsp;m removed from one corner. What is the remaining area, and what fraction of the original square is left?</p></div></div>
+</section>
+
+<!-- ============ 16. VOLUME / CAPACITY WITH FRACTIONS ============ -->
+<section class="cat" id="c16">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 16</span>
+    <h2>Volume / Capacity with Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> fractional fill levels, pouring, and finding capacities from partial fills.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q91</div><div class="qb"><p>A bottle holds <span class="fr">3/4</span> litre when full. How much liquid is in it when it is <span class="fr">2/3</span> full?</p></div></div>
+  <div class="q foundation"><div class="qn">Q92</div><div class="qb"><p>A tank holds 60&nbsp;L and is <span class="fr">5/6</span> full. How many litres of water does it contain?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q93</div><div class="qb"><p>A cuboid tank has base area <span class="fr">3/4</span>&nbsp;m&sup2; and the water stands <span class="fr">2/3</span>&nbsp;m deep. Find the volume of water.</p></div></div>
+  <div class="q challenge"><div class="qn">Q94</div><div class="qb"><p>A jug holds <span class="fr">2/3</span>&nbsp;L. It is used to fill a 6-litre bucket. How many full jugs are needed, and is the last jug exactly full?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q95</div><div class="qb"><p>A tank is <span class="fr">1/5</span> full. Adding 24&nbsp;L of water makes it <span class="fr">1/2</span> full. Find the tank&rsquo;s full capacity.</p></div></div>
+  <div class="q achiever"><div class="qn">Q96</div><div class="qb"><p>Container X holds <span class="fr">3/4</span>&nbsp;L and container Y holds <span class="fr">5/6</span>&nbsp;L, both when full. Both are filled and poured into an empty 2-litre jug. What fraction of the jug is now filled, and how much empty space is left?</p></div></div>
+</section>
+
+<!-- ============ 17. FRACTION PATTERNS ============ -->
+<section class="cat" id="c17">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 17</span>
+    <h2>Fraction Patterns</h2>
+    <p class="skill"><b>Skill focus:</b> spotting the rule in a fraction sequence and summing telescoping or geometric patterns.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q97</div><div class="qb"><p>Continue the sequence for two more terms: <span class="fr">1/2</span>, <span class="fr">1/4</span>, <span class="fr">1/8</span>, &hellip;</p></div></div>
+  <div class="q foundation"><div class="qn">Q98</div><div class="qb"><p>Find the next term: <span class="fr">1/3</span>, <span class="fr">2/5</span>, <span class="fr">3/7</span>, <span class="fr">4/9</span>, &hellip;</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q99</div><div class="qb"><p>Find the sum <span class="fr">1/2</span> + <span class="fr">1/4</span> + <span class="fr">1/8</span> + <span class="fr">1/16</span>.</p></div></div>
+  <div class="q challenge"><div class="qn">Q100</div><div class="qb"><p>In the sequence <span class="fr">2/3</span>, <span class="fr">4/9</span>, <span class="fr">8/27</span>, &hellip; each term is <span class="fr">2/3</span> of the previous one. Find the 5th term.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q101</div><div class="qb"><p>Find the exact sum <span class="fr">1/(1&middot;2)</span> + <span class="fr">1/(2&middot;3)</span> + <span class="fr">1/(3&middot;4)</span> + <span class="fr">1/(4&middot;5)</span>. (Hint: <span class="fr">1/(n(n+1))</span> = <span class="fr">1/n</span> &minus; <span class="fr">1/(n+1)</span>.)</p></div></div>
+  <div class="q achiever"><div class="qn">Q102</div><div class="qb"><p>Let S<sub>n</sub> = <span class="fr">1/2</span> + <span class="fr">1/4</span> + &hellip; + <span class="fr">1/2<sup>n</sup></span>. Find S<sub>6</sub> and state how far it is short of 1.</p></div></div>
+</section>
+
+<!-- ============ 18. HIDDEN FRACTION ============ -->
+<section class="cat" id="c18">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 18</span>
+    <h2>Hidden Fraction</h2>
+    <p class="skill"><b>Skill focus:</b> forming a single fractional equation from a &ldquo;difference of parts&rdquo; description.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q103</div><div class="qb"><p>Three-quarters of a number is 18. What is one-third of the number?</p></div></div>
+  <div class="q foundation"><div class="qn">Q104</div><div class="qb"><p>If <span class="fr">1/4</span> of a number equals <span class="fr">1/6</span> of 30, find the number.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q105</div><div class="qb"><p><span class="fr">2/5</span> of a number exceeds <span class="fr">1/3</span> of the same number by 2. Find the number.</p></div></div>
+  <div class="q challenge"><div class="qn">Q106</div><div class="qb"><p>When <span class="fr">1/3</span> of a number is subtracted from <span class="fr">3/4</span> of it, the result is 25. Find the number.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q107</div><div class="qb"><p>Half of a number, plus a third of it, plus a quarter of it, together make 39. Find the number.</p></div></div>
+  <div class="q achiever"><div class="qn">Q108</div><div class="qb"><p><span class="fr">3/5</span> of a number is 12 more than <span class="fr">1/2</span> of it. What is the number?</p></div></div>
+</section>
+
+<!-- ============ 19. EQUIVALENT FRACTIONS ============ -->
+<section class="cat" id="c19">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 19</span>
+    <h2>Equivalent Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> generating and solving for equal fractions, including changes to numerator and denominator.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q109</div><div class="qb"><p>Fill in the missing number: <span class="fr">3/5</span> = <span class="fr">&square;/20</span>.</p></div></div>
+  <div class="q foundation"><div class="qn">Q110</div><div class="qb"><p>Fill in the missing number: <span class="fr">24/&square;</span> = <span class="fr">3/4</span>.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q111</div><div class="qb"><p>Find x if <span class="fr">4/7</span> = <span class="fr">(x+2)/28</span>.</p></div></div>
+  <div class="q challenge"><div class="qn">Q112</div><div class="qb"><p>For what value of n is <span class="fr">(n+1)/(n+4)</span> = <span class="fr">2/3</span>?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q113</div><div class="qb"><p>A fraction equals <span class="fr">3/8</span>. When 4 is added to both its numerator and its denominator, it becomes <span class="fr">1/2</span>. Find the original fraction (before simplifying).</p></div></div>
+  <div class="q achiever"><div class="qn">Q114</div><div class="qb"><p>The numerator of a fraction is 5 less than its denominator. When both are increased by 3, the fraction equals <span class="fr">3/4</span>. Find the original fraction.</p></div></div>
+</section>
+
+<!-- ============ 20. COMMON DENOMINATOR REASONING ============ -->
+<section class="cat" id="c20">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 20</span>
+    <h2>Common Denominator Reasoning</h2>
+    <p class="skill"><b>Skill focus:</b> using the least common denominator to add, compare, and count fractions between two values.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q115</div><div class="qb"><p>Using a common denominator, compute <span class="fr">2/3</span> + <span class="fr">1/4</span>.</p></div></div>
+  <div class="q foundation"><div class="qn">Q116</div><div class="qb"><p>Compute <span class="fr">5/6</span> &minus; <span class="fr">3/8</span>.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q117</div><div class="qb"><p>Find the smallest common denominator for <span class="fr">1/6</span>, <span class="fr">1/9</span> and <span class="fr">1/4</span>, then add the three fractions.</p></div></div>
+  <div class="q challenge"><div class="qn">Q118</div><div class="qb"><p>Two fractions have denominators 8 and 12. What is the smallest denominator into which both can be written? Rewrite <span class="fr">3/8</span> and <span class="fr">5/12</span> with it.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q119</div><div class="qb"><p>Find a fraction with denominator 24 that lies strictly between <span class="fr">1/3</span> and <span class="fr">1/2</span>. Give all such fractions of the form <span class="fr">k/24</span>.</p></div></div>
+  <div class="q achiever"><div class="qn">Q120</div><div class="qb"><p>How many fractions of the form <span class="fr">k/36</span> (k a whole number) lie strictly between <span class="fr">1/4</span> and <span class="fr">1/2</span>?</p></div></div>
+</section>
+
+<!-- ============ 21. UNIT FRACTIONS ============ -->
+<section class="cat" id="c21">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 21</span>
+    <h2>Unit Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> decomposing fractions into sums of distinct unit fractions (Egyptian style).</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q121</div><div class="qb"><p>Write <span class="fr">3/4</span> as a sum of two <b>different</b> unit fractions (fractions with numerator 1).</p></div></div>
+  <div class="q foundation"><div class="qn">Q122</div><div class="qb"><p>Which is larger, <span class="fr">1/7</span> or <span class="fr">1/9</span>, and by how much?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q123</div><div class="qb"><p>Express <span class="fr">5/6</span> as a sum of two distinct unit fractions.</p></div></div>
+  <div class="q challenge"><div class="qn">Q124</div><div class="qb"><p>Express <span class="fr">2/7</span> as a sum of two distinct unit fractions.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q125</div><div class="qb"><p>Find three distinct unit fractions that add up to exactly 1.</p></div></div>
+  <div class="q achiever"><div class="qn">Q126</div><div class="qb"><p>Express <span class="fr">4/7</span> as a sum of two distinct unit fractions.</p></div></div>
+</section>
+
+<!-- ============ 22. FRACTION PUZZLES ============ -->
+<section class="cat" id="c22">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 22</span>
+    <h2>Fraction Puzzles</h2>
+    <p class="skill"><b>Skill focus:</b> reconstructing a fraction from clues about its value and its numerator/denominator.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q127</div><div class="qb"><p>A fraction equals <span class="fr">1/2</span>, and its numerator plus its denominator is 21. Find the fraction.</p></div></div>
+  <div class="q foundation"><div class="qn">Q128</div><div class="qb"><p>A fraction equals <span class="fr">2/5</span>, and its numerator plus its denominator is 21. Find the fraction.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q129</div><div class="qb"><p>The numerator of a fraction is 3 less than its denominator. Adding 2 to both gives <span class="fr">5/6</span>. Find the original fraction.</p></div></div>
+  <div class="q challenge"><div class="qn">Q130</div><div class="qb"><p>Find a fraction equal to <span class="fr">3/5</span> whose numerator and denominator differ by 8.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q131</div><div class="qb"><p>A fraction equals <span class="fr">5/8</span>. If 3 is added to its numerator and 3 is subtracted from its denominator, the value becomes 1. Find the original fraction.</p></div></div>
+  <div class="q achiever"><div class="qn">Q132</div><div class="qb"><p>Two fractions with denominator 12 add up to <span class="fr">3/4</span>, and one is exactly twice the other. Find the two fractions.</p></div></div>
+</section>
+
+<!-- ============ 23. BALANCE SCALE PROBLEMS ============ -->
+<section class="cat" id="c23">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 23</span>
+    <h2>Balance Scale Problems</h2>
+    <p class="skill"><b>Skill focus:</b> reading a balance as an equation and solving for an unknown fractional weight.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q133</div><div class="qb"><p>On the balanced scale below, one block exactly balances three equal marbles. What fraction of a block is one marble?</p>
+    <div class="fig">
+      <svg viewBox="0 0 460 170" role="img" aria-label="Balance: one block on the left balances three marbles on the right">
+        <title>A balance with one block on the left pan and three marbles on the right pan, level</title>
+        <line x1="230" y1="20" x2="230" y2="130" stroke="#22409e" stroke-width="4"/>
+        <line x1="80" y1="45" x2="380" y2="45" stroke="#22409e" stroke-width="4"/>
+        <polygon points="230,130 210,158 250,158" fill="#22409e"/>
+        <line x1="80" y1="45" x2="80" y2="80" stroke="#5b6575" stroke-width="1.5"/>
+        <line x1="380" y1="45" x2="380" y2="80" stroke="#5b6575" stroke-width="1.5"/>
+        <path d="M45 80 h70 l-10 22 h-50 z" fill="none" stroke="#5b6575" stroke-width="1.5"/>
+        <path d="M345 80 h70 l-10 22 h-50 z" fill="none" stroke="#5b6575" stroke-width="1.5"/>
+        <rect x="63" y="55" width="34" height="24" rx="3" fill="#9a1750"/>
+        <text x="80" y="72" font-size="11" text-anchor="middle" fill="#fff">1</text>
+        <circle cx="360" cy="70" r="8" fill="#177a4d"/><circle cx="380" cy="70" r="8" fill="#177a4d"/><circle cx="400" cy="70" r="8" fill="#177a4d"/>
+      </svg>
+      <div class="cap">Left: 1 block. Right: 3 equal marbles. The scale is level.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q134</div><div class="qb"><p>Two identical apples balance five identical plums. One plum is what fraction of an apple?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q135</div><div class="qb"><p>A scale balances with an unknown weight W together with a <span class="fr">1/4</span>&nbsp;kg weight on the left, and a <span class="fr">3/4</span>&nbsp;kg weight on the right. Find W.</p></div></div>
+  <div class="q challenge"><div class="qn">Q136</div><div class="qb"><p>Three equal cubes on the left balance two equal cubes plus a <span class="fr">2/5</span>&nbsp;kg weight on the right. Find the mass of one cube.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q137</div><div class="qb"><p>The scale below balances. On the left is <span class="fr">2/3</span> of a bag of flour. On the right is <span class="fr">1/4</span> of the same bag plus a 5&nbsp;kg weight. Find the mass of a full bag.</p>
+    <div class="fig">
+      <svg viewBox="0 0 480 170" role="img" aria-label="Balance: two-thirds of a bag on the left, one-quarter of a bag plus a 5 kg weight on the right">
+        <title>Balance with two-thirds bag on left, one-quarter bag and a 5 kg weight on right, level</title>
+        <line x1="240" y1="20" x2="240" y2="130" stroke="#22409e" stroke-width="4"/>
+        <line x1="80" y1="45" x2="400" y2="45" stroke="#22409e" stroke-width="4"/>
+        <polygon points="240,130 220,158 260,158" fill="#22409e"/>
+        <line x1="80" y1="45" x2="80" y2="80" stroke="#5b6575" stroke-width="1.5"/>
+        <line x1="400" y1="45" x2="400" y2="80" stroke="#5b6575" stroke-width="1.5"/>
+        <path d="M45 80 h70 l-10 24 h-50 z" fill="none" stroke="#5b6575" stroke-width="1.5"/>
+        <path d="M365 80 h70 l-10 24 h-50 z" fill="none" stroke="#5b6575" stroke-width="1.5"/>
+        <rect x="66" y="52" width="28" height="30" rx="3" fill="#9a6206"/>
+        <text x="80" y="46" font-size="12" text-anchor="middle" fill="#9a6206" font-weight="700">&frac23; bag</text>
+        <rect x="360" y="58" width="20" height="22" rx="3" fill="#9a6206"/>
+        <rect x="388" y="56" width="26" height="24" rx="3" fill="#22409e"/>
+        <text x="401" y="72" font-size="10" text-anchor="middle" fill="#fff">5kg</text>
+        <text x="388" y="46" font-size="11" text-anchor="middle" fill="#9a6206" font-weight="700">&frac14; bag</text>
+      </svg>
+      <div class="cap">Left = <span class="fr">2/3</span> bag &nbsp;&middot;&nbsp; Right = <span class="fr">1/4</span> bag + 5 kg. The scale is level.</div>
+    </div></div></div>
+  <div class="q achiever"><div class="qn">Q138</div><div class="qb"><p>Three weights P, Q, R balance in pairs. P balances Q plus <span class="fr">1/2</span>&nbsp;kg; Q balances R plus <span class="fr">1/4</span>&nbsp;kg. Then P balances R plus how many kilograms?</p></div></div>
+</section>
+
+<!-- ============ 24. AGE PROBLEMS ============ -->
+<section class="cat" id="c24">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 24</span>
+    <h2>Age Problems</h2>
+    <p class="skill"><b>Skill focus:</b> turning &ldquo;a fraction of another age&rdquo; and &ldquo;in t years&rdquo; into equations.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q139</div><div class="qb"><p>A boy&rsquo;s age is <span class="fr">1/3</span> of his father&rsquo;s. If the father is 36, how old is the boy?</p></div></div>
+  <div class="q foundation"><div class="qn">Q140</div><div class="qb"><p>A girl is <span class="fr">1/4</span> as old as her mother, who is 32. How old is the girl?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q141</div><div class="qb"><p>Sara&rsquo;s age is <span class="fr">2/3</span> of her brother&rsquo;s age. The sum of their ages is 30. Find both ages.</p></div></div>
+  <div class="q challenge"><div class="qn">Q142</div><div class="qb"><p>A father is 40. His son&rsquo;s age is <span class="fr">1/5</span> of his. In how many years will the son be <span class="fr">1/3</span> of the father&rsquo;s age?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q143</div><div class="qb"><p>A daughter&rsquo;s age is <span class="fr">1/3</span> of her mother&rsquo;s. In 12 years it will be <span class="fr">1/2</span> of her mother&rsquo;s age. Find both present ages.</p></div></div>
+  <div class="q achiever"><div class="qn">Q144</div><div class="qb"><p>Five years ago, a boy&rsquo;s age was <span class="fr">1/4</span> of his father&rsquo;s. Now it is <span class="fr">1/3</span> of his father&rsquo;s. Find their present ages.</p></div></div>
+</section>
+
+<!-- ============ 25. RECIPE SCALING ============ -->
+<section class="cat" id="c25">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 25</span>
+    <h2>Recipe Scaling</h2>
+    <p class="skill"><b>Skill focus:</b> scaling fractional quantities up and down, including &ldquo;how many servings from what I have&rdquo;.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q145</div><div class="qb"><p>A recipe for 4 people uses <span class="fr">2/3</span> cup of sugar. How much sugar is needed for 8 people?</p></div></div>
+  <div class="q foundation"><div class="qn">Q146</div><div class="qb"><p>A recipe uses <span class="fr">3/4</span> cup of flour for one cake. How much flour is needed for 3 cakes?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q147</div><div class="qb"><p>A recipe for 6 people needs <span class="fr">5/8</span>&nbsp;kg of rice. How much rice per person, and how much for 15 people?</p></div></div>
+  <div class="q challenge"><div class="qn">Q148</div><div class="qb"><p>A recipe uses <span class="fr">2/3</span> cup of milk and <span class="fr">1/4</span> cup of oil. To scale the recipe by a factor of <span class="fr">3/2</span>, how much of each is needed?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q149</div><div class="qb"><p>A recipe serving 8 people needs <span class="fr">3/4</span> cup of butter. Rehan has only <span class="fr">1/2</span> cup of butter. Keeping the proportions, what is the greatest whole number of servings he can make?</p></div></div>
+  <div class="q achiever"><div class="qn">Q150</div><div class="qb"><p>A syrup recipe needs <span class="fr">3/4</span> cup of syrup to make 12 glasses of drink. How much syrup is needed to make exactly 20 glasses?</p></div></div>
+</section>
+
+<!-- ============ 26. POPULATION PROBLEMS ============ -->
+<section class="cat" id="c26">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 26</span>
+    <h2>Population Problems</h2>
+    <p class="skill"><b>Skill focus:</b> fractional breakdowns of a group and recovering totals from a known sub-count.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q151</div><div class="qb"><p>A town has 4000 people; <span class="fr">3/8</span> are children. How many children live in the town?</p></div></div>
+  <div class="q foundation"><div class="qn">Q152</div><div class="qb"><p>In a village of 900 people, <span class="fr">2/5</span> are women. How many people are not women?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q153</div><div class="qb"><p>In a city of 5400 people, <span class="fr">5/9</span> are adults; of the rest, exactly half are children under 10. How many children under 10 are there?</p></div></div>
+  <div class="q challenge"><div class="qn">Q154</div><div class="qb"><p>A town&rsquo;s population is <span class="fr">3/4</span> the size of a neighbouring city&rsquo;s. Together they have 28,000 people. Find each population.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q155</div><div class="qb"><p>A town&rsquo;s population grew by <span class="fr">1/10</span> to reach 7,700. What was the original population?</p></div></div>
+  <div class="q achiever"><div class="qn">Q156</div><div class="qb"><p>Of a town&rsquo;s people, <span class="fr">2/5</span> are men, <span class="fr">1/3</span> are women, and the remaining 1,600 are children. How many men live in the town?</p></div></div>
+</section>
+
+<!-- ============ 27. TANKS AND PIPES ============ -->
+<section class="cat" id="c27">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 27</span>
+    <h2>Tanks and Pipes</h2>
+    <p class="skill"><b>Skill focus:</b> per-hour fractional fill/drain rates, combining inflow and outflow.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q157</div><div class="qb"><p>A pipe fills <span class="fr">1/6</span> of a tank each hour. What fraction is filled in 3 hours?</p></div></div>
+  <div class="q foundation"><div class="qn">Q158</div><div class="qb"><p>A tap fills a tank in 8 hours. What fraction is filled in 3 hours?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q159</div><div class="qb"><p>Pipe A fills <span class="fr">1/4</span> of a tank per hour and pipe B fills <span class="fr">1/6</span> per hour. Working together, what fraction fills in one hour, and how long to fill the whole tank?</p></div></div>
+  <div class="q challenge"><div class="qn">Q160</div><div class="qb"><p>A tank is <span class="fr">1/2</span> full. A pipe adds <span class="fr">1/8</span> of the tank each hour. After how many hours is the tank full?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q161</div><div class="qb"><p>An empty tank is filled by a pipe adding <span class="fr">1/5</span> of the tank per hour, while a leak drains <span class="fr">1/20</span> per hour. What fraction is filled after 2 hours, and how long to fill it completely?</p></div></div>
+  <div class="q achiever"><div class="qn">Q162</div><div class="qb"><p>A tank is <span class="fr">3/4</span> full. Pipe A drains <span class="fr">1/8</span> of the tank per hour while pipe B fills <span class="fr">1/12</span> per hour, both open. What is the net change per hour, and after how many hours is the tank empty?</p></div></div>
+</section>
+
+<!-- ============ 28. SHADED GEOMETRY ============ -->
+<section class="cat" id="c28">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 28</span>
+    <h2>Shaded Geometry</h2>
+    <p class="skill"><b>Skill focus:</b> reading a shaded fraction of an area, including layered and diagonal partitions.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q163</div><div class="qb"><p>The rectangle below is divided into equal parts. What fraction is shaded? Simplify.</p>
+    <div class="fig">
+      <svg viewBox="0 0 360 90" role="img" aria-label="Rectangle divided into six equal parts with two shaded">
+        <title>A rectangle in six equal cells, two of them shaded</title>
+        <g stroke="#22409e" stroke-width="1.5">
+          <rect x="20" y="20" width="55" height="50" fill="#9a1750"/>
+          <rect x="75" y="20" width="55" height="50" fill="#9a1750"/>
+          <rect x="130" y="20" width="55" height="50" fill="#fff"/>
+          <rect x="185" y="20" width="55" height="50" fill="#fff"/>
+          <rect x="240" y="20" width="55" height="50" fill="#fff"/>
+          <rect x="295" y="20" width="55" height="50" fill="#fff"/>
+        </g>
+      </svg>
+      <div class="cap">6 equal cells; the two coloured cells are shaded.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q164</div><div class="qb"><p>A square is split into 4 equal triangles by its two diagonals. Three of the triangles are shaded. What fraction of the square is shaded?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q165</div><div class="qb"><p>The large square below is a 4&times;4 grid (16 small squares). A 2&times;2 block plus 2 extra small squares are shaded. What fraction is shaded?</p>
+    <div class="fig">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Four by four grid, a two by two block and two more squares shaded">
+        <title>A 4 by 4 grid with a 2 by 2 corner block and two extra cells shaded</title>
+        <g stroke="#22409e" stroke-width="1.5" fill="#fff">
+          <rect x="20" y="20" width="40" height="40" fill="#9a1750"/><rect x="60" y="20" width="40" height="40" fill="#9a1750"/>
+          <rect x="100" y="20" width="40" height="40"/><rect x="140" y="20" width="40" height="40"/>
+          <rect x="20" y="60" width="40" height="40" fill="#9a1750"/><rect x="60" y="60" width="40" height="40" fill="#9a1750"/>
+          <rect x="100" y="60" width="40" height="40"/><rect x="140" y="60" width="40" height="40" fill="#9a1750"/>
+          <rect x="20" y="100" width="40" height="40"/><rect x="60" y="100" width="40" height="40"/>
+          <rect x="100" y="100" width="40" height="40"/><rect x="140" y="100" width="40" height="40" fill="#9a1750"/>
+          <rect x="20" y="140" width="40" height="40"/><rect x="60" y="140" width="40" height="40"/>
+          <rect x="100" y="140" width="40" height="40"/><rect x="140" y="140" width="40" height="40"/>
+        </g>
+      </svg>
+      <div class="cap">6 of the 16 small squares are shaded.</div>
+    </div></div></div>
+  <div class="q challenge"><div class="qn">Q166</div><div class="qb"><p>A rectangle is half shaded. Then half of the still-unshaded part is also shaded. What fraction of the rectangle is shaded in total?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q167</div><div class="qb"><p>The midpoints of the four sides of a square are joined in order to form an inner square (shaded). What fraction of the large square is the inner square?</p>
+    <div class="fig">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Square with midpoints joined to form a rotated inner square">
+        <title>Large square with its four side-midpoints joined to make a tilted inner square</title>
+        <rect x="30" y="30" width="140" height="140" fill="#fff" stroke="#22409e" stroke-width="2"/>
+        <polygon points="100,30 170,100 100,170 30,100" fill="#9a1750" stroke="#22409e" stroke-width="2"/>
+        <g fill="#22409e"><circle cx="100" cy="30" r="3"/><circle cx="170" cy="100" r="3"/><circle cx="100" cy="170" r="3"/><circle cx="30" cy="100" r="3"/></g>
+      </svg>
+      <div class="cap">The dots are the midpoints of the sides.</div>
+    </div></div></div>
+  <div class="q achiever"><div class="qn">Q168</div><div class="qb"><p>In a 3&times;3 grid, the shaded region is an L-shape covering the entire bottom row and the entire left column. What fraction of the grid is shaded?</p>
+    <div class="fig">
+      <svg viewBox="0 0 160 160" role="img" aria-label="Three by three grid with the bottom row and left column shaded as an L">
+        <title>A 3 by 3 grid with the whole bottom row and whole left column shaded</title>
+        <g stroke="#22409e" stroke-width="1.5" fill="#fff">
+          <rect x="20" y="20" width="40" height="40" fill="#9a1750"/><rect x="60" y="20" width="40" height="40"/><rect x="100" y="20" width="40" height="40"/>
+          <rect x="20" y="60" width="40" height="40" fill="#9a1750"/><rect x="60" y="60" width="40" height="40"/><rect x="100" y="60" width="40" height="40"/>
+          <rect x="20" y="100" width="40" height="40" fill="#9a1750"/><rect x="60" y="100" width="40" height="40" fill="#9a1750"/><rect x="100" y="100" width="40" height="40" fill="#9a1750"/>
+        </g>
+      </svg>
+      <div class="cap">The bottom row and the left column are shaded.</div>
+    </div></div></div>
+</section>
+
+<!-- ============ 29. GRID COLOURING ============ -->
+<section class="cat" id="c29">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 29</span>
+    <h2>Grid Colouring</h2>
+    <p class="skill"><b>Skill focus:</b> counting cells as fractions of a grid, with two-step and reverse counting.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q169</div><div class="qb"><p>In the 5&times;5 grid below, 10 cells are coloured. What fraction of the grid is coloured?</p>
+    <div class="fig">
+      <svg viewBox="0 0 180 180" role="img" aria-label="Five by five grid with ten cells coloured">
+        <title>A 5 by 5 grid with ten cells coloured</title>
+        <g stroke="#22409e" stroke-width="1.2" fill="#fff">
+          <rect x="15" y="15" width="30" height="30" fill="#22409e"/><rect x="45" y="15" width="30" height="30" fill="#22409e"/><rect x="75" y="15" width="30" height="30"/><rect x="105" y="15" width="30" height="30"/><rect x="135" y="15" width="30" height="30"/>
+          <rect x="15" y="45" width="30" height="30" fill="#22409e"/><rect x="45" y="45" width="30" height="30" fill="#22409e"/><rect x="75" y="45" width="30" height="30"/><rect x="105" y="45" width="30" height="30"/><rect x="135" y="45" width="30" height="30"/>
+          <rect x="15" y="75" width="30" height="30" fill="#22409e"/><rect x="45" y="75" width="30" height="30" fill="#22409e"/><rect x="75" y="75" width="30" height="30"/><rect x="105" y="75" width="30" height="30"/><rect x="135" y="75" width="30" height="30"/>
+          <rect x="15" y="105" width="30" height="30" fill="#22409e"/><rect x="45" y="105" width="30" height="30" fill="#22409e"/><rect x="75" y="105" width="30" height="30"/><rect x="105" y="105" width="30" height="30"/><rect x="135" y="105" width="30" height="30"/>
+          <rect x="15" y="135" width="30" height="30" fill="#22409e"/><rect x="45" y="135" width="30" height="30" fill="#22409e"/><rect x="75" y="135" width="30" height="30"/><rect x="105" y="135" width="30" height="30"/><rect x="135" y="135" width="30" height="30"/>
+        </g>
+      </svg>
+      <div class="cap">Two full columns (10 cells) are coloured.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q170</div><div class="qb"><p>A 4&times;5 grid has 20 cells. If <span class="fr">1/4</span> of the cells are coloured, how many cells is that?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q171</div><div class="qb"><p>A 6&times;6 grid (36 cells) has <span class="fr">1/3</span> coloured red and <span class="fr">1/4</span> coloured blue; the rest are white. How many white cells are there?</p></div></div>
+  <div class="q challenge"><div class="qn">Q172</div><div class="qb"><p>In a grid of 40 cells, <span class="fr">3/8</span> are green and <span class="fr">1/5</span> are yellow. How many cells are neither green nor yellow?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q173</div><div class="qb"><p>A grid has 60 cells. First <span class="fr">2/5</span> of them are shaded; then <span class="fr">1/3</span> of the remaining unshaded cells are also shaded. How many cells are shaded in total?</p></div></div>
+  <div class="q achiever"><div class="qn">Q174</div><div class="qb"><p>A square grid is coloured so that exactly <span class="fr">5/9</span> of its cells are blue, and there are 20 blue cells. How many cells does the grid have, and what are its dimensions?</p></div></div>
+</section>
+
+<!-- ============ 30. TREE DIAGRAM PROBLEMS ============ -->
+<section class="cat" id="c30">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 30</span>
+    <h2>Tree Diagram Problems</h2>
+    <p class="skill"><b>Skill focus:</b> multiplying along branches and adding across paths to find outcome fractions.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q175</div><div class="qb"><p>A fair coin is tossed twice, as shown. What fraction of the equally likely outcomes are two heads?</p>
+    <div class="fig">
+      <svg viewBox="0 0 340 190" role="img" aria-label="Tree diagram for two coin tosses">
+        <title>Tree diagram: first toss H or T, second toss H or T</title>
+        <g stroke="#22409e" stroke-width="1.6" fill="none">
+          <line x1="40" y1="95" x2="140" y2="45"/><line x1="40" y1="95" x2="140" y2="145"/>
+          <line x1="160" y1="45" x2="260" y2="25"/><line x1="160" y1="45" x2="260" y2="70"/>
+          <line x1="160" y1="145" x2="260" y2="120"/><line x1="160" y1="145" x2="260" y2="165"/>
+        </g>
+        <g font-size="12" fill="#1e2632" font-weight="700">
+          <text x="150" y="49">H</text><text x="150" y="149">T</text>
+          <text x="272" y="29">H</text><text x="272" y="74">T</text><text x="272" y="124">H</text><text x="272" y="169">T</text>
+        </g>
+        <g font-size="10" fill="#5b6575">
+          <text x="78" y="58">&frac12;</text><text x="78" y="130">&frac12;</text>
+          <text x="200" y="28">&frac12;</text><text x="200" y="63">&frac12;</text><text x="200" y="127">&frac12;</text><text x="200" y="162">&frac12;</text>
+        </g>
+      </svg>
+      <div class="cap">Each branch has probability <span class="fr">1/2</span>.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q176</div><div class="qb"><p>A path first goes left or right, each with probability <span class="fr">1/2</span>. The left path then splits into two equal branches. What fraction of travellers reach the left-then-first-branch leaf?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q177</div><div class="qb"><p>A spinner lands on A with probability <span class="fr">1/3</span> and on B with probability <span class="fr">2/3</span>. It is spun twice. What fraction of outcomes are exactly one A and one B (in either order)?</p></div></div>
+  <div class="q challenge"><div class="qn">Q178</div><div class="qb"><p>A bag is chosen first: Bag 1 with probability <span class="fr">1/2</span> (then a red ball with probability <span class="fr">1/4</span>), or Bag 2 with probability <span class="fr">1/2</span> (then a red ball with probability <span class="fr">2/3</span>). What fraction of the time is a red ball drawn?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q179</div><div class="qb"><p>A fair coin is tossed three times. What fraction of the equally likely outcomes contain at least two heads?</p></div></div>
+  <div class="q achiever"><div class="qn">Q180</div><div class="qb"><p>On a path, <span class="fr">2/5</span> of travellers go up and <span class="fr">3/5</span> go down. Those who went up then split <span class="fr">1/2</span>&ndash;<span class="fr">1/2</span>, and a star is reached by taking the first up-branch. Those who went down reach a star with probability <span class="fr">1/3</span>. What fraction of all travellers reach a star?</p></div></div>
+</section>
+
+<!-- ============ 31. DICE AND CARD PROBLEMS ============ -->
+<section class="cat" id="c31">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 31</span>
+    <h2>Dice and Card Fraction Problems</h2>
+    <p class="skill"><b>Skill focus:</b> favourable-over-total counting, including overlaps and two-dice sample spaces.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q181</div><div class="qb"><p>A fair six-sided die is rolled once. What fraction of the outcomes are even?</p></div></div>
+  <div class="q foundation"><div class="qn">Q182</div><div class="qb"><p>One card is drawn from a standard 52-card deck. What fraction of the deck are hearts?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q183</div><div class="qb"><p>A fair die is rolled. What fraction of outcomes are greater than 4?</p></div></div>
+  <div class="q challenge"><div class="qn">Q184</div><div class="qb"><p>Two fair dice are rolled. Of the 36 equally likely outcomes, what fraction give a total of 7?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q185</div><div class="qb"><p>Two fair dice are rolled. What fraction of the 36 outcomes give a product that is even?</p></div></div>
+  <div class="q achiever"><div class="qn">Q186</div><div class="qb"><p>One card is drawn from a standard deck. What fraction of the deck are either a face card (Jack, Queen, King) or a spade?</p></div></div>
+</section>
+
+<!-- ============ 32. FRACTION INEQUALITIES ============ -->
+<section class="cat" id="c32">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 32</span>
+    <h2>Fraction Inequalities</h2>
+    <p class="skill"><b>Skill focus:</b> finding all whole numbers that satisfy a fractional inequality or bound.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q187</div><div class="qb"><p>Write down one fraction that lies strictly between <span class="fr">1/3</span> and <span class="fr">1/2</span>.</p></div></div>
+  <div class="q foundation"><div class="qn">Q188</div><div class="qb"><p>Is <span class="fr">4/9</span> greater than or less than <span class="fr">1/2</span>? Explain.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q189</div><div class="qb"><p>For which whole numbers n is <span class="fr">n/12</span> greater than <span class="fr">1/4</span> and less than <span class="fr">1/2</span>?</p></div></div>
+  <div class="q challenge"><div class="qn">Q190</div><div class="qb"><p>Find all whole numbers x for which <span class="fr">2/3</span> &lt; <span class="fr">x/9</span> &lt; 1.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q191</div><div class="qb"><p>Find the smallest whole number n such that <span class="fr">1/2</span> + <span class="fr">1/n</span> &lt; <span class="fr">5/8</span>.</p></div></div>
+  <div class="q achiever"><div class="qn">Q192</div><div class="qb"><p>For how many whole numbers n from 1 to 20 is <span class="fr">7/n</span> greater than <span class="fr">1/2</span>?</p></div></div>
+</section>
+
+<!-- ============ 33. ESTIMATION AND BENCHMARKING ============ -->
+<section class="cat" id="c33">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 33</span>
+    <h2>Fraction Estimation and Benchmarking</h2>
+    <p class="skill"><b>Skill focus:</b> judging fractions against 0, <span class="fr">1/2</span> and 1 to estimate sums quickly.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q193</div><div class="qb"><p>Is <span class="fr">7/15</span> closest to 0, <span class="fr">1/2</span>, or 1? Explain.</p></div></div>
+  <div class="q foundation"><div class="qn">Q194</div><div class="qb"><p>Without exact calculation, is <span class="fr">5/8</span> + <span class="fr">3/7</span> more or less than 1? Explain using benchmarks.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q195</div><div class="qb"><p>Is <span class="fr">9/20</span> + <span class="fr">11/21</span> more or less than 1? Justify by comparing each fraction with <span class="fr">1/2</span>.</p></div></div>
+  <div class="q challenge"><div class="qn">Q196</div><div class="qb"><p>Which is bigger, <span class="fr">3/7</span> + <span class="fr">4/9</span> or 1? Reason without exact arithmetic.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q197</div><div class="qb"><p>Estimate <span class="fr">11/23</span> + <span class="fr">14/29</span> + <span class="fr">8/17</span> to the nearest whole number, and justify your estimate.</p></div></div>
+  <div class="q achiever"><div class="qn">Q198</div><div class="qb"><p>Between which two consecutive whole numbers does <span class="fr">7/8</span> + <span class="fr">5/6</span> + <span class="fr">9/10</span> lie? Justify without finding the exact sum.</p></div></div>
+</section>
+
+<!-- ============ 34. STRATEGY CHOICE / MENTAL METHODS ============ -->
+<section class="cat" id="c34">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 34</span>
+    <h2>Strategy Choice / Mental Methods</h2>
+    <p class="skill"><b>Skill focus:</b> choosing the fastest route &mdash; halves-of-halves, complements, and factoring out.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q199</div><div class="qb"><p>Find <span class="fr">3/4</span> of 48 using a quick mental strategy, and state the strategy.</p></div></div>
+  <div class="q foundation"><div class="qn">Q200</div><div class="qb"><p>Find <span class="fr">5/6</span> of 60 mentally.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q201</div><div class="qb"><p>Compute <span class="fr">2/3</span> + <span class="fr">3/4</span> &minus; <span class="fr">1/2</span> using the most efficient common denominator.</p></div></div>
+  <div class="q challenge"><div class="qn">Q202</div><div class="qb"><p>Give a quick way to compare <span class="fr">17/34</span> and <span class="fr">18/35</span>, then state which is larger.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q203</div><div class="qb"><p>Using cancellation, quickly evaluate <br>(1 &minus; <span class="fr">1/2</span>)(1 &minus; <span class="fr">1/3</span>)(1 &minus; <span class="fr">1/4</span>)(1 &minus; <span class="fr">1/5</span>).</p></div></div>
+  <div class="q achiever"><div class="qn">Q204</div><div class="qb"><p>Using the distributive idea, compute <span class="fr">7/8</span> of 96 minus <span class="fr">5/6</span> of 96 in one step.</p></div></div>
+</section>
+
+<!-- ============ 35. MULTIPLE REPRESENTATIONS ============ -->
+<section class="cat" id="c35">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 35</span>
+    <h2>Multiple Representations</h2>
+    <p class="skill"><b>Skill focus:</b> moving between picture, fraction and decimal for the same quantity.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q205</div><div class="qb"><p>Write <span class="fr">3/4</span> as a decimal.</p></div></div>
+  <div class="q foundation"><div class="qn">Q206</div><div class="qb"><p>The bar below is divided into 5 equal parts. Write the shaded amount as a fraction and as a decimal.</p>
+    <div class="fig">
+      <svg viewBox="0 0 320 70" role="img" aria-label="A bar of five equal parts with two parts shaded">
+        <title>A fraction bar of five equal parts, two shaded</title>
+        <g stroke="#22409e" stroke-width="1.5" fill="#fff">
+          <rect x="20" y="20" width="56" height="34" fill="#177a4d"/>
+          <rect x="76" y="20" width="56" height="34" fill="#177a4d"/>
+          <rect x="132" y="20" width="56" height="34"/>
+          <rect x="188" y="20" width="56" height="34"/>
+          <rect x="244" y="20" width="56" height="34"/>
+        </g>
+      </svg>
+      <div class="cap">2 of the 5 equal parts are shaded.</div>
+    </div></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q207</div><div class="qb"><p>A shape is 0.6 shaded. Write this as a fraction in lowest terms, and state how many of 10 equal parts would be shaded.</p></div></div>
+  <div class="q challenge"><div class="qn">Q208</div><div class="qb"><p>Convert <span class="fr">7/8</span> to a decimal, and say how far it is from 1 as a fraction.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q209</div><div class="qb"><p>A grid of 25 cells has 0.44 of it shaded. How many cells are shaded, and what is 0.44 as a fraction in lowest terms?</p></div></div>
+  <div class="q achiever"><div class="qn">Q210</div><div class="qb"><p>Order these from smallest to largest: 0.7, <span class="fr">3/5</span>, <span class="fr">5/8</span>, 0.62.</p></div></div>
+</section>
+
+<!-- ============ 36. FRACTION EQUATIONS IN WORD PROBLEMS ============ -->
+<section class="cat" id="c36">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 36</span>
+    <h2>Fraction Equations in Word Problems</h2>
+    <p class="skill"><b>Skill focus:</b> translating a sentence into a single-variable fractional equation and solving it.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q211</div><div class="qb"><p>One-third of a number, plus 4, equals 10. Find the number.</p></div></div>
+  <div class="q foundation"><div class="qn">Q212</div><div class="qb"><p>Half of a number, minus 3, equals 7. Find the number.</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q213</div><div class="qb"><p>Two-fifths of a number equals one-third of the number plus 2. Find the number.</p></div></div>
+  <div class="q challenge"><div class="qn">Q214</div><div class="qb"><p>A number decreased by one-quarter of itself equals 27. Find the number.</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q215</div><div class="qb"><p>Three-quarters of a number is 6 more than two-thirds of it. Find the number.</p></div></div>
+  <div class="q achiever"><div class="qn">Q216</div><div class="qb"><p>A number is increased by half of itself and then by a third of the original number; the result is 55 more than the number. Find the number.</p></div></div>
+</section>
+
+<!-- ============ 37. DISTRIBUTION CHAIN PROBLEMS ============ -->
+<section class="cat" id="c37">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 37</span>
+    <h2>Distribution Chain Problems</h2>
+    <p class="skill"><b>Skill focus:</b> tracking a quantity passed along a chain, each stage keeping or passing a fraction.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q217</div><div class="qb"><p>A man gives <span class="fr">1/2</span> of his sweets to A, and A gives <span class="fr">1/2</span> of those to B. What fraction of the original amount does B receive?</p></div></div>
+  <div class="q foundation"><div class="qn">Q218</div><div class="qb"><p>Water flows so that <span class="fr">2/3</span> of a supply reaches tank X, and <span class="fr">1/2</span> of that reaches tank Y. What fraction of the original supply reaches Y?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q219</div><div class="qb"><p>Water passes through three pipes in a row. The first passes on <span class="fr">3/4</span> of what it receives, the second <span class="fr">2/3</span>, the third <span class="fr">1/2</span>. What fraction of the original comes out of the third pipe?</p></div></div>
+  <div class="q challenge"><div class="qn">Q220</div><div class="qb"><p>A sum of money passes through three people; each keeps <span class="fr">1/3</span> and passes on the rest. What fraction remains after the third person passes it on?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q221</div><div class="qb"><p>A charity&rsquo;s head office keeps <span class="fr">1/5</span> of the funds and sends the rest to regions. Each region keeps <span class="fr">1/4</span> and sends the rest to branches. Branches keep <span class="fr">1/2</span> and pass the rest to projects. If &#8377;6,000 finally reaches projects, how much money did the head office start with?</p></div></div>
+  <div class="q achiever"><div class="qn">Q222</div><div class="qb"><p>Apples are passed down a chain. Person 1 keeps 6 and gives half of the rest to person 2. Person 2 keeps 6 and gives half of the rest to person 3. Person 3 receives 15 apples. How many apples did person 1 start with?</p></div></div>
+</section>
+
+<!-- ============ 38. CIRCULAR SHARING PROBLEMS ============ -->
+<section class="cat" id="c38">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 38</span>
+    <h2>Circular Sharing Problems</h2>
+    <p class="skill"><b>Skill focus:</b> fractions of a circle/pie, including &ldquo;fraction of the remainder&rdquo; taken in turns.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q223</div><div class="qb"><p>A pizza is cut into 8 equal slices; 3 are eaten. What fraction of the pizza remains?</p>
+    <div class="fig">
+      <svg viewBox="0 0 130 130" role="img" aria-label="A pizza in eight equal slices with three eaten">
+        <title>A circle cut into eight equal slices, three shown as eaten (empty)</title>
+        <g stroke="#22409e" stroke-width="1.5">
+          <path d="M65 65 L65 15 A50 50 0 0 1 100.4 29.6 Z" fill="#f0b23c"/>
+          <path d="M65 65 L100.4 29.6 A50 50 0 0 1 115 65 Z" fill="#f0b23c"/>
+          <path d="M65 65 L115 65 A50 50 0 0 1 100.4 100.4 Z" fill="#f0b23c"/>
+          <path d="M65 65 L100.4 100.4 A50 50 0 0 1 65 115 Z" fill="#f0b23c"/>
+          <path d="M65 65 L65 115 A50 50 0 0 1 29.6 100.4 Z" fill="#f0b23c"/>
+          <path d="M65 65 L29.6 100.4 A50 50 0 0 1 15 65 Z" fill="#fff"/>
+          <path d="M65 65 L15 65 A50 50 0 0 1 29.6 29.6 Z" fill="#fff"/>
+          <path d="M65 65 L29.6 29.6 A50 50 0 0 1 65 15 Z" fill="#fff"/>
+        </g>
+      </svg>
+      <div class="cap">The three white slices have been eaten.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q224</div><div class="qb"><p>A circular cake is divided into equal sectors, and one sector is <span class="fr">1/6</span> of the cake. How many sectors are there?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q225</div><div class="qb"><p>Guests share a cake. The first takes <span class="fr">1/4</span> of the whole cake; the second takes <span class="fr">1/3</span> of what remains. What fraction of the cake is left for the others?</p></div></div>
+  <div class="q challenge"><div class="qn">Q226</div><div class="qb"><p>A circle is divided so that one sector is <span class="fr">1/2</span> and another is <span class="fr">1/4</span>; the rest is split into two equal sectors. What fraction is each of these two equal sectors?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q227</div><div class="qb"><p>Three friends sit in a circle and pass a plate of 27 biscuits. Each in turn takes <span class="fr">1/3</span> of the biscuits currently on the plate. How many biscuits remain after all three have taken their share?</p></div></div>
+  <div class="q achiever"><div class="qn">Q228</div><div class="qb"><p>A circular pie is shared: A gets <span class="fr">1/3</span>, B gets <span class="fr">1/4</span>, C gets <span class="fr">1/6</span>, and D gets the rest. Express D&rsquo;s share and state who got the most and who got the least.</p>
+    <div class="fig">
+      <svg viewBox="0 0 150 130" role="img" aria-label="Pie split into four shares A one third, B one quarter, C one sixth, D the rest">
+        <title>Pie chart of shares A, B, C, D</title>
+        <g stroke="#fff" stroke-width="1.5">
+          <path d="M65 65 L65 15 A50 50 0 0 1 108.3 90 Z" fill="#22409e"/>
+          <path d="M65 65 L108.3 90 A50 50 0 0 1 40 108.3 Z" fill="#9a1750"/>
+          <path d="M65 65 L40 108.3 A50 50 0 0 1 15 65 Z" fill="#177a4d"/>
+          <path d="M65 65 L15 65 A50 50 0 0 1 65 15 Z" fill="#f0b23c"/>
+        </g>
+        <g font-size="11" fill="#fff" font-weight="700">
+          <text x="88" y="54">A</text><text x="74" y="98">B</text><text x="40" y="82">C</text><text x="42" y="46">D</text>
+        </g>
+      </svg>
+      <div class="cap">A = <span class="fr">1/3</span>, B = <span class="fr">1/4</span>, C = <span class="fr">1/6</span>, D = the rest.</div>
+    </div></div></div>
+</section>
+
+<!-- ============ 39. SURVEY / DATA INTERPRETATION ============ -->
+<section class="cat" id="c39">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 39</span>
+    <h2>Survey / Data Interpretation with Fractions</h2>
+    <p class="skill"><b>Skill focus:</b> reading fractional shares of survey totals and recovering the total from a remainder.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q229</div><div class="qb"><p>In a survey of 40 people, <span class="fr">1/5</span> chose apples as their favourite fruit. How many people chose apples?</p>
+    <div class="fig">
+      <svg viewBox="0 0 320 120" role="img" aria-label="Bar chart of favourite fruit fractions">
+        <title>Bar chart: apples one fifth, others make the rest of the 40 people</title>
+        <line x1="35" y1="100" x2="300" y2="100" stroke="#5b6575" stroke-width="1.5"/>
+        <g fill="#22409e">
+          <rect x="55" y="60" width="40" height="40"/>
+          <rect x="130" y="24" width="40" height="76"/>
+          <rect x="205" y="48" width="40" height="52"/>
+        </g>
+        <g font-size="11" fill="#1e2632" text-anchor="middle">
+          <text x="75" y="114">Apple</text><text x="150" y="114">Banana</text><text x="225" y="114">Mango</text>
+        </g>
+        <text x="75" y="52" font-size="10" text-anchor="middle" fill="#9a1750" font-weight="700">&frac15;</text>
+      </svg>
+      <div class="cap">Apples make up <span class="fr">1/5</span> of the 40 responses.</div>
+    </div></div></div>
+  <div class="q foundation"><div class="qn">Q230</div><div class="qb"><p>In a class of 24 students, <span class="fr">1/2</span> like football and <span class="fr">1/4</span> like cricket; the rest like tennis. How many like tennis?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q231</div><div class="qb"><p>120 people were surveyed about drinks: <span class="fr">2/5</span> chose tea, <span class="fr">1/3</span> chose coffee, and the rest chose juice. How many chose juice?</p></div></div>
+  <div class="q challenge"><div class="qn">Q232</div><div class="qb"><p>In a pet survey of 36 people: <span class="fr">1/2</span> have dogs, <span class="fr">1/6</span> have cats, <span class="fr">1/12</span> have fish, and the rest have birds. How many have birds?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q233</div><div class="qb"><p>In a travel survey, <span class="fr">3/8</span> walk to work, <span class="fr">1/4</span> cycle, <span class="fr">1/6</span> take the bus, and the remaining 40 people drive. How many people were surveyed?</p></div></div>
+  <div class="q achiever"><div class="qn">Q234</div><div class="qb"><p>In a survey, <span class="fr">2/3</span> of people preferred product A. Of those who preferred A, <span class="fr">3/5</span> were women. If 60 women preferred A, how many people were surveyed in total?</p></div></div>
+</section>
+
+<!-- ============ 40. OPTIMISATION PROBLEMS ============ -->
+<section class="cat" id="c40">
+  <a class="top" href="#top">&uarr; contents</a>
+  <div class="cat-head">
+    <span class="cat-num">Category 40</span>
+    <h2>Optimisation Problems</h2>
+    <p class="skill"><b>Skill focus:</b> maximising or minimising counts under fractional-capacity constraints, with leftovers.</p>
+  </div>
+
+  <div class="band-label"><span class="badge b-found">Foundation</span></div>
+  <div class="q foundation"><div class="qn">Q235</div><div class="qb"><p>A 1&nbsp;m ribbon is cut into pieces each <span class="fr">1/6</span>&nbsp;m long. How many pieces are obtained, and how much ribbon is left over?</p></div></div>
+  <div class="q foundation"><div class="qn">Q236</div><div class="qb"><p>Bottles each hold <span class="fr">3/4</span>&nbsp;L. What is the least number of bottles needed to store 5&nbsp;L?</p></div></div>
+
+  <div class="band-label"><span class="badge b-chall">Challenge</span></div>
+  <div class="q challenge"><div class="qn">Q237</div><div class="qb"><p>Boxes each hold <span class="fr">2/5</span>&nbsp;kg. What is the greatest whole number of boxes that can be completely filled from 7&nbsp;kg, and how much is left over?</p></div></div>
+  <div class="q challenge"><div class="qn">Q238</div><div class="qb"><p>You have <span class="fr">3/4</span>&nbsp;m of wire. Each bracelet needs <span class="fr">1/10</span>&nbsp;m. What is the greatest number of bracelets you can make, and how much wire remains?</p></div></div>
+
+  <div class="band-label"><span class="badge b-achv">Achiever</span></div>
+  <div class="q achiever"><div class="qn">Q239</div><div class="qb"><p>Exactly 6&nbsp;L of juice is poured into glasses so that none is left over. Small glasses hold <span class="fr">1/4</span>&nbsp;L and large glasses hold <span class="fr">1/2</span>&nbsp;L. If at least 4 small glasses must be used, what is the smallest total number of glasses, and how many of each?</p></div></div>
+  <div class="q achiever"><div class="qn">Q240</div><div class="qb"><p>A baker has <span class="fr">5/2</span>&nbsp;kg of dough. Large loaves use <span class="fr">1/2</span>&nbsp;kg each and small loaves use <span class="fr">1/3</span>&nbsp;kg each. Using all the dough exactly with whole numbers of each type, what is the greatest total number of loaves he can make, and one combination that achieves it?</p></div></div>
+</section>
+
+<!-- ============ ANSWER KEY ============ -->
+<section class="answers" id="answers">
+  <h2>Answer Key</h2>
+  <p class="k">Final answers only, numbered to match the problem set (Q1&ndash;Q240). Fractions are given in lowest terms unless the question asked otherwise.</p>
+
+  <div class="ak-group">
+    <h3>Categories 1&ndash;10 &nbsp;&middot;&nbsp; Q1&ndash;Q60</h3>
+    <ul class="ak">
+      <li><b>Q1</b> 1/3</li>
+      <li><b>Q2</b> 16 students</li>
+      <li><b>Q3</b> 10 pieces; each is 1/10</li>
+      <li><b>Q4</b> 48 marbles</li>
+      <li><b>Q5</b> 60 m&sup2;</li>
+      <li><b>Q6</b> 24 coins</li>
+      <li><b>Q7</b> 1/2</li>
+      <li><b>Q8</b> 3/10</li>
+      <li><b>Q9</b> 3/16</li>
+      <li><b>Q10</b> 1/8</li>
+      <li><b>Q11</b> 8/27</li>
+      <li><b>Q12</b> 180 people</li>
+      <li><b>Q13</b> &#8377;60</li>
+      <li><b>Q14</b> 36</li>
+      <li><b>Q15</b> 120 apples</li>
+      <li><b>Q16</b> 36 stickers</li>
+      <li><b>Q17</b> 60 sweets</li>
+      <li><b>Q18</b> &#8377;75</li>
+      <li><b>Q19</b> 56</li>
+      <li><b>Q20</b> 54 m</li>
+      <li><b>Q21</b> 63 cows</li>
+      <li><b>Q22</b> 32 oranges</li>
+      <li><b>Q23</b> 90 students</li>
+      <li><b>Q24</b> 36</li>
+      <li><b>Q25</b> 24</li>
+      <li><b>Q26</b> 12 m</li>
+      <li><b>Q27</b> 60</li>
+      <li><b>Q28</b> 64 mm</li>
+      <li><b>Q29</b> 3 days</li>
+      <li><b>Q30</b> &#8377;300</li>
+      <li><b>Q31</b> &#8377;200</li>
+      <li><b>Q32</b> 1/3</li>
+      <li><b>Q33</b> Equal &mdash; no net change</li>
+      <li><b>Q34</b> Down by 1/100</li>
+      <li><b>Q35</b> 12,800</li>
+      <li><b>Q36</b> 2/5</li>
+      <li><b>Q37</b> 4 L</li>
+      <li><b>Q38</b> 12 L acid, 18 L water</li>
+      <li><b>Q39</b> 17/25</li>
+      <li><b>Q40</b> 12 L</li>
+      <li><b>Q41</b> 6 L</li>
+      <li><b>Q42</b> 9/17</li>
+      <li><b>Q43</b> 5/8</li>
+      <li><b>Q44</b> 7/9</li>
+      <li><b>Q45</b> 4/7 is larger; 5/9 is closer to 1/2</li>
+      <li><b>Q46</b> 13/15</li>
+      <li><b>Q47</b> 101/102</li>
+      <li><b>Q48</b> 7/8</li>
+      <li><b>Q49</b> 1/2 &lt; 2/3 &lt; 3/4</li>
+      <li><b>Q50</b> 3/8 &lt; 5/12 &lt; 1/2</li>
+      <li><b>Q51</b> 5/7 &gt; 7/10 &gt; 9/14</li>
+      <li><b>Q52</b> 7/12 &lt; 3/5 &lt; 5/8 &lt; 2/3</li>
+      <li><b>Q53</b> 3/7 &lt; 4/9 &lt; 5/11 &lt; 6/13</li>
+      <li><b>Q54</b> 7/15 &lt; 8/17 &lt; 9/19 &lt; 1/2</li>
+      <li><b>Q55</b> 3/4 of a pizza</li>
+      <li><b>Q56</b> 5/8 of a bar</li>
+      <li><b>Q57</b> 7/12 each (= 1/2 + 1/12)</li>
+      <li><b>Q58</b> 18 children</li>
+      <li><b>Q59</b> 80 nuts</li>
+      <li><b>Q60</b> &#8377;320, &#8377;240, &#8377;120</li>
+    </ul>
+  </div>
+
+  <div class="ak-group">
+    <h3>Categories 11&ndash;20 &nbsp;&middot;&nbsp; Q61&ndash;Q120</h3>
+    <ul class="ak">
+      <li><b>Q61</b> 4/7</li>
+      <li><b>Q62</b> 120 pages</li>
+      <li><b>Q63</b> 3/8</li>
+      <li><b>Q64</b> 4/15 remains; &#8377;300 saved</li>
+      <li><b>Q65</b> 7/40</li>
+      <li><b>Q66</b> 72 km</li>
+      <li><b>Q67</b> 5/8</li>
+      <li><b>Q68</b> 7/9</li>
+      <li><b>Q69</b> 4/7 and 3/7</li>
+      <li><b>Q70</b> 5/12</li>
+      <li><b>Q71</b> 60 hectares</li>
+      <li><b>Q72</b> 1/4</li>
+      <li><b>Q73</b> 5/8</li>
+      <li><b>Q74</b> 1/2</li>
+      <li><b>Q75</b> 2/3</li>
+      <li><b>Q76</b> 11/12</li>
+      <li><b>Q77</b> 2</li>
+      <li><b>Q78</b> 31/24</li>
+      <li><b>Q79</b> 1/4 km</li>
+      <li><b>Q80</b> 60 km</li>
+      <li><b>Q81</b> 150 km</li>
+      <li><b>Q82</b> 1/8</li>
+      <li><b>Q83</b> 72 km</li>
+      <li><b>Q84</b> Total 20 km (legs 6, 5, 9 km)</li>
+      <li><b>Q85</b> 1/2 m&sup2;</li>
+      <li><b>Q86</b> 25/36 cm&sup2;</li>
+      <li><b>Q87</b> 14/3 m&sup2; (4 2/3 m&sup2;)</li>
+      <li><b>Q88</b> 3/2 m</li>
+      <li><b>Q89</b> 9/40 m&sup2;</li>
+      <li><b>Q90</b> 32/49 m&sup2;; 8/9 of the original</li>
+      <li><b>Q91</b> 1/2 L</li>
+      <li><b>Q92</b> 50 L</li>
+      <li><b>Q93</b> 1/2 m&sup3;</li>
+      <li><b>Q94</b> 9 jugs; the last is exactly full</li>
+      <li><b>Q95</b> 80 L</li>
+      <li><b>Q96</b> 19/24 full; 5/12 L empty</li>
+      <li><b>Q97</b> 1/16, 1/32</li>
+      <li><b>Q98</b> 5/11</li>
+      <li><b>Q99</b> 15/16</li>
+      <li><b>Q100</b> 32/243</li>
+      <li><b>Q101</b> 4/5</li>
+      <li><b>Q102</b> 63/64; short of 1 by 1/64</li>
+      <li><b>Q103</b> 8</li>
+      <li><b>Q104</b> 20</li>
+      <li><b>Q105</b> 30</li>
+      <li><b>Q106</b> 60</li>
+      <li><b>Q107</b> 36</li>
+      <li><b>Q108</b> 120</li>
+      <li><b>Q109</b> 12</li>
+      <li><b>Q110</b> 32</li>
+      <li><b>Q111</b> 14</li>
+      <li><b>Q112</b> 5</li>
+      <li><b>Q113</b> 6/16</li>
+      <li><b>Q114</b> 12/17</li>
+      <li><b>Q115</b> 11/12</li>
+      <li><b>Q116</b> 11/24</li>
+      <li><b>Q117</b> LCD 36; sum 19/36</li>
+      <li><b>Q118</b> 24; 9/24 and 10/24</li>
+      <li><b>Q119</b> 9/24, 10/24, 11/24</li>
+      <li><b>Q120</b> 8 fractions</li>
+    </ul>
+  </div>
+
+  <div class="ak-group">
+    <h3>Categories 21&ndash;30 &nbsp;&middot;&nbsp; Q121&ndash;Q180</h3>
+    <ul class="ak">
+      <li><b>Q121</b> 1/2 + 1/4</li>
+      <li><b>Q122</b> 1/7 is larger, by 2/63</li>
+      <li><b>Q123</b> 1/2 + 1/3</li>
+      <li><b>Q124</b> 1/4 + 1/28</li>
+      <li><b>Q125</b> 1/2 + 1/3 + 1/6</li>
+      <li><b>Q126</b> 1/2 + 1/14</li>
+      <li><b>Q127</b> 7/14</li>
+      <li><b>Q128</b> 6/15</li>
+      <li><b>Q129</b> 13/16</li>
+      <li><b>Q130</b> 12/20</li>
+      <li><b>Q131</b> 10/16</li>
+      <li><b>Q132</b> 3/12 and 6/12 (1/4 and 1/2)</li>
+      <li><b>Q133</b> 1/3</li>
+      <li><b>Q134</b> 2/5</li>
+      <li><b>Q135</b> 1/2 kg</li>
+      <li><b>Q136</b> 2/5 kg</li>
+      <li><b>Q137</b> 12 kg</li>
+      <li><b>Q138</b> 3/4 kg</li>
+      <li><b>Q139</b> 12</li>
+      <li><b>Q140</b> 8</li>
+      <li><b>Q141</b> Brother 18, Sara 12</li>
+      <li><b>Q142</b> 8 years</li>
+      <li><b>Q143</b> Daughter 12, mother 36</li>
+      <li><b>Q144</b> Boy 15, father 45</li>
+      <li><b>Q145</b> 4/3 cups</li>
+      <li><b>Q146</b> 9/4 cups</li>
+      <li><b>Q147</b> 5/48 kg each; 25/16 kg for 15</li>
+      <li><b>Q148</b> 1 cup milk, 3/8 cup oil</li>
+      <li><b>Q149</b> 5 servings</li>
+      <li><b>Q150</b> 5/4 cups</li>
+      <li><b>Q151</b> 1500 children</li>
+      <li><b>Q152</b> 540</li>
+      <li><b>Q153</b> 1200</li>
+      <li><b>Q154</b> Town 12,000; city 16,000</li>
+      <li><b>Q155</b> 7000</li>
+      <li><b>Q156</b> 2400 men</li>
+      <li><b>Q157</b> 1/2</li>
+      <li><b>Q158</b> 3/8</li>
+      <li><b>Q159</b> 5/12 per hour; full in 12/5 h (2 h 24 min)</li>
+      <li><b>Q160</b> 4 hours</li>
+      <li><b>Q161</b> 3/10 after 2 h; full in 20/3 h (6 h 40 min)</li>
+      <li><b>Q162</b> Drains 1/24 per hour; empty in 18 h</li>
+      <li><b>Q163</b> 1/3</li>
+      <li><b>Q164</b> 3/4</li>
+      <li><b>Q165</b> 3/8</li>
+      <li><b>Q166</b> 3/4</li>
+      <li><b>Q167</b> 1/2</li>
+      <li><b>Q168</b> 5/9</li>
+      <li><b>Q169</b> 2/5</li>
+      <li><b>Q170</b> 5 cells</li>
+      <li><b>Q171</b> 15 white cells</li>
+      <li><b>Q172</b> 17 cells</li>
+      <li><b>Q173</b> 36 cells</li>
+      <li><b>Q174</b> 36 cells; 6&times;6</li>
+      <li><b>Q175</b> 1/4</li>
+      <li><b>Q176</b> 1/4</li>
+      <li><b>Q177</b> 4/9</li>
+      <li><b>Q178</b> 11/24</li>
+      <li><b>Q179</b> 1/2</li>
+      <li><b>Q180</b> 2/5</li>
+    </ul>
+  </div>
+
+  <div class="ak-group">
+    <h3>Categories 31&ndash;40 &nbsp;&middot;&nbsp; Q181&ndash;Q240</h3>
+    <ul class="ak">
+      <li><b>Q181</b> 1/2</li>
+      <li><b>Q182</b> 1/4</li>
+      <li><b>Q183</b> 1/3</li>
+      <li><b>Q184</b> 1/6</li>
+      <li><b>Q185</b> 3/4</li>
+      <li><b>Q186</b> 11/26</li>
+      <li><b>Q187</b> e.g. 2/5 (any fraction between 1/3 and 1/2)</li>
+      <li><b>Q188</b> Less than 1/2</li>
+      <li><b>Q189</b> n = 4 or 5</li>
+      <li><b>Q190</b> x = 7 or 8</li>
+      <li><b>Q191</b> 9</li>
+      <li><b>Q192</b> 13 values</li>
+      <li><b>Q193</b> Closest to 1/2</li>
+      <li><b>Q194</b> More than 1</li>
+      <li><b>Q195</b> Less than 1</li>
+      <li><b>Q196</b> 1 is bigger (sum &lt; 1)</li>
+      <li><b>Q197</b> 1</li>
+      <li><b>Q198</b> Between 2 and 3</li>
+      <li><b>Q199</b> 36</li>
+      <li><b>Q200</b> 50</li>
+      <li><b>Q201</b> 11/12</li>
+      <li><b>Q202</b> 18/35 is larger (17/34 = 1/2)</li>
+      <li><b>Q203</b> 1/5</li>
+      <li><b>Q204</b> 4</li>
+      <li><b>Q205</b> 0.75</li>
+      <li><b>Q206</b> 2/5 = 0.4</li>
+      <li><b>Q207</b> 3/5; 6 of 10 parts</li>
+      <li><b>Q208</b> 0.875; 1/8 short of 1</li>
+      <li><b>Q209</b> 11 cells; 11/25</li>
+      <li><b>Q210</b> 3/5 &lt; 0.62 &lt; 5/8 &lt; 0.7</li>
+      <li><b>Q211</b> 18</li>
+      <li><b>Q212</b> 20</li>
+      <li><b>Q213</b> 30</li>
+      <li><b>Q214</b> 36</li>
+      <li><b>Q215</b> 72</li>
+      <li><b>Q216</b> 66</li>
+      <li><b>Q217</b> 1/4</li>
+      <li><b>Q218</b> 1/3</li>
+      <li><b>Q219</b> 1/4</li>
+      <li><b>Q220</b> 8/27</li>
+      <li><b>Q221</b> &#8377;20,000</li>
+      <li><b>Q222</b> 78 apples</li>
+      <li><b>Q223</b> 5/8</li>
+      <li><b>Q224</b> 6 sectors</li>
+      <li><b>Q225</b> 1/2</li>
+      <li><b>Q226</b> 1/8 each</li>
+      <li><b>Q227</b> 8 biscuits</li>
+      <li><b>Q228</b> D = 1/4; A most, C least</li>
+      <li><b>Q229</b> 8 people</li>
+      <li><b>Q230</b> 6 students</li>
+      <li><b>Q231</b> 32</li>
+      <li><b>Q232</b> 9</li>
+      <li><b>Q233</b> 192 people</li>
+      <li><b>Q234</b> 150 people</li>
+      <li><b>Q235</b> 6 pieces, none left</li>
+      <li><b>Q236</b> 7 bottles</li>
+      <li><b>Q237</b> 17 boxes; 1/5 kg left</li>
+      <li><b>Q238</b> 7 bracelets; 1/20 m left</li>
+      <li><b>Q239</b> 14 glasses (4 small + 10 large)</li>
+      <li><b>Q240</b> 7 loaves (e.g. 1 large + 6 small)</li>
+    </ul>
+  </div>
+</section>
+
+<footer>Olympiad Fractions Master Problem Set &middot; 40 categories &middot; Q1&ndash;Q240 &middot; graded practice</footer>
+
+</div><!-- /wrap -->
+</body>
+</html>
