@@ -1,6 +1,7 @@
 /**
  * Instant search over every lesson, as an accessible combobox: type, move with the arrow keys, Enter to open.
- * Used by the home page hero and the search page.
+ * Used by the home page hero (results drop down under the box) and the search page
+ * (`inline`: results sit in the page itself, which works better with a phone keyboard open).
  */
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { AnimatePresence, m } from 'motion/react';
@@ -11,15 +12,16 @@ import './search.css';
 
 const spring = { type: 'spring', stiffness: 420, damping: 34, mass: 0.8 } as const;
 
-export default function SearchBox({ lessons, autoFocus = false, limit = 7 }: { lessons: LessonItem[]; autoFocus?: boolean; limit?: number }) {
+export default function SearchBox({ lessons, autoFocus = false, limit = 7, inline = false }: { lessons: LessonItem[]; autoFocus?: boolean; limit?: number; inline?: boolean }) {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const input = useRef<HTMLInputElement>(null);
+  const box = useRef<HTMLDivElement>(null);
   const listId = useId();
   const results = useMemo(() => search(lessons, q, limit), [lessons, q, limit]);
   const ts = useMemo(() => terms(q), [q]);
-  const showPanel = open && q.trim().length > 0;
+  const showPanel = (inline || open) && q.trim().length > 0;
 
   // "/" or Ctrl/⌘ + K jumps to the search box from anywhere on the page.
   useEffect(() => {
@@ -35,12 +37,18 @@ export default function SearchBox({ lessons, autoFocus = false, limit = 7 }: { l
     return () => removeEventListener('keydown', onKey);
   }, []);
   useEffect(() => setActive(0), [q]);
-  // The search page can arrive with ?q=… and starts with the box focused.
+  // The search page can arrive with ?q=… . It focuses the box only with a mouse or keyboard:
+  // on a phone, opening the keyboard by itself would cover the page before you asked for it.
   useEffect(() => {
     const start = new URLSearchParams(location.search).get('q');
     if (start) { setQ(start); setOpen(true); }
-    if (autoFocus) input.current?.focus();
+    if (autoFocus && matchMedia('(pointer: fine)').matches) input.current?.focus();
   }, [autoFocus]);
+  // On a phone, tapping the box scrolls it to the top of the screen, so the results have room above the keyboard.
+  const onFocus = () => {
+    setOpen(true);
+    if (!inline && matchMedia('(pointer: coarse)').matches) setTimeout(() => box.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 300);
+  };
 
   const go = (l?: LessonItem) => { if (l) location.assign(l.href); };
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -51,7 +59,7 @@ export default function SearchBox({ lessons, autoFocus = false, limit = 7 }: { l
   };
 
   return (
-    <div className="search" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false); }}>
+    <div ref={box} className={`search${inline ? ' is-inline' : ''}`} onBlur={(e) => { if (!inline && !e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false); }}>
       <label className="search-field">
         <span className="sr-only">Search every lesson</span>
         <Icon name="search" size={24} />
@@ -63,12 +71,13 @@ export default function SearchBox({ lessons, autoFocus = false, limit = 7 }: { l
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showPanel && results[active] ? `${listId}-${active}` : undefined}
-          placeholder="Search any lesson…"
+          placeholder="Search any lesson or topic…"
+          enterKeyHint="go"
           autoComplete="off"
           spellCheck={false}
           value={q}
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
+          onFocus={onFocus}
           onKeyDown={onKeyDown}
         />
         {q ? (
@@ -117,7 +126,7 @@ export default function SearchBox({ lessons, autoFocus = false, limit = 7 }: { l
                 Nothing matches “{q.trim()}” yet. Try a shorter word, like <em>force</em> or <em>chip</em>.
               </p>
             )}
-            <p className="search-hint" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> to move · <kbd>Enter</kbd> to open · <kbd>Esc</kbd> to clear</p>
+            {!inline && <p className="search-hint" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> to move · <kbd>Enter</kbd> to open · <kbd>Esc</kbd> to clear</p>}
           </m.div>
         )}
       </AnimatePresence>

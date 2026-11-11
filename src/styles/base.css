@@ -2,7 +2,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 5rem; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: var(--space-4); }
+@media (min-width: 48rem) { html { scroll-padding-top: 5rem; } } /* room for the pinned header on larger screens */
 body {
   margin: 0;
   background: var(--paper);

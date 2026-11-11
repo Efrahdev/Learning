@@ -30,7 +30,8 @@ const nav = [
 <html lang="en-GB" data-accent={accent}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- resizes-content: when the phone keyboard opens, the page shrinks to fit above it instead of hiding behind it. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <!-- Keep the site out of search engines (see CLAUDE.md). -->
     <meta name="robots" content="noindex, nofollow" />
     <title>{fullTitle}</title>
@@ -38,6 +39,13 @@ const nav = [
     <meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#12151c" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <!-- Installable app (PWA): manifest, icons, and a service worker that lets it open (and work offline for visited pages). -->
+    <link rel="manifest" href={url('manifest.webmanifest')} />
+    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+    <meta name="apple-mobile-web-app-title" content="Library" />
+    <script is:inline define:vars={{ sw: url('sw.js'), scope: url() }}>
+      if ('serviceWorker' in navigator) addEventListener('load', function () { navigator.serviceWorker.register(sw, { scope: scope }).catch(function () {}); });
+    </script>
     <!-- Set light/dark before the first paint, so the page never flashes the wrong colours. -->
     <script is:inline>
       (function () {
@@ -70,7 +78,7 @@ const nav = [
 
 <style>
   .site-header {
-    position: sticky; top: 0; z-index: 20;
+    position: relative; z-index: 20; /* scrolls away on phones, so it never covers the page when the keyboard is open */
     background: color-mix(in srgb, var(--paper) 88%, transparent);
     backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: var(--border);
@@ -86,6 +94,7 @@ const nav = [
   }
   nav a:hover { background: var(--surface-2); }
   nav a[aria-current='page'] { color: var(--ink); background: var(--surface-2); }
+  @media (min-width: 48rem) { .site-header { position: sticky; top: 0; } }
   main { padding-block: var(--space-6) var(--space-8); }
   main.home { padding-top: var(--space-4); }
   .site-footer { padding-block: var(--space-6); border-top: var(--border); }

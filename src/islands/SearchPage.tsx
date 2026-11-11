@@ -16,7 +16,7 @@ export default function SearchPage({ data }: { data: Catalogue }) {
             Type a word from a title, a topic or an idea. All {plural(data.totals.lessons, 'lesson')} are searched as you type.
           </p>
           <div className="search-wrap rise" style={{ '--i': 3 } as React.CSSProperties}>
-            <SearchBox lessons={data.lessons} autoFocus limit={12} />
+            <SearchBox lessons={data.lessons} autoFocus inline limit={40} />
           </div>
         </section>
       </LazyMotion>

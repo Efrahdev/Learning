@@ -23,7 +23,7 @@
 .search-panel {
   position: absolute; left: 0; right: 0; top: calc(100% + var(--space-2));
   background: var(--surface); border: var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lift);
-  padding: var(--space-2); max-height: min(70vh, 34rem); overflow: auto; transform-origin: top center;
+  padding: var(--space-2); max-height: min(62dvh, 34rem); overscroll-behavior: contain; overflow: auto; transform-origin: top center;
 }
 .search-panel ul { list-style: none; margin: 0; padding: 0; }
 .result {
@@ -41,3 +41,7 @@
 @media (max-width: 40rem) { .search-hint { display: none; } .result .kind { display: none; } }
 
 @media (pointer: coarse) { .search-kbd { display: none; } }
+
+/* Search page: results sit in the page, not in a box over it. */
+.search.is-inline .search-panel { position: static; max-height: none; margin-top: var(--space-4); box-shadow: none; background: none; border: 0; padding: 0; }
+.search.is-inline .result { border-bottom: var(--border); border-radius: 0; }
