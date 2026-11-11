@@ -20,8 +20,9 @@ const { pages, compact = false } = Astro.props;
 </ol>
 
 <style>
-  .lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-  .pg { display: flex; gap: var(--space-4); align-items: flex-start; padding: var(--space-4) var(--space-5); text-decoration: none; color: var(--ink); min-height: var(--tap); }
+  .lessons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .pg { display: flex; gap: var(--space-3); align-items: flex-start; padding: var(--space-3) var(--space-4); text-decoration: none; color: var(--ink); min-height: var(--tap); }
+  @media (min-width: 48rem) { .pg { gap: var(--space-4); padding: var(--space-4) var(--space-5); } }
   .pg { transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease), border-color var(--fast); }
   .pg:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
   .pg:hover .num { background: var(--accent); color: var(--on-accent); }
@@ -30,5 +31,5 @@ const { pages, compact = false } = Astro.props;
   .body { display: flex; flex-direction: column; gap: 2px; }
   .name { font-family: var(--font-heading); font-weight: 700; font-size: var(--text-lg); letter-spacing: -0.01em; }
   .compact .name { font-size: var(--text-base); }
-  .summary { color: var(--ink-2); }
+  .summary { color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } /* two lines at most, so more lessons fit on a phone screen */
 </style>

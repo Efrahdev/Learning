@@ -1,44 +1,32 @@
 /**
- * The home page, built around one idea: the library is a small universe of learning.
+ * The home page. Its job: get to any lesson fast.
  *
- *  1. Hero: a bold promise, instant search, and the Library Orbit (each subject a world,
- *     each moon a lesson). Pointing at a world, or at its name, wakes it up.
- *  2. A band of numbers, then the subjects as an editorial, numbered index.
- *  3. "Two ways to learn": interactive labs and deep guides.
- *  4. Every lesson, filterable, and the map.
+ *  1. Hero: the promise, instant search, and the Shelf, a still picture of the library where
+ *     each subject is a book (the thicker the book, the more lessons inside). Tapping a book opens it.
+ *  2. The library: every lesson, grouped by subject and topic, each ONE tap from here.
+ *     A filter (All / Interactive / Reading) and a row of subject shortcuts sit on top.
  *
- * Entrance effects are plain CSS (they play before React wakes up); Motion handles the
- * interactive animations (filter pills, cards re-flowing, search results).
+ * Built phone first: everything stacks in one column, nothing is pinned to the screen,
+ * and every tap target is at least 48px tall.
  */
 import { useEffect, useId, useState, type CSSProperties } from 'react';
-import { AnimatePresence, LazyMotion, MotionConfig, domMax, m } from 'motion/react';
+import { LazyMotion, MotionConfig, domMax, m } from 'motion/react';
 import type { Catalogue, FolderItem, LessonItem } from '@lib/catalogue';
 import SearchBox from './SearchBox';
-import Orbit from './Orbit';
-import { Icon, KindBadge, plural } from './ui';
+import { Icon, plural } from './ui';
 import './islands.css';
 import './home.css';
 
+type Kind = 'all' | 'live' | 'read';
 const spring = { type: 'spring', stiffness: 420, damping: 34, mass: 0.8 } as const;
 const vt = (name: string) => ({ viewTransitionName: name }) as CSSProperties;
-const i = (n: number) => ({ '--i': n }) as CSSProperties;
 
 export default function Home({ data, mapHref }: { data: Catalogue; mapHref: string }) {
-  const [kind, setKind] = useState<Kind>('all');
-  const pickKind = (k: Kind) => {
-    setKind(k);
-    document.getElementById('explore')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-  };
   return (
     <MotionConfig reducedMotion="user">
       <LazyMotion features={domMax} strict>
-        <div className="grain" aria-hidden="true" />
         <Hero data={data} />
-        <Numbers totals={data.totals} />
-        <SubjectIndex subjects={data.subjects} />
-        <TwoWays data={data} onPick={pickKind} />
-        <Explorer data={data} kind={kind} setKind={setKind} />
-        <MapPromo href={mapHref} totals={data.totals} />
+        <Library data={data} mapHref={mapHref} />
       </LazyMotion>
     </MotionConfig>
   );
@@ -52,178 +40,81 @@ function greetingFor(h: number) {
 
 function Hero({ data }: { data: Catalogue }) {
   const [greeting, setGreeting] = useState('Hello');
-  const [active, setActive] = useState<string | null>(null);
   useEffect(() => setGreeting(greetingFor(new Date().getHours())), []);
+  const { totals } = data;
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero-copy">
-        <p className="hello rise" style={i(0)}>
-          <span className="hello-dot" aria-hidden="true" /> {greeting}! {data.totals.lessons} lessons are waiting.
-        </p>
+        <p className="hello">{greeting}!</p>
         <h1 id="hero-title" className="hero-title">
-          <span className="line"><span className="line-in" style={i(1)}>Learn how</span></span>
-          <span className="line"><span className="line-in" style={i(2)}>everything</span></span>
-          <span className="line"><span className="line-in hero-accent" style={i(3)}>works.</span></span>
+          Learn how everything <span className="hero-accent">works.</span>
         </h1>
-        <p className="hero-lead rise" style={i(5)}>
-          Hands-on labs and friendly, deep guides across maths, science, coding, English and technology.
-          Pick a world to explore, or search for any idea.
+        <p className="hero-lead">
+          {totals.lessons} lessons across {totals.subjects} subjects: {totals.interactive} hands-on labs to play with,
+          and {totals.lessons - totals.interactive} friendly guides to read.
         </p>
-        <div className="search-wrap rise" style={i(6)}>
+        <div className="search-wrap">
           <SearchBox lessons={data.lessons} />
         </div>
+        <a className="browse" href="#library">Browse every lesson <Icon name="arrow" size={18} /></a>
       </div>
-
-      <div className="hero-visual rise" style={i(4)}>
-        <Orbit subjects={data.subjects} active={active} onActive={setActive} />
-        <p className="orbit-caption"><span aria-hidden="true">●</span> Each world is a subject. Each moon is a lesson.</p>
-        <nav className="worlds" aria-label="Subjects">
-          {data.subjects.map((s) => (
-            <a key={s.path} href={s.href} data-accent={s.accent} className={`world${active === s.path ? ' on' : ''}${s.count ? '' : ' soon'}`}
-              onPointerEnter={() => setActive(s.path)} onPointerLeave={() => setActive(null)}
-              onFocus={() => setActive(s.path)} onBlur={() => setActive(null)}>
-              <span aria-hidden="true">{s.icon}</span> {s.title}
-              <span className="world-n">{s.count || 'soon'}</span>
-            </a>
-          ))}
-        </nav>
-      </div>
+      <Shelf subjects={data.subjects} />
     </section>
   );
 }
 
-/* ───────────────────────── Numbers ───────────────────────── */
-
-function Numbers({ totals }: { totals: Catalogue['totals'] }) {
-  const items = [
-    { n: totals.lessons, label: 'lessons', note: 'in one place' },
-    { n: totals.interactive, label: 'interactive labs', note: 'to touch and try' },
-    { n: totals.lessons - totals.interactive, label: 'deep guides', note: 'to read slowly' },
-    { n: totals.subjects, label: 'subjects', note: `and ${totals.topics} topics` },
-  ];
+/** The library as a shelf of books: one book per subject, thicker when it holds more lessons. Still, not animated. */
+function Shelf({ subjects }: { subjects: FolderItem[] }) {
+  const most = Math.max(1, ...subjects.map((s) => s.count));
+  const heights = [94, 100, 86, 97, 90, 100, 92, 84, 96, 88];
   return (
-    <section className="numbers" aria-label="The library in numbers">
-      <ul role="list">
-        {items.map((x) => (
-          <li key={x.label} className="num-item">
-            <span className="stat-n" style={{ '--to': x.n } as CSSProperties} aria-hidden="true" />
-            <span className="sr-only">{x.n}</span>
-            <span className="num-label">{x.label}</span>
-            <span className="num-note">{x.note}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-/* ───────────────────────── Subjects: an editorial index ───────────────────────── */
-
-function SubjectIndex({ subjects }: { subjects: FolderItem[] }) {
-  return (
-    <section className="section" aria-labelledby="subjects-title">
-      <div className="section-head">
-        <p className="eyebrow">Contents</p>
-        <h2 id="subjects-title" className="section-title">Choose a subject</h2>
-      </div>
-      <ol className="index" role="list">
+    <figure className="shelf">
+      <div className="shelf-books">
         {subjects.map((s, n) => (
-          <li key={s.path} data-accent={s.accent} className="index-item">
-            <a className={`row${s.count ? '' : ' is-empty'}`} href={s.href}>
-              <span className="row-num" aria-hidden="true">{String(n + 1).padStart(2, '0')}</span>
-              <span className="row-icon" aria-hidden="true" style={vt(`icon-${s.slug}`)}>{s.icon ?? '📁'}</span>
-              <span className="row-main">
-                <span className="row-title" style={vt(`title-${s.slug}`)}>{s.title}</span>
-                {s.blurb && <span className="row-blurb">{s.blurb}</span>}
-              </span>
-              {s.folders.length > 0 && (
-                <span className="row-topics" aria-label="Topics">
-                  {s.folders.slice(0, 4).map((f) => <span key={f.path} className="topic">{f.title}</span>)}
-                  {s.folders.length > 4 && <span className="topic more">+{s.folders.length - 4}</span>}
-                </span>
-              )}
-              <span className="row-count">
-                {s.count ? <><b>{s.count}</b> {s.count === 1 ? 'lesson' : 'lessons'}</> : <span className="soon">Coming soon</span>}
-              </span>
-              <span className="go" aria-hidden="true"><Icon name="arrow" /></span>
-            </a>
-          </li>
+          <a
+            key={s.path}
+            href={s.href}
+            data-accent={s.accent}
+            className={`book${s.count ? '' : ' is-empty'}`}
+            style={{ '--grow': (1 + (2.4 * s.count) / most).toFixed(2), '--h': `${heights[n % heights.length]}%` } as CSSProperties}
+            aria-label={`${s.title}: ${s.count ? plural(s.count, 'lesson') : 'coming soon'}`}
+          >
+            <span className="book-icon" aria-hidden="true" style={vt(`icon-${s.slug}`)}>{s.icon ?? '📘'}</span>
+            <span className="book-title" aria-hidden="true">{s.title}</span>
+            <span className="book-n" aria-hidden="true">{s.count}</span>
+          </a>
         ))}
-      </ol>
-    </section>
+        <span className="bookend" aria-hidden="true" />
+      </div>
+      <figcaption>Each book is a subject. The thicker the book, the more lessons inside.</figcaption>
+    </figure>
   );
 }
 
-/* ───────────────────────── Two ways to learn ───────────────────────── */
+/* ───────────────────────── The library: every lesson, one tap away ───────────────────────── */
 
-/** Up to three lessons of one kind, each from a different subject where possible. */
-function sample(list: LessonItem[], count = 3) {
-  const out: LessonItem[] = [], seen = new Set<string>();
-  for (const l of list) if (!seen.has(l.subject) && out.length < count) { out.push(l); seen.add(l.subject); }
-  for (const l of list) if (out.length < count && !out.includes(l)) out.push(l);
+interface Group { title: string | null; href?: string; lessons: LessonItem[] }
+
+const flatten = (f: FolderItem): LessonItem[] => [...f.lessons, ...f.folders.flatMap(flatten)];
+
+/** A subject's lessons in reading order: its own lessons first ("General"), then each topic. */
+function groupsOf(s: FolderItem): Group[] {
+  const out: Group[] = [];
+  if (s.lessons.length) out.push({ title: s.folders.length ? 'General' : null, lessons: s.lessons });
+  for (const f of s.folders) out.push({ title: f.title, href: f.href, lessons: flatten(f) });
   return out;
 }
 
-function TwoWays({ data, onPick }: { data: Catalogue; onPick: (k: Kind) => void }) {
-  const labs = data.lessons.filter((l) => l.interactive);
-  const guides = data.lessons.filter((l) => !l.interactive);
-  const ways = [
-    { k: 'live' as const, cls: 'way-labs', icon: 'spark' as const, title: 'Interactive labs', count: labs.length,
-      text: 'Drag, slide, press and watch. Ideas you can play with until they click.', list: sample(labs) },
-    { k: 'read' as const, cls: 'way-guides', icon: 'book' as const, title: 'Deep guides', count: guides.length,
-      text: 'Read at your own pace, with clear diagrams and real-world examples.', list: sample(guides) },
-  ];
+function Library({ data, mapHref }: { data: Catalogue; mapHref: string }) {
+  const [kind, setKind] = useState<Kind>('all');
+  const keep = (l: LessonItem) => kind === 'all' || (kind === 'live') === l.interactive;
+  const shown = data.lessons.filter(keep).length;
   return (
-    <section className="section" aria-labelledby="ways-title">
-      <div className="section-head">
-        <p className="eyebrow">How to learn here</p>
-        <h2 id="ways-title" className="section-title">Two ways to learn</h2>
-      </div>
-      <div className="ways">
-        {ways.map((w) => (
-          <article key={w.k} className={`way ${w.cls}`}>
-            <div className="way-head">
-              <span className="way-icon"><Icon name={w.icon} size={26} /></span>
-              <span className="way-count"><b>{w.count}</b> lessons</span>
-            </div>
-            <h3 className="way-title">{w.title}</h3>
-            <p className="way-text">{w.text}</p>
-            <ul className="way-list" role="list">
-              {w.list.map((l) => (
-                <li key={l.id} data-accent={l.accent}>
-                  <a href={l.href}><span aria-hidden="true">{l.icon}</span><span className="way-l">{l.title}</span><Icon name="arrow" size={16} /></a>
-                </li>
-              ))}
-            </ul>
-            <button type="button" className="btn quiet pop way-all" onClick={() => onPick(w.k)}>See all {w.count} <Icon name="arrow" size={18} /></button>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ───────────────────────── Explorer (every lesson) ───────────────────────── */
-
-type Kind = 'all' | 'live' | 'read';
-const PAGE = 12;
-
-function Explorer({ data, kind, setKind }: { data: Catalogue; kind: Kind; setKind: (k: Kind) => void }) {
-  const [subject, setSubject] = useState('all');
-  const [shown, setShown] = useState(PAGE);
-  const subjects = data.subjects.filter((s) => s.count > 0);
-  const list = data.lessons.filter(
-    (l) => (subject === 'all' || l.subject === subject) && (kind === 'all' || (kind === 'live') === l.interactive),
-  );
-  useEffect(() => setShown(PAGE), [subject, kind]);
-  const visible = list.slice(0, shown);
-
-  return (
-    <section className="section" id="explore" aria-labelledby="explore-title">
-      <div className="section-head row">
-        <div>
-          <p className="eyebrow">Explore</p>
-          <h2 id="explore-title" className="section-title">Every lesson</h2>
+    <section id="library" className="library" aria-labelledby="library-title">
+      <div className="lib-head">
+        <div className="lib-title">
+          <p className="eyebrow">The library</p>
+          <h2 id="library-title" className="section-title">Every lesson, one tap away</h2>
         </div>
         <Segmented
           label="Kind of lesson"
@@ -232,54 +123,67 @@ function Explorer({ data, kind, setKind }: { data: Catalogue; kind: Kind; setKin
           options={[{ v: 'all', label: 'All' }, { v: 'live', label: 'Interactive' }, { v: 'read', label: 'Reading' }]}
         />
       </div>
-      <div className="chips" role="toolbar" aria-label="Filter by subject">
-        {[{ path: 'all', title: 'Everything', icon: '✨', accent: undefined }, ...subjects].map((s) => {
-          const on = subject === s.path;
+      <p className="meta lib-count" role="status">
+        {kind === 'all' ? plural(shown, 'lesson') : `${plural(shown, kind === 'live' ? 'interactive lesson' : 'guide')}`}
+      </p>
+      <nav className="jump" aria-label="Jump to a subject">
+        {data.subjects.map((s) => {
+          const n = flatten(s).filter(keep).length;
           return (
-            <button key={s.path} type="button" className={`chip${on ? ' on' : ''}`} aria-pressed={on} data-accent={s.accent} onClick={() => setSubject(s.path)}>
-              {on && <m.span layoutId="chip-pill" className="chip-pill" transition={spring} />}
-              <span className="chip-label"><span aria-hidden="true">{s.icon}</span> {s.title}</span>
-            </button>
+            <a key={s.path} href={`#s-${s.slug}`} data-accent={s.accent} className={`jump-chip${n ? '' : ' is-dim'}`}>
+              <span aria-hidden="true">{s.icon}</span> {s.title} <span className="jump-n">{n}</span>
+            </a>
           );
         })}
+      </nav>
+      <div className="subjects">
+        {data.subjects.map((s) => <SubjectBlock key={s.path} s={s} keep={keep} filtered={kind !== 'all'} />)}
       </div>
-      <p className="meta count" role="status">{plural(list.length, 'lesson')}</p>
-      <m.ul className="lesson-grid" role="list" layout>
-        <AnimatePresence mode="popLayout" initial={false}>
-          {visible.map((l) => (
-            <m.li
-              key={l.id}
-              layout
-              data-accent={l.accent}
-              initial={{ opacity: 0, scale: 0.94, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94 }}
-              transition={spring}
-            >
-              <LessonCard l={l} />
-            </m.li>
+      <p className="lib-foot">
+        Prefer a picture of everything? <a href={mapHref}>Open the library map <Icon name="arrow" size={16} /></a>
+      </p>
+    </section>
+  );
+}
+
+function SubjectBlock({ s, keep, filtered }: { s: FolderItem; keep: (l: LessonItem) => boolean; filtered: boolean }) {
+  const groups = groupsOf(s).map((g) => ({ ...g, lessons: g.lessons.filter(keep) })).filter((g) => g.lessons.length);
+  const n = groups.reduce((sum, g) => sum + g.lessons.length, 0);
+  return (
+    <section id={`s-${s.slug}`} data-accent={s.accent} className={`subj${n ? '' : ' is-empty'}`} aria-labelledby={`t-${s.slug}`}>
+      <header className="subj-head">
+        <span className="subj-icon" aria-hidden="true">{s.icon ?? '📁'}</span>
+        <div className="subj-text">
+          <h3 id={`t-${s.slug}`} className="subj-title"><a href={s.href}>{s.title}</a></h3>
+          {s.blurb && <p className="subj-blurb">{s.blurb}</p>}
+        </div>
+        <span className="subj-n">{n ? plural(n, 'lesson') : filtered ? 'None of this kind' : 'Coming soon'}</span>
+      </header>
+      {groups.length > 0 && (
+        <div className="subj-body">
+          {groups.map((g) => (
+            <div key={g.title ?? 'all'} className="grp">
+              {g.title && <h4 className="grp-title">{g.href ? <a href={g.href}>{g.title}</a> : g.title}</h4>}
+              <ul className="lrows" role="list">
+                {g.lessons.map((l) => <li key={l.id}><LessonRow l={l} /></li>)}
+              </ul>
+            </div>
           ))}
-        </AnimatePresence>
-      </m.ul>
-      {list.length === 0 && <p className="lead empty-note">No lessons of that kind here yet.</p>}
-      {shown < list.length && (
-        <div className="more-wrap">
-          <button type="button" className="btn quiet pop" onClick={() => setShown((n) => n + PAGE)}>
-            Show more <span className="meta">({list.length - shown} left)</span>
-          </button>
         </div>
       )}
     </section>
   );
 }
 
-function LessonCard({ l }: { l: LessonItem }) {
+function LessonRow({ l }: { l: LessonItem }) {
   return (
-    <a className="lesson" href={l.href}>
-      <span className="lesson-trail"><span aria-hidden="true">{l.icon}</span> {l.trail.join(' › ')}</span>
-      <span className="lesson-title">{l.title}</span>
-      {l.summary && <span className="lesson-summary">{l.summary}</span>}
-      <span className="lesson-foot"><KindBadge lesson={l} /><span className="go" aria-hidden="true"><Icon name="arrow" size={18} /></span></span>
+    <a className="lrow" href={l.href}>
+      <span className={`lrow-kind${l.interactive ? ' live' : ''}`} aria-hidden="true"><Icon name={l.interactive ? 'spark' : 'book'} size={18} /></span>
+      <span className="lrow-text">
+        <span className="lrow-title">{l.title}</span>
+        <span className="lrow-meta">{l.interactive ? 'Interactive' : `Read${l.minutes ? ` · ${l.minutes} min` : ''}`}</span>
+      </span>
+      <span className="lrow-go" aria-hidden="true"><Icon name="chevron" size={18} /></span>
     </a>
   );
 }
@@ -295,34 +199,5 @@ function Segmented<T extends string>({ label, value, onChange, options }: { labe
         </button>
       ))}
     </div>
-  );
-}
-
-/* ───────────────────────── Map promo ───────────────────────── */
-
-function MapPromo({ href, totals }: { href: string; totals: Catalogue['totals'] }) {
-  return (
-    <section className="section">
-      <a className="promo" href={href}>
-        <svg className="promo-art" viewBox="0 0 220 120" aria-hidden="true">
-          <g fill="none" strokeWidth="2.5" strokeLinecap="round">
-            <path className="branch b1" d="M24 60 C70 60 70 22 116 22" />
-            <path className="branch b2" d="M24 60 H116" />
-            <path className="branch b3" d="M24 60 C70 60 70 98 116 98" />
-            <path className="branch b4" d="M136 22 C160 22 160 10 190 10 M136 22 C160 22 160 34 190 34" />
-            <path className="branch b5" d="M136 98 C160 98 160 86 190 86 M136 98 C160 98 160 110 190 110" />
-          </g>
-          <circle cx="24" cy="60" r="9" className="node n0" />
-          {[22, 60, 98].map((y, i) => <circle key={y} cx="126" cy={y} r="7" className={`node n${i + 1}`} />)}
-          {[10, 34, 86, 110].map((y) => <circle key={y} cx="196" cy={y} r="5" className="node leaf" />)}
-        </svg>
-        <span className="promo-text">
-          <span className="eyebrow">The library map</span>
-          <span className="promo-title">See all {totals.lessons} lessons on one page</span>
-          <span className="promo-sub">Every subject, topic and lesson, laid out as one tree you can search.</span>
-        </span>
-        <span className="go big" aria-hidden="true"><Icon name="arrow" size={26} /></span>
-      </a>
-    </section>
   );
 }

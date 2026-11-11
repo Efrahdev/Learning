@@ -56,6 +56,8 @@
   --shadow: 0 1px 2px rgb(29 34 48 / 0.06), 0 6px 20px -8px rgb(29 34 48 / 0.18);
   --shadow-lift: 0 2px 4px rgb(29 34 48 / 0.06), 0 18px 40px -16px rgb(29 34 48 / 0.32);
   --glass: color-mix(in srgb, var(--surface) 72%, transparent); /* frosted panels over the hero glow */
+  --spine-shade: rgb(0 0 0 / 0.22);   /* the home page shelf: shadow and shine on book spines */
+  --spine-light: rgb(255 255 255 / 0.28);
   --border: 1px solid var(--line);
 
   /* Touch and layout */

@@ -36,7 +36,8 @@ The system has three parts, and each has one job:
 - Page changes cross-fade with CSS cross-document View Transitions (no JS); a subject's icon and title glide from its home tile to its page (`view-transition-name: icon-<slug>` / `title-<slug>`).
 - Maths uses KaTeX (remark-math + rehype-katex via `unified()` in `astro.config.mjs`), rendered at build time. Code highlighting uses Astro's built-in Shiki.
 - Search (Phase 3): Pagefind, static, runs in the browser.
-- PWA (later, optional): `@vite-pwa/astro`, so visited pages can be read offline.
+- **Installable app (PWA)**, no extra dependency: `public/manifest.webmanifest` (relative `start_url`/`scope`, so it follows the site path), icons in `public/` (`icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`), and a hand-written service worker `public/sw.js` (pages network-first with an offline copy of visited pages; `/_astro/` files cache-first). Registered in `BaseLayout`. Bump `VERSION` in `sw.js` to drop old caches.
+- **Phone keyboard rule:** nothing is pinned (sticky/fixed) on screens under 48rem, and the viewport meta has `interactive-widget=resizes-content`, so an open keyboard never hides the page. Never auto-focus an input on touch screens.
 - Site path: `site` and `base` in `astro.config.mjs` (`/Learning`). Internal links always go through `url()` in `src/lib/url.ts`, so moving the site is a one-line change.
 - GitHub Pages sends a short cache time for everything; hashed assets in `_astro/` are safe because their names change when they change.
 
@@ -79,10 +80,10 @@ source: https://claude.ai/artifact/…      # where an imported lesson came from
 - The build fails if a lesson `id` is missing, badly formed or duplicated, or if a lesson and a folder would share an address.
 
 ## Routes
-- `/` is the home page: a hero with instant search (`/` or Ctrl/⌘ K) and the **Library Orbit** (`src/islands/Orbit.tsx`, a canvas where each subject is a world and each moon a lesson; hover or tap a world or its name to wake it), a numbers band, the subjects as a numbered index, "Two ways to learn" (interactive labs and deep guides), and a filterable list of every lesson. `/map/` shows the whole tree on one page, with a live filter.
-- `/<any/folder/path>/` lists that folder's sub-folders (cards) and lessons. One route, `src/pages/[...path].astro`, serves every depth.
+- `/` is the home page: a hero with instant search (`/` or Ctrl/⌘ K) and the **Shelf** (a still picture: one book per subject, thicker with more lessons; tap a book to open the subject), then **every lesson listed directly, grouped by subject and topic, one tap each**, with an All / Interactive / Reading filter and subject shortcuts. Owner rule: any lesson must be reachable in as few taps as possible, and no ambient animation on the home page. `/map/` shows the whole tree on one page, with a live filter.
+- `/<any/folder/path>/` lists every lesson inside that folder, grouped by topic (with topic shortcuts), so any lesson is one tap from its subject. One route, `src/pages/[...path].astro`, serves every depth.
 - `/<folder/path>/<lesson>/` is a lesson: breadcrumb, the folder's lessons in a sidebar, previous/next. It always opens at the top.
-- `/search/`: instant search over titles, topics, tags and summaries (`?q=` works). Full-text search inside lessons (Pagefind) is Phase 3.
+- `/search/`: instant search over titles, topics, tags and summaries (`?q=` works); results sit in the page, not in a pop-up. Full-text search inside lessons (Pagefind) is Phase 3.
 
 ## Where things live (so refactors stay small)
 - `src/styles/tokens.css`: every colour, size, space, radius and tap size. Light and dark. Subject accents.
@@ -92,7 +93,7 @@ source: https://claude.ai/artifact/…      # where an imported lesson came from
 - `src/sims/`: interactive simulations, imported by the lessons that use them (`import X from '@sims/X.astro'`).
 - `src/lib/content.ts`: the only code that reads the collections; builds the folder tree (`getLibrary`, `allPages`, `ancestors`, `neighbours`).
 - `src/lib/catalogue.ts`: the same tree as plain data for the islands (`getCatalogue`).
-- `src/islands/`: React islands (`Home`, `Orbit`, `Map`, `SearchPage`, `SearchBox`), the shared search logic (`search.ts`) and their CSS (tokens only).
+- `src/islands/`: React islands (`Home`, `Map`, `SearchPage`, `SearchBox`), the shared search logic (`search.ts`) and their CSS (tokens only).
 - Components use tokens, never raw colours or sizes. Lessons contain words and components, never styling.
 
 ## Shared components
