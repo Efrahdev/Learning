@@ -79,7 +79,7 @@ source: https://claude.ai/artifact/…      # where an imported lesson came from
 - The build fails if a lesson `id` is missing, badly formed or duplicated, or if a lesson and a folder would share an address.
 
 ## Routes
-- `/` is the home page: hero with instant search (`/` or Ctrl/⌘ K), "Surprise me", subjects as a bento grid, and a filterable list of every lesson. `/map/` shows the whole tree on one page, with a live filter.
+- `/` is the home page: a hero with instant search (`/` or Ctrl/⌘ K) and the **Library Orbit** (`src/islands/Orbit.tsx`, a canvas where each subject is a world and each moon a lesson; hover or tap a world or its name to wake it), a numbers band, the subjects as a numbered index, "Two ways to learn" (interactive labs and deep guides), and a filterable list of every lesson. `/map/` shows the whole tree on one page, with a live filter.
 - `/<any/folder/path>/` lists that folder's sub-folders (cards) and lessons. One route, `src/pages/[...path].astro`, serves every depth.
 - `/<folder/path>/<lesson>/` is a lesson: breadcrumb, the folder's lessons in a sidebar, previous/next. It always opens at the top.
 - `/search/`: instant search over titles, topics, tags and summaries (`?q=` works). Full-text search inside lessons (Pagefind) is Phase 3.
@@ -92,7 +92,7 @@ source: https://claude.ai/artifact/…      # where an imported lesson came from
 - `src/sims/`: interactive simulations, imported by the lessons that use them (`import X from '@sims/X.astro'`).
 - `src/lib/content.ts`: the only code that reads the collections; builds the folder tree (`getLibrary`, `allPages`, `ancestors`, `neighbours`).
 - `src/lib/catalogue.ts`: the same tree as plain data for the islands (`getCatalogue`).
-- `src/islands/`: React islands (`Home`, `Map`, `SearchPage`, `SearchBox`), the shared search logic (`search.ts`) and their CSS (tokens only).
+- `src/islands/`: React islands (`Home`, `Orbit`, `Map`, `SearchPage`, `SearchBox`), the shared search logic (`search.ts`) and their CSS (tokens only).
 - Components use tokens, never raw colours or sizes. Lessons contain words and components, never styling.
 
 ## Shared components

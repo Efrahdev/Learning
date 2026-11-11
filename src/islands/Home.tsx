@@ -1,28 +1,43 @@
 /**
- * The home page: a welcoming hero with instant search, the subjects as a bento grid,
- * and an explorer that filters every lesson with fluid layout animations.
+ * The home page, built around one idea: the library is a small universe of learning.
  *
- * Entrance effects are plain CSS (they run before React wakes up); Motion handles the
+ *  1. Hero: a bold promise, instant search, and the Library Orbit (each subject a world,
+ *     each moon a lesson). Pointing at a world, or at its name, wakes it up.
+ *  2. A band of numbers, then the subjects as an editorial, numbered index.
+ *  3. "Two ways to learn": interactive labs and deep guides.
+ *  4. Every lesson, filterable, and the map.
+ *
+ * Entrance effects are plain CSS (they play before React wakes up); Motion handles the
  * interactive animations (filter pills, cards re-flowing, search results).
  */
-import { useEffect, useId, useState, type CSSProperties, type PointerEvent } from 'react';
+import { useEffect, useId, useState, type CSSProperties } from 'react';
 import { AnimatePresence, LazyMotion, MotionConfig, domMax, m } from 'motion/react';
 import type { Catalogue, FolderItem, LessonItem } from '@lib/catalogue';
 import SearchBox from './SearchBox';
+import Orbit from './Orbit';
 import { Icon, KindBadge, plural } from './ui';
 import './islands.css';
 import './home.css';
 
 const spring = { type: 'spring', stiffness: 420, damping: 34, mass: 0.8 } as const;
 const vt = (name: string) => ({ viewTransitionName: name }) as CSSProperties;
+const i = (n: number) => ({ '--i': n }) as CSSProperties;
 
 export default function Home({ data, mapHref }: { data: Catalogue; mapHref: string }) {
+  const [kind, setKind] = useState<Kind>('all');
+  const pickKind = (k: Kind) => {
+    setKind(k);
+    document.getElementById('explore')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  };
   return (
     <MotionConfig reducedMotion="user">
       <LazyMotion features={domMax} strict>
-        <Hero data={data} mapHref={mapHref} />
-        <Subjects subjects={data.subjects} />
-        <Explorer data={data} />
+        <div className="grain" aria-hidden="true" />
+        <Hero data={data} />
+        <Numbers totals={data.totals} />
+        <SubjectIndex subjects={data.subjects} />
+        <TwoWays data={data} onPick={pickKind} />
+        <Explorer data={data} kind={kind} setKind={setKind} />
         <MapPromo href={mapHref} totals={data.totals} />
       </LazyMotion>
     </MotionConfig>
@@ -32,124 +47,159 @@ export default function Home({ data, mapHref }: { data: Catalogue; mapHref: stri
 /* ───────────────────────── Hero ───────────────────────── */
 
 function greetingFor(h: number) {
-  return h < 5 ? 'Still up? Hello, night owl' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  return h < 5 ? 'Up late? Hello' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 }
 
-function Hero({ data, mapHref }: { data: Catalogue; mapHref: string }) {
+function Hero({ data }: { data: Catalogue }) {
   const [greeting, setGreeting] = useState('Hello');
+  const [active, setActive] = useState<string | null>(null);
   useEffect(() => setGreeting(greetingFor(new Date().getHours())), []);
-  const surprise = () => {
-    const pick = data.lessons[Math.floor(Math.random() * data.lessons.length)];
-    if (pick) location.assign(pick.href);
-  };
-  const { totals } = data;
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <div className="aurora" aria-hidden="true">
-        <span data-accent="blue" /><span data-accent="violet" /><span data-accent="rose" /><span data-accent="teal" />
-      </div>
-      <div className="hero-inner">
-        <p className="hello rise" style={{ '--i': 0 } as CSSProperties}>
-          <span className="wave" aria-hidden="true">👋</span> {greeting}!
+      <div className="hero-copy">
+        <p className="hello rise" style={i(0)}>
+          <span className="hello-dot" aria-hidden="true" /> {greeting}! {data.totals.lessons} lessons are waiting.
         </p>
         <h1 id="hero-title" className="hero-title">
-          {['What', 'shall', 'we'].map((w, i) => (
-            <span key={w} className="word rise" style={{ '--i': i + 1 } as CSSProperties}>{w} </span>
-          ))}
-          <span className="word rise shine" style={{ '--i': 4 } as CSSProperties}>explore</span>{' '}
-          <span className="word rise" style={{ '--i': 5 } as CSSProperties}>today?</span>
+          <span className="line"><span className="line-in" style={i(1)}>Learn how</span></span>
+          <span className="line"><span className="line-in" style={i(2)}>everything</span></span>
+          <span className="line"><span className="line-in hero-accent" style={i(3)}>works.</span></span>
         </h1>
-        <p className="hero-lead rise" style={{ '--i': 6 } as CSSProperties}>
-          Every lesson, animation and guide we have made, all in one calm place. Search for anything, or pick a subject below.
+        <p className="hero-lead rise" style={i(5)}>
+          Hands-on labs and friendly, deep guides across maths, science, coding, English and technology.
+          Pick a world to explore, or search for any idea.
         </p>
-        <div className="search-wrap rise" style={{ '--i': 7 } as CSSProperties}>
+        <div className="search-wrap rise" style={i(6)}>
           <SearchBox lessons={data.lessons} />
         </div>
-        <div className="hero-actions rise" style={{ '--i': 8 } as CSSProperties}>
-          <button type="button" className="btn pop" onClick={surprise}><Icon name="dice" /> Surprise me</button>
-          <a className="btn quiet pop" href={mapHref}><Icon name="map" /> See the whole map</a>
-        </div>
-        <ul className="stats rise" style={{ '--i': 9 } as CSSProperties} role="list">
-          <Stat n={totals.subjects} label="subjects" />
-          <Stat n={totals.topics} label="topics" />
-          <Stat n={totals.lessons} label="lessons" />
-          <Stat n={totals.interactive} label="interactive" />
-        </ul>
+      </div>
+
+      <div className="hero-visual rise" style={i(4)}>
+        <Orbit subjects={data.subjects} active={active} onActive={setActive} />
+        <p className="orbit-caption"><span aria-hidden="true">●</span> Each world is a subject. Each moon is a lesson.</p>
+        <nav className="worlds" aria-label="Subjects">
+          {data.subjects.map((s) => (
+            <a key={s.path} href={s.href} data-accent={s.accent} className={`world${active === s.path ? ' on' : ''}${s.count ? '' : ' soon'}`}
+              onPointerEnter={() => setActive(s.path)} onPointerLeave={() => setActive(null)}
+              onFocus={() => setActive(s.path)} onBlur={() => setActive(null)}>
+              <span aria-hidden="true">{s.icon}</span> {s.title}
+              <span className="world-n">{s.count || 'soon'}</span>
+            </a>
+          ))}
+        </nav>
       </div>
     </section>
   );
 }
 
-/** The number counts up with a pure-CSS animation (an animatable @property counter). */
-function Stat({ n, label }: { n: number; label: string }) {
-  return (
-    <li className="stat">
-      <span className="stat-n" style={{ '--to': n } as CSSProperties} aria-hidden="true" />
-      <span className="sr-only">{n}</span>
-      <span className="stat-label">{label}</span>
-    </li>
-  );
-}
+/* ───────────────────────── Numbers ───────────────────────── */
 
-/* ───────────────────────── Subjects (bento grid) ───────────────────────── */
-
-function Subjects({ subjects }: { subjects: FolderItem[] }) {
-  // The biggest subjects get wide tiles, so the grid has rhythm instead of a flat wall of cards.
-  // Just enough of them that a three-column grid ends on a full row (no lonely tile at the end).
-  const n = (3 - (subjects.length % 3)) % 3 || (subjects.length >= 6 ? 3 : 0);
-  const wide = new Set([...subjects].filter((s) => s.count > 0).sort((a, b) => b.count - a.count).slice(0, n).map((s) => s.path));
+function Numbers({ totals }: { totals: Catalogue['totals'] }) {
+  const items = [
+    { n: totals.lessons, label: 'lessons', note: 'in one place' },
+    { n: totals.interactive, label: 'interactive labs', note: 'to touch and try' },
+    { n: totals.lessons - totals.interactive, label: 'deep guides', note: 'to read slowly' },
+    { n: totals.subjects, label: 'subjects', note: `and ${totals.topics} topics` },
+  ];
   return (
-    <section className="section" aria-labelledby="subjects-title">
-      <div className="section-head">
-        <p className="eyebrow">Subjects</p>
-        <h2 id="subjects-title" className="section-title">Choose your adventure</h2>
-      </div>
-      <ul className="bento" role="list">
-        {subjects.map((s, i) => <SubjectCard key={s.path} s={s} wide={wide.has(s.path)} index={i} />)}
+    <section className="numbers" aria-label="The library in numbers">
+      <ul role="list">
+        {items.map((x) => (
+          <li key={x.label} className="num-item">
+            <span className="stat-n" style={{ '--to': x.n } as CSSProperties} aria-hidden="true" />
+            <span className="sr-only">{x.n}</span>
+            <span className="num-label">{x.label}</span>
+            <span className="num-note">{x.note}</span>
+          </li>
+        ))}
       </ul>
     </section>
   );
 }
 
-function SubjectCard({ s, wide, index }: { s: FolderItem; wide: boolean; index: number }) {
-  const empty = s.count === 0;
-  const topics = s.folders.map((f) => f.title);
-  // Pointer-following light and a gentle 3D tilt, written straight to CSS variables (no re-render).
-  const onMove = (e: PointerEvent<HTMLAnchorElement>) => {
-    if (e.pointerType !== 'mouse') return;
-    const el = e.currentTarget, r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-    el.style.setProperty('--mx', `${x * 100}%`);
-    el.style.setProperty('--my', `${y * 100}%`);
-    el.style.setProperty('--ry', `${(x - 0.5) * 7}deg`);
-    el.style.setProperty('--rx', `${(0.5 - y) * 7}deg`);
-  };
-  const onLeave = (e: PointerEvent<HTMLAnchorElement>) => {
-    e.currentTarget.style.setProperty('--rx', '0deg');
-    e.currentTarget.style.setProperty('--ry', '0deg');
-  };
+/* ───────────────────────── Subjects: an editorial index ───────────────────────── */
+
+function SubjectIndex({ subjects }: { subjects: FolderItem[] }) {
   return (
-    <li className={`bento-cell${wide ? ' wide' : ''}`} data-accent={s.accent} style={{ '--i': index } as CSSProperties}>
-      <a className={`subject${empty ? ' is-empty' : ''}`} href={s.href} onPointerMove={onMove} onPointerLeave={onLeave}>
-        <span className="subject-glow" aria-hidden="true" />
-        <span className="subject-top">
-          <span className="subject-icon" aria-hidden="true" style={vt(`icon-${s.slug}`)}>{s.icon ?? '📁'}</span>
-          {empty ? <span className="soon">Coming soon</span> : <span className="subject-count">{plural(s.count, 'lesson')}</span>}
-        </span>
-        <span className="subject-name" style={vt(`title-${s.slug}`)}>{s.title}</span>
-        {s.blurb && <span className="subject-blurb">{s.blurb}</span>}
-        {topics.length > 0 && (
-          <span className="topics">
-            {topics.slice(0, wide ? 5 : 3).map((t) => <span key={t} className="topic">{t}</span>)}
-            {topics.length > (wide ? 5 : 3) && <span className="topic more">+{topics.length - (wide ? 5 : 3)}</span>}
-          </span>
-        )}
-        <span className="subject-foot">
-          <span className="meta">{s.interactive ? `${s.interactive} interactive` : empty ? 'Lessons on the way' : plural(s.folders.length || 1, 'topic')}</span>
-          <span className="go" aria-hidden="true"><Icon name="arrow" /></span>
-        </span>
-      </a>
-    </li>
+    <section className="section" aria-labelledby="subjects-title">
+      <div className="section-head">
+        <p className="eyebrow">Contents</p>
+        <h2 id="subjects-title" className="section-title">Choose a subject</h2>
+      </div>
+      <ol className="index" role="list">
+        {subjects.map((s, n) => (
+          <li key={s.path} data-accent={s.accent} className="index-item">
+            <a className={`row${s.count ? '' : ' is-empty'}`} href={s.href}>
+              <span className="row-num" aria-hidden="true">{String(n + 1).padStart(2, '0')}</span>
+              <span className="row-icon" aria-hidden="true" style={vt(`icon-${s.slug}`)}>{s.icon ?? '📁'}</span>
+              <span className="row-main">
+                <span className="row-title" style={vt(`title-${s.slug}`)}>{s.title}</span>
+                {s.blurb && <span className="row-blurb">{s.blurb}</span>}
+              </span>
+              {s.folders.length > 0 && (
+                <span className="row-topics" aria-label="Topics">
+                  {s.folders.slice(0, 4).map((f) => <span key={f.path} className="topic">{f.title}</span>)}
+                  {s.folders.length > 4 && <span className="topic more">+{s.folders.length - 4}</span>}
+                </span>
+              )}
+              <span className="row-count">
+                {s.count ? <><b>{s.count}</b> {s.count === 1 ? 'lesson' : 'lessons'}</> : <span className="soon">Coming soon</span>}
+              </span>
+              <span className="go" aria-hidden="true"><Icon name="arrow" /></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/* ───────────────────────── Two ways to learn ───────────────────────── */
+
+/** Up to three lessons of one kind, each from a different subject where possible. */
+function sample(list: LessonItem[], count = 3) {
+  const out: LessonItem[] = [], seen = new Set<string>();
+  for (const l of list) if (!seen.has(l.subject) && out.length < count) { out.push(l); seen.add(l.subject); }
+  for (const l of list) if (out.length < count && !out.includes(l)) out.push(l);
+  return out;
+}
+
+function TwoWays({ data, onPick }: { data: Catalogue; onPick: (k: Kind) => void }) {
+  const labs = data.lessons.filter((l) => l.interactive);
+  const guides = data.lessons.filter((l) => !l.interactive);
+  const ways = [
+    { k: 'live' as const, cls: 'way-labs', icon: 'spark' as const, title: 'Interactive labs', count: labs.length,
+      text: 'Drag, slide, press and watch. Ideas you can play with until they click.', list: sample(labs) },
+    { k: 'read' as const, cls: 'way-guides', icon: 'book' as const, title: 'Deep guides', count: guides.length,
+      text: 'Read at your own pace, with clear diagrams and real-world examples.', list: sample(guides) },
+  ];
+  return (
+    <section className="section" aria-labelledby="ways-title">
+      <div className="section-head">
+        <p className="eyebrow">How to learn here</p>
+        <h2 id="ways-title" className="section-title">Two ways to learn</h2>
+      </div>
+      <div className="ways">
+        {ways.map((w) => (
+          <article key={w.k} className={`way ${w.cls}`}>
+            <div className="way-head">
+              <span className="way-icon"><Icon name={w.icon} size={26} /></span>
+              <span className="way-count"><b>{w.count}</b> lessons</span>
+            </div>
+            <h3 className="way-title">{w.title}</h3>
+            <p className="way-text">{w.text}</p>
+            <ul className="way-list" role="list">
+              {w.list.map((l) => (
+                <li key={l.id} data-accent={l.accent}>
+                  <a href={l.href}><span aria-hidden="true">{l.icon}</span><span className="way-l">{l.title}</span><Icon name="arrow" size={16} /></a>
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="btn quiet pop way-all" onClick={() => onPick(w.k)}>See all {w.count} <Icon name="arrow" size={18} /></button>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -158,9 +208,8 @@ function SubjectCard({ s, wide, index }: { s: FolderItem; wide: boolean; index: 
 type Kind = 'all' | 'live' | 'read';
 const PAGE = 12;
 
-function Explorer({ data }: { data: Catalogue }) {
+function Explorer({ data, kind, setKind }: { data: Catalogue; kind: Kind; setKind: (k: Kind) => void }) {
   const [subject, setSubject] = useState('all');
-  const [kind, setKind] = useState<Kind>('all');
   const [shown, setShown] = useState(PAGE);
   const subjects = data.subjects.filter((s) => s.count > 0);
   const list = data.lessons.filter(
@@ -170,7 +219,7 @@ function Explorer({ data }: { data: Catalogue }) {
   const visible = list.slice(0, shown);
 
   return (
-    <section className="section" aria-labelledby="explore-title">
+    <section className="section" id="explore" aria-labelledby="explore-title">
       <div className="section-head row">
         <div>
           <p className="eyebrow">Explore</p>
