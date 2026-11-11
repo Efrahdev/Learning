@@ -1,1 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0f7f86"/><path d="M14 18h14a6 6 0 0 1 6 6v24a5 5 0 0 0-5-5H14zM50 18H36a6 6 0 0 0-6 6v24a5 5 0 0 1 5-5h15z" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+    <rect width="512" height="512" rx="112" fill="#1d2230"/>
+    
+    <rect x="108.80000000000001" y="129.04" width="79.12" height="259.44" rx="9.200000000000001" fill="#17806a"/>
+    <rect x="108.80000000000001" y="152.96" width="79.12" height="9.200000000000001" fill="#0b4d40" opacity=".55"/>
+    <rect x="108.80000000000001" y="351.68" width="79.12" height="9.200000000000001" fill="#0b4d40" opacity=".55"/>
+    
+    <rect x="200.8" y="92.24000000000001" width="95.68" height="296.24" rx="9.200000000000001" fill="#e9a23b"/>
+    <rect x="200.8" y="116.16000000000001" width="95.68" height="9.200000000000001" fill="#9a5d0c" opacity=".55"/>
+    <rect x="200.8" y="351.68" width="95.68" height="9.200000000000001" fill="#9a5d0c" opacity=".55"/>
+    <g transform="rotate(14 381.12000000000006,388.48)">
+    <rect x="313.04" y="138.24" width="75.44" height="250.24" rx="9.200000000000001" fill="#d0547f"/>
+    <rect x="313.04" y="162.16" width="75.44" height="9.200000000000001" fill="#7d2346" opacity=".55"/>
+    <rect x="313.04" y="351.68" width="75.44" height="9.200000000000001" fill="#7d2346" opacity=".55"/></g>
+    <rect x="79.36" y="388.48" width="353.28000000000003" height="20.240000000000002" rx="10.120000000000001" fill="#f7f5f0"/>
+  </svg>
